@@ -125,3 +125,12 @@ a.object_link:hover {
     color: #ff6600;
     text-decoration:none;
 }
+
+.left-half {
+    float:left;
+}
+
+.right-half {
+    margin-left: 60px;
+    float: left;
+}

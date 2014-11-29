@@ -1,5 +1,28 @@
 {% extends 'base.html' %}
 
+{% block scripts %}
+	<script>
+		$(document).ready(function ()
+		{
+			$('#orgOneButton').click(function ()
+			{
+				var iframeSrc = 'https://';
+				if ( $('#org_one_env').val() == 'Production' )
+				{
+					iframeSrc += 'login'
+				}
+				else
+				{
+					iframeSrc += 'test'
+				}
+				iframeSrc += '.salesforce.com/services/oauth2/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=api';
+				$('#orgOneFrame').attr('src', iframeSrc);
+			});
+		});
+	</script>
+
+{% endblock %}
+
 {% block content %}
 
 	<div class="inner">
@@ -11,92 +34,93 @@
 		<p>
 			None of your organisation information or data is captured or kept from running this tool.
 		</p>
-		
-		<table id="login_table">
 
-			<form action="." method="POST" onsubmit="hideTable();" oncomplete="showTable();" id="loginForm"> {% csrf_token %}
+		<div class="left-half">
 
-				<table class="login_table">
+			<h2>Org One</h2>
 
-					<tr>
-						<td colspan="2" style="color:#ff6600;font-weight:bold;">
-							<h2>Select Options</h2>
-						</td>
-					</tr>
+			<table>
 
-					{% if login_form.errors or login_form.non_field_errors %}
-						<tr>
-							<td colspan="2" style="color:#ff6600;font-weight:bold;">
-								{{ login_form.errors}} <br/>
-								{{ login_form.non_field_errors }}
-							</td>
-						</tr>
-					{% endif %}
+				<tr>
+					<td width="125">
+						<select id="org_one_env" name="org_one_env" class="form-control">
+							<option value="Production">Production</option>
+							<option value="Sandbox">Sandbox</option>
+						</select>
+					</td>
+					<td>
+						&nbsp;&nbsp;
+						<button type="button" data-toggle="modal" data-target="#orgOne" id="orgOneButton">
+  							Login
+						</button>
+					</td>
+				</tr>
 
-					{% if messages %}
-						<tr>
-							<td colspan="2" style="color:#ff6600;font-weight:bold;">
-							    {% for message in messages %}
-							    	{{ message }}<br/>
-							    {% endfor %}
-							    <br/>
-							</td>
-						</tr>
-					{% endif %}
+			</table>
 
-					<tr>
-						<td width="200">
-							<label for="id_environment">Environment</label>
-						</td>
-						<td>
-							<select id="id_environment" name="environment">
-								<option value="Production">Production</option>
-								<option value="Sandbox">Sandbox</option>
-							</select>
-						</td>
-					</tr>
+		</div>
 
-					<tr>
-						<td>
-							<label for="id_api_version">API Version</label>
-						</td>
-						<td>
-							<select id="id_api_version" name="api_version">
-								<option value="32">32.0</option>
-								<option value="31">31.0</option>
-								<option value="30">30.0</option>
-								<option value="29">29.0</option>
-								<option value="28">28.0</option>
-							</select>
-						</td>
-					</tr>
+		<div class="right-half">
 
-					<tr>
-						<td colspan="2">&nbsp;</td>
-					</tr>
+			<h2>Org Two</h2>
 
-					<tr>
-						<td colspan="2" style="text-align:center;height:50px;">
-							<input type="submit" value="Login to Salesforce with OAuth" />
-						</td>
-					</tr>
+			<table>
 
-				</table>
+				<tr>
+					<td width="125">
+						<select id="org_two_env" name="org_two_env" class="form-control">
+							<option value="Production">Production</option>
+							<option value="Sandbox">Sandbox</option>
+						</select>
+					</td>
+					<td>
+						&nbsp;&nbsp;
+						<button type="button" data-toggle="modal" data-target="#orgTwo">
+  							Login
+						</button>
+					</td>
+				</tr>
 
-				<div class="loading">
-					<div style="float:left;">
-						<img src="{{ STATIC_URL }}images/loading.gif" alt="Loading" title="Loading" />
-					</div>
-					<div style="float:left;margin-left:20px;">
-						<h1 style="font-size:1.5em;margin-top:20px;">Accessing Salesforce...</h1>
-						<p>Logging in with OAuth 2.0</p>
-					</div>
-				</div>
+			</table>
 
-			</form>
+		</div>
 
-		</table>
+	</div>
 
+	<!-- Org One Modal -->
+	<div class="modal fade" id="orgOne" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  	<div class="modal-dialog">
+		    <div class="modal-content">
+		      	<div class="modal-header">
+		        	<button type="button" class="close" data-dismiss="modal">
+		        		<span aria-hidden="true">&times;</span>
+		        		<span class="sr-only">Close</span>
+		        	</button>
+		        	<h4 class="modal-title" id="myModalLabel">Log in to Org One</h4>
+		      	</div>
+		      	<div class="modal-body">
+		        	<iframe id="orgOneFrame" border="0"></iframe>
+		      	</div>	
+		    </div>
+		</div>
+	</div>
+
+	<!-- Org Two Modal -->
+	<div class="modal fade" id="orgTwo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  	<div class="modal-dialog">
+		    <div class="modal-content">
+		      	<div class="modal-header">
+		        	<button type="button" class="close" data-dismiss="modal">
+		        		<span aria-hidden="true">&times;</span>
+		        		<span class="sr-only">Close</span>
+		        	</button>
+		        	<h4 class="modal-title" id="myModalLabel">Log in to Org Two</h4>
+		      	</div>
+		      	<div class="modal-body">
+		        	<iframe id="orgTwoFrame" border="0"></iframe>
+		      	</div>
+		    </div>
+		</div>
 	</div>
 
 {% endblock %}
