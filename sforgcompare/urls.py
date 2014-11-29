@@ -6,4 +6,5 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', 'compareorgs.views.index', name='index'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^oauth_response/$', 'compareorgs.views.oauth_response', name='oauth_response'),
 )

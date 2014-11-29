@@ -4,21 +4,54 @@
 	<script>
 		$(document).ready(function ()
 		{
-			$('#orgOneButton').click(function ()
+			$('#orgOneButton').click(function()
 			{
-				var iframeSrc = 'https://';
+				var loginUrl = 'https://';
 				if ( $('#org_one_env').val() == 'Production' )
 				{
-					iframeSrc += 'login'
+					loginUrl += 'login'
 				}
 				else
 				{
-					iframeSrc += 'test'
+					loginUrl += 'test'
 				}
-				iframeSrc += '.salesforce.com/services/oauth2/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=api';
-				$('#orgOneFrame').attr('src', iframeSrc);
+				loginUrl += '.salesforce.com/services/oauth2/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=api&state=' + $('#org_one_env').val() + 'org1';
+				popupwindow(loginUrl);
 			});
+
+			$('#orgTwoButton').click(function()
+			{
+				var loginUrl = 'https://';
+				if ( $('#org_two_env').val() == 'Production' )
+				{
+					loginUrl += 'login'
+				}
+				else
+				{
+					loginUrl += 'test'
+				}
+				loginUrl += '.salesforce.com/services/oauth2/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=api&state=' + $('#org_one_env').val() + 'org2';
+				popupwindow(loginUrl);
+			});
+
 		});
+
+		function popupwindow(url) 
+		{
+			var w = 800;
+			var h = 500;
+		  	var left = (screen.width/2)-(w/2);
+		  	var top = (screen.height/2)-(h/2);
+		  	return window.open(url, 'SalesforceLogin', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+		} 
+
+		function updateOrgDetails(org, username, org_name)
+		{
+			console.log(org);
+			console.log(username);
+			console.log(org_name);
+		}
+
 	</script>
 
 {% endblock %}
@@ -50,7 +83,7 @@
 					</td>
 					<td>
 						&nbsp;&nbsp;
-						<button type="button" data-toggle="modal" data-target="#orgOne" id="orgOneButton">
+						<button type="button" id="orgOneButton">
   							Login
 						</button>
 					</td>
@@ -75,7 +108,7 @@
 					</td>
 					<td>
 						&nbsp;&nbsp;
-						<button type="button" data-toggle="modal" data-target="#orgTwo">
+						<button type="button" id="orgTwoButton">
   							Login
 						</button>
 					</td>
@@ -85,42 +118,6 @@
 
 		</div>
 
-	</div>
-
-	<!-- Org One Modal -->
-	<div class="modal fade" id="orgOne" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	  	<div class="modal-dialog">
-		    <div class="modal-content">
-		      	<div class="modal-header">
-		        	<button type="button" class="close" data-dismiss="modal">
-		        		<span aria-hidden="true">&times;</span>
-		        		<span class="sr-only">Close</span>
-		        	</button>
-		        	<h4 class="modal-title" id="myModalLabel">Log in to Org One</h4>
-		      	</div>
-		      	<div class="modal-body">
-		        	<iframe id="orgOneFrame" border="0"></iframe>
-		      	</div>	
-		    </div>
-		</div>
-	</div>
-
-	<!-- Org Two Modal -->
-	<div class="modal fade" id="orgTwo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	  	<div class="modal-dialog">
-		    <div class="modal-content">
-		      	<div class="modal-header">
-		        	<button type="button" class="close" data-dismiss="modal">
-		        		<span aria-hidden="true">&times;</span>
-		        		<span class="sr-only">Close</span>
-		        	</button>
-		        	<h4 class="modal-title" id="myModalLabel">Log in to Org Two</h4>
-		      	</div>
-		      	<div class="modal-body">
-		        	<iframe id="orgTwoFrame" border="0"></iframe>
-		      	</div>
-		    </div>
-		</div>
 	</div>
 
 {% endblock %}
