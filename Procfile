@@ -1,2 +1,2 @@
-web: gunicorn schemalister.wsgi --workers $WEB_CONCURRENCY
-worker: celery -A getschema.tasks worker -B --loglevel=info
+web: gunicorn sforgcompare.wsgi --workers $WEB_CONCURRENCY
+worker: celery -A compareorgs.tasks worker -B --loglevel=info
