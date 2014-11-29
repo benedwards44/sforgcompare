@@ -1,8 +1,10 @@
 $(document).ready(function ()
-{
+{	var urlPrefix =  'https://';
+	var urlSuffix = '.salesforce.com/services/oauth2/authorize?response_type=code&client_id=' + $('#client_id').val() + '&redirect_uri=' + $('#redirect_uri').val() + '&scope=api&state=';
+
 	$('#orgOneButton').click(function()
 	{
-		var loginUrl = 'https://';
+		var loginUrl = urlPrefix;
 		if ( $('#org_one_env').val() == 'Production' )
 		{
 			loginUrl += 'login'
@@ -11,13 +13,13 @@ $(document).ready(function ()
 		{
 			loginUrl += 'test'
 		}
-		loginUrl += '.salesforce.com/services/oauth2/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=api&state=' + $('#org_one_env').val() + 'org1';
+		loginUrl += urlSuffix + $('#org_one_env').val() + 'org1';
 		popupwindow(loginUrl);
 	});
 
 	$('#orgTwoButton').click(function()
 	{
-		var loginUrl = 'https://';
+		var loginUrl = urlPrefix;
 		if ( $('#org_two_env').val() == 'Production' )
 		{
 			loginUrl += 'login'
@@ -26,7 +28,7 @@ $(document).ready(function ()
 		{
 			loginUrl += 'test'
 		}
-		loginUrl += '.salesforce.com/services/oauth2/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=api&state=' + $('#org_one_env').val() + 'org2';
+		loginUrl += urlSuffix + $('#org_one_env').val() + 'org2';
 		popupwindow(loginUrl);
 	});
 
