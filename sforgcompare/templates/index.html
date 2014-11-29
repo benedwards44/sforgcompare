@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<div class="inner">
+
+		<h1>Salesforce Schema Lister</h1>
+		<p>
+			This tool uses the Salesforce REST API to build a list of objects, fields and field attributes from within your Salesforce Org.
+		</p>
+		<p>
+			None of your organisation information or data is captured or kept from running this tool.
+		</p>
+		
+		<table id="login_table">
+
+			<form action="." method="POST" onsubmit="hideTable();" oncomplete="showTable();" id="loginForm"> {% csrf_token %}
+
+				<table class="login_table">
+
+					<tr>
+						<td colspan="2" style="color:#ff6600;font-weight:bold;">
+							<h2>Select Options</h2>
+						</td>
+					</tr>
+
+					{% if login_form.errors or login_form.non_field_errors %}
+						<tr>
+							<td colspan="2" style="color:#ff6600;font-weight:bold;">
+								{{ login_form.errors}} <br/>
+								{{ login_form.non_field_errors }}
+							</td>
+						</tr>
+					{% endif %}
+
+					{% if messages %}
+						<tr>
+							<td colspan="2" style="color:#ff6600;font-weight:bold;">
+							    {% for message in messages %}
+							    	{{ message }}<br/>
+							    {% endfor %}
+							    <br/>
+							</td>
+						</tr>
+					{% endif %}
+
+					<tr>
+						<td width="200">
+							<label for="id_environment">Environment</label>
+						</td>
+						<td>
+							<select id="id_environment" name="environment">
+								<option value="Production">Production</option>
+								<option value="Sandbox">Sandbox</option>
+							</select>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<label for="id_api_version">API Version</label>
+						</td>
+						<td>
+							<select id="id_api_version" name="api_version">
+								<option value="32">32.0</option>
+								<option value="31">31.0</option>
+								<option value="30">30.0</option>
+								<option value="29">29.0</option>
+								<option value="28">28.0</option>
+							</select>
+						</td>
+					</tr>
+
+					<tr>
+						<td colspan="2">&nbsp;</td>
+					</tr>
+
+					<tr>
+						<td colspan="2" style="text-align:center;height:50px;">
+							<input type="submit" value="Login to Salesforce with OAuth" />
+						</td>
+					</tr>
+
+				</table>
+
+				<div class="loading">
+					<div style="float:left;">
+						<img src="{{ STATIC_URL }}images/loading.gif" alt="Loading" title="Loading" />
+					</div>
+					<div style="float:left;margin-left:20px;">
+						<h1 style="font-size:1.5em;margin-top:20px;">Accessing Salesforce...</h1>
+						<p>Logging in with OAuth 2.0</p>
+					</div>
+				</div>
+
+			</form>
+
+		</table>
+
+	</div>
+
+{% endblock %}

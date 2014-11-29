@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<div class="inner">
+
+		<h1>Salesforce Schema Lister</h1>
+		<p>
+			This tool uses the Salesforce REST API to build a list of objects, fields and field attributes from within your Salesforce Org.
+		</p>
+		<p>
+			None of your organisation information or data is captured or kept from running this tool.
+		</p>
+					
+		<div class="loading-components">
+
+			<div style="float:left;">
+				<img src="{{ STATIC_URL }}images/loading.gif" alt="Loading" title="Loading" />
+			</div>
+
+			<div style="float:left;margin-left:20px;">
+				<h1 style="font-size:1.5em;margin-top:20px;">Querying objects and fields...</h1>
+				<p>This can take a few minutes.</p>
+			</div>
+
+		</div>
+
+		<div class="error" style="display:none;">
+			<p>
+				There was an error processing your request: <i class="error_message"></i>
+				<br/><br/>
+				Please <a href="/">return</a> to the home page and try again.
+			</p>
+		</div>
+
+	</div>
+
+	<script>
+ 		window.setInterval(function () 
+ 		{
+       		$.ajax({
+			    url: '/job_status/{{ schema.id }}',
+			    type: 'get', //this is the default though, you don't actually need to always mention it
+			    success: function(resp) 
+			    {
+			        if (resp.split(':::')[0].trim() == 'Finished')
+			        {
+			        	window.location = '/schema/{{ schema.id }}/';
+			        } 
+			        else if (resp.split(':::')[0].trim() == 'Error')
+			        {
+			        	$('.loading-components').hide();
+			        	$('.error').show();
+			        	$('.error_message').text(resp.split(':::')[1]);
+			        }
+			        // Else job is still running, this will re-run shortly.
+			    },
+			    failure: function(resp) 
+			    { 
+			        $('.loading-components').hide();
+		        	$('.error').show();
+		        	$('.error_message').text(resp);
+			    }
+			});
+    	}, 3000);
+	</script>
+
+{% endblock %}

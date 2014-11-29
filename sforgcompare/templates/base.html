@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Salesforce.com Schema Lister</title>
+		<meta name="keywords" content="salesforce, salesforce.com, force.com, schema, schemalister, sfschema packagebuilder, metadata, api, metadata api, package.xml, xml, destructivechanges.xml, descructivechanges, ide, force.com ide, eclipse, ant, force.com migration" /> 
+  		<meta name="description" content="Build a list of objects, fields and field attributes from your Salesforce Org" />
+  		<meta name="author" content="Ben Edwards (ben@benedwards.co.nz)" />
+  		<meta charset="UTF-8" />
+
+  		{% block css %}{% endblock %}
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/styles.css" />
+		<link rel="shortcut icon" href="{{ STATIC_URL }}images/favicon.ico" type="image/vnd.microsoft.icon" />
+		
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/main.js"></script>
+		{% block scripts %}{% endblock %}
+	</head>	
+
+	<body>
+
+		<div id="wrapper">
+
+			<a href="http://www.tquila.com" class="logo" target="_blank">
+				<img src="{{ STATIC_URL }}images/tquila-logo@1x.png" style="" border="0" />
+			</a>
+
+			<div class="contact">
+				<a href="https://packagebuilder.herokuapp.com" target="_blank">Package Builder</a>
+				&nbsp;|&nbsp;
+				<a href="https://github.com/benedwards44/schemalister" target="_blank">Source Code</a>
+				&nbsp;|&nbsp;
+				<a href="https://twitter.com/benedwards44" target="_blank">@benedwards44</a>
+			</div>
+
+			<div class="clear"></div>
+
+			<div id="container">
+				{% block content %}{% endblock %}
+			</div>
+
+		</div>
+
+	</body>
+
+</html>
