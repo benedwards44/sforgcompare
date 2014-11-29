@@ -1,61 +1,5 @@
 {% extends 'base.html' %}
 
-{% block scripts %}
-	<script>
-		$(document).ready(function ()
-		{
-			$('#orgOneButton').click(function()
-			{
-				var loginUrl = 'https://';
-				if ( $('#org_one_env').val() == 'Production' )
-				{
-					loginUrl += 'login'
-				}
-				else
-				{
-					loginUrl += 'test'
-				}
-				loginUrl += '.salesforce.com/services/oauth2/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=api&state=' + $('#org_one_env').val() + 'org1';
-				popupwindow(loginUrl);
-			});
-
-			$('#orgTwoButton').click(function()
-			{
-				var loginUrl = 'https://';
-				if ( $('#org_two_env').val() == 'Production' )
-				{
-					loginUrl += 'login'
-				}
-				else
-				{
-					loginUrl += 'test'
-				}
-				loginUrl += '.salesforce.com/services/oauth2/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&scope=api&state=' + $('#org_one_env').val() + 'org2';
-				popupwindow(loginUrl);
-			});
-
-		});
-
-		function popupwindow(url) 
-		{
-			var w = 800;
-			var h = 500;
-		  	var left = (screen.width/2)-(w/2);
-		  	var top = (screen.height/2)-(h/2);
-		  	return window.open(url, 'SalesforceLogin', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-		} 
-
-		function updateOrgDetails(org, username, org_name)
-		{
-			console.log(org);
-			console.log(username);
-			console.log(org_name);
-		}
-
-	</script>
-
-{% endblock %}
-
 {% block content %}
 
 	<div class="inner">
@@ -72,7 +16,7 @@
 
 			<h2>Org One</h2>
 
-			<table>
+			<table id="orgOneLogin">
 
 				<tr>
 					<td width="125">
@@ -91,13 +35,35 @@
 
 			</table>
 
+			<table id="orgOneDisplay" style="display:none;">
+
+				<tr>
+					<td width="125">
+						<strong>Username</strong>
+					</td>
+					<td>
+						<span id="orgOneUsername"></span>
+					</td>
+				</tr>
+
+				<tr>
+					<td width="125">
+						<strong>Org</strong>
+					</td>
+					<td>
+						<span id="orgOneOrg"></span>
+					</td>
+				</tr>
+
+			</table>
+
 		</div>
 
 		<div class="right-half">
 
 			<h2>Org Two</h2>
 
-			<table>
+			<table id="orgTwoLogin">
 
 				<tr>
 					<td width="125">
@@ -116,6 +82,34 @@
 
 			</table>
 
+			<table id="orgTwoDisplay" style="display:none;">
+
+				<tr>
+					<td width="125">
+						<strong>Username</strong>
+					</td>
+					<td>
+						<span id="orgTwoUsername"></span>
+					</td>
+				</tr>
+
+				<tr>
+					<td width="125">
+						<strong>Org</strong>
+					</td>
+					<td>
+						<span id="orgTwoOrg"></span>
+					</td>
+				</tr>
+
+			</table>
+
+		</div>
+
+		<div class="clear"></div>
+
+		<div id="compareOrgs" style="display:none;width:100%;text-align:center;">
+			<button>Compare Orgs</button>
 		</div>
 
 	</div>
