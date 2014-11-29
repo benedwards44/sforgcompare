@@ -9,4 +9,6 @@ from time import sleep
 
 def index(request):
 
+	login_form = LoginForm()
+
 	return render_to_response('index.html', RequestContext(request,{'login_form': login_form}))
