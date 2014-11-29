@@ -6,8 +6,8 @@ class Job(models.Model):
 	error = models.TextField(blank=True)
 
 	def save_model(self, request, obj, form, change):
-        obj.created_date = datetime.datetime.now()
-        obj.save()
+		obj.created_date = datetime.datetime.now()
+		obj.save()
 
 class Org(models.Model):
 	job = models.ForeignKey(Job)
