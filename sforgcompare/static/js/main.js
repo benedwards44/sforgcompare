@@ -50,14 +50,14 @@ function updateOrgDetails(org, username, org_name)
 		$('#orgOneLogin').hide();
 		$('#orgOneDisplay').show();
 		$('#orgOneUsername').text(username);
-		$('#orgOneOrg').show(org_name);
+		$('#orgOneOrg').text(org_name);
 	}
 	else
 	{
 		$('#orgTwoLogin').hide();
 		$('#orgTwoDisplay').show();
 		$('#orgTwoUsername').text(username);
-		$('#orgTwoOrg').show(org_name);
+		$('#orgTwoOrg').text(org_name);
 	}
 
 	// Both elements are visible, show the GO button
