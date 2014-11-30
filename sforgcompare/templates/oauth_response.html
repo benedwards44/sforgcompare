@@ -19,9 +19,9 @@
 
   	<body>
 
-  		{% if error %}
+        <div style="padding:20px 40px;">
 
-            <div style="padding:20px 40px;">
+      		{% if error %}
 
                 <h2>Error</h2>
 
@@ -33,16 +33,30 @@
 
                 <button onclick="window.close();">Close</button>
 
-            </div>
+      		{% else %}
 
-  		{% else %}
+                <h2>Success</h2>
 
-  			<script>
-  				window.opener.updateOrgDetails('{{ org_choice }}','{{ username }}', '{{ org_name }}', '{{ org.id }}');
-  				window.close();
-  			</script>
+                <div class="alert alert-success" role="alert">
+                    Your authorisation has been successful. Please wait while your details are loaded.
+                </div>
 
-  		{% endif %}
+                <iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+                <iframe src="https://test.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+
+      			<script>
+      				window.opener.updateOrgDetails('{{ org_choice }}','{{ username }}', '{{ org_name }}', '{{ org.id }}');
+                    setTimeout(function() 
+                    {
+                        window.close();
+                    },
+                        3000
+                    );
+      			</script>
+
+      		{% endif %}
+
+        </div>
 
   	</body>
 
