@@ -2,7 +2,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
-from compareorgs.models import Org
+from compareorgs.models import Job, Org
+from compareorgs.forms import JobForm
 import json	
 import requests
 from time import sleep
@@ -12,7 +13,30 @@ def index(request):
 	client_id = settings.SALESFORCE_CONSUMER_KEY
 	redirect_uri = settings.SALESFORCE_REDIRECT_URI
 
-	return render_to_response('index.html', RequestContext(request,{'client_id': client_id, 'redirect_uri': redirect_uri}))
+	if request.POST:
+
+		job_form = JobForm(request.POST)
+
+		if job_form.is_valid():
+
+			job = Job()
+			job.status = 'In Progress'
+			job.save()
+
+			org_one = Org.objects.get(pk = job_form.cleaned_data['org_one'])
+			org_one.job = job
+			org_one.save()
+
+			org_two = Org.objects.get(pk = job_form.cleaned_data['org_two'])
+			org_two.job = job
+			org_two.save()
+
+			return HttpResponseRedirect('/loading/' + job.id)
+
+	else:
+		job_form = JobForm()
+
+	return render_to_response('index.html', RequestContext(request,{'client_id': client_id, 'redirect_uri': redirect_uri, 'job_form': job_form}))
 
 def oauth_response(request):
 

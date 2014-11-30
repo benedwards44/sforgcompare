@@ -51,7 +51,7 @@ function updateOrgDetails(org, username, org_name, org_id)
 		$('#orgOneDisplay').show();
 		$('#orgOneUsername').text(username);
 		$('#orgOneOrg').text(org_name);
-		$('#org_one_id').val(org_id);
+		$('#id_org_one').val(org_id);
 	}
 	else
 	{
@@ -59,7 +59,7 @@ function updateOrgDetails(org, username, org_name, org_id)
 		$('#orgTwoDisplay').show();
 		$('#orgTwoUsername').text(username);
 		$('#orgTwoOrg').text(org_name);
-		$('#org_two_id').val(org_id);
+		$('#id_org_two').val(org_id);
 	}
 
 	// Both elements are visible, show the GO button

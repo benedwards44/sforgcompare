@@ -109,15 +109,23 @@
 		<div class="clear"></div>
 
 		<div id="compareOrgs" style="display:none;width:80%;text-align:center;margin-top:30px;">
-			<button>Compare Orgs</button>
+
+			<form action="." method="POST">
+
+				{% csrf_token %}
+
+				<input type="submit" value="Compare Orgs" />
+
+				<input type="hidden" id="client_id" value="{{ client_id }}" />
+				<input type="hidden" id="redirect_uri" value="{{ redirect_uri }}" />
+				<input type="hidden" id="id_org_one" name="org_one" />
+				<input type="hidden" id="id_org_two" name="org_two" />
+
+			</form>
+
 		</div>
 
 	</div>
-
-	<input type="hidden" id="client_id" value="{{ client_id }}" />
-	<input type="hidden" id="redirect_uri" value="{{ redirect_uri }}" />
-	<input type="hidden" id="org_one_id" />
-	<input type="hidden" id="org_two_id" />
 
 	<!-- Force logout when page is loaded -->
 	<iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
