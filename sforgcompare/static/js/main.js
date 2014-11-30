@@ -63,7 +63,7 @@ function updateOrgDetails(org, username, org_name, org_id)
 	}
 
 	// Both elements are visible, show the GO button
-	if ( $('orgOneDisplay').is(":visible") && $('orgTwoDisplay').is(":visible") )
+	if ( $('#orgOneDisplay').is(":visible") && $('#orgTwoDisplay').is(":visible") )
 	{
 		$('#compareOrgs').show();
 	}
