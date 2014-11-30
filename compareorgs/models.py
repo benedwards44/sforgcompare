@@ -13,6 +13,7 @@ class Org(models.Model):
 	job = models.ForeignKey(Job)
 	org_number = models.PositiveSmallIntegerField()
 	access_token = models.CharField(max_length=255)
+	instance_url = models.CharField(max_length=255)
 	org_id = models.CharField(max_length=255)
 	org_name = models.CharField(max_length=255, blank=True)
 	username = models.CharField(max_length=255, blank=True)

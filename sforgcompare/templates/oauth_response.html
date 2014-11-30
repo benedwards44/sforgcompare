@@ -38,7 +38,7 @@
   		{% else %}
 
   			<script>
-  				window.opener.updateOrgDetails('{{ org_choice }}','{{ username }}', '{{ org_name }}');
+  				window.opener.updateOrgDetails('{{ org_choice }}','{{ username }}', '{{ org_name }}', '{{ org.id }}');
   				window.close();
   			</script>
 

@@ -42,6 +42,7 @@ def oauth_response(request):
 			error_exists = True
 			error_message = auth_response['error_description']
 		else:
+
 			access_token = auth_response['access_token']
 			instance_url = auth_response['instance_url']
 			user_id = auth_response['id'][-18:]
@@ -56,5 +57,19 @@ def oauth_response(request):
 			# get the org name of the authenticated user
 			r = requests.get(instance_url + '/services/data/v32.0/sobjects/Organization/' + org_id + '?fields=Name', headers={'Authorization': 'OAuth ' + access_token})
 			org_name = json.loads(r.text)['Name']
+
+			org = Org()
+			org.access_token = access_token
+			org.instance_url = instance_url
+			org.org_id = org_id
+			org.org_name = org_name
+			org.username = username
 			
-	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice}))
+			if org_choice == 'org1':
+				org.org_number = 1
+			else:
+				org.org_number = 2
+
+			org.save()
+			
+	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org}))
