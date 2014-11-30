@@ -5,10 +5,6 @@ class Job(models.Model):
 	status = models.CharField(max_length=255, blank=True)
 	error = models.TextField(blank=True)
 
-	def save_model(self, request, obj, form, change):
-		obj.created_date = datetime.datetime.now()
-		obj.save()
-
 class Org(models.Model):
 	job = models.ForeignKey(Job, blank=True, null=True)
 	org_number = models.PositiveSmallIntegerField()

@@ -6,7 +6,9 @@ from compareorgs.models import Job, Org
 from compareorgs.forms import JobForm
 import json	
 import requests
+import datetime
 from time import sleep
+
 
 def index(request):
 
@@ -20,6 +22,7 @@ def index(request):
 		if job_form.is_valid():
 
 			job = Job()
+			job.created_date = datetime.datetime.now()
 			job.status = 'In Progress'
 			job.save()
 
@@ -31,7 +34,7 @@ def index(request):
 			org_two.job = job
 			org_two.save()
 
-			return HttpResponseRedirect('/loading/' + job.id)
+			return HttpResponseRedirect('/loading/' + str(job.id))
 
 	else:
 		job_form = JobForm()
