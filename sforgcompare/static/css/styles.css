@@ -10,7 +10,7 @@ body {
     margin: 30px auto;
 }
 .inner {
-    width: 600px;
+    width: 700px;
     margin: 0px auto;
 }
 input[type="text"], input[type="password"] {
@@ -128,9 +128,11 @@ a.object_link:hover {
 
 .left-half {
     float:left;
+    width:45%;
 }
 
 .right-half {
-    margin-left: 60px;
+    margin-left: 10%x;
+    width:45%;
     float: left;
 }
