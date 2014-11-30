@@ -21,7 +21,15 @@
 
   		{% if error %}
 
-  			<p class="error">{{ error_message }}</p>
+            <div style="padding:50px;">
+
+  			    <div class="alert alert-danger" role="alert">
+                    There was an error authorising your login: {{ error_message }}
+                    <br/><br/>
+                    Please close this window and try again.
+                </div>
+
+            </div>
 
   		{% else %}
 
