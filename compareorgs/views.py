@@ -20,6 +20,7 @@ def oauth_response(request):
 	error_message = ''
 	username = ''
 	org_name = ''
+	org = Org()
 
 	# On page load
 	if request.GET:
