@@ -23,11 +23,15 @@
 
             <div style="padding:50px;">
 
+                <h2>Error</h2>
+
   			    <div class="alert alert-danger" role="alert">
                     There was an error authorising your login: {{ error_message }}
                     <br/><br/>
                     Please close this window and try again.
                 </div>
+
+                <button onclick="window.close();">Close</button>
 
             </div>
 
