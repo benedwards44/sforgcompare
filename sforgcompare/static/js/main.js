@@ -45,7 +45,7 @@ function popupwindow(url)
 
 function updateOrgDetails(org, username, org_name)
 {
-	if (org == 'one')
+	if (org == 'org1')
 	{
 		$('#orgOneLogin').hide();
 		$('#orgOneDisplay').show();

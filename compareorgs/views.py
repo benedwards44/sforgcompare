@@ -57,4 +57,4 @@ def oauth_response(request):
 			r = requests.get(instance_url + '/services/data/v32.0/sobjects/Organization/' + org_id + '?fields=Name', headers={'Authorization': 'OAuth ' + access_token})
 			org_name = json.loads(r.text)['Name']
 			
-	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name}))
+	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice}))
