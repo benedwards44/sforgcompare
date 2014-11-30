@@ -10,7 +10,7 @@ class Job(models.Model):
 		obj.save()
 
 class Org(models.Model):
-	job = models.ForeignKey(Job, null=True)
+	job = models.ForeignKey(Job, blank=True, null=True)
 	org_number = models.PositiveSmallIntegerField()
 	access_token = models.CharField(max_length=255)
 	instance_url = models.CharField(max_length=255)
