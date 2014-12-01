@@ -61,16 +61,21 @@ def oauth_response(request):
 		org_id = ''
 
 		if 'Production' in environment:
+
 			login_url = 'https://login.salesforce.com'
+			
 		else:
+
 			login_url = 'https://test.salesforce.com'
 		
 		r = requests.post(login_url + '/services/oauth2/token', headers={ 'content-type':'application/x-www-form-urlencoded'}, data={'grant_type':'authorization_code','client_id': settings.SALESFORCE_CONSUMER_KEY,'client_secret':settings.SALESFORCE_CONSUMER_SECRET,'redirect_uri': settings.SALESFORCE_REDIRECT_URI,'code': oauth_code})
 		auth_response = json.loads(r.text)
 
 		if 'error_description' in auth_response:
+
 			error_exists = True
 			error_message = auth_response['error_description']
+
 		else:
 
 			access_token = auth_response['access_token']
@@ -96,8 +101,11 @@ def oauth_response(request):
 			org.username = username
 			
 			if org_choice == 'org1':
+
 				org.org_number = 1
+
 			else:
+
 				org.org_number = 2
 
 			org.save()
@@ -111,11 +119,21 @@ def job_status(request, job_id):
 
 	# Check that both Orgs have finished downloading metadata
 	all_metadata_downloaded = False
+
 	for org in job.sorted_orgs:
+
 		if org.status == 'Finished':
+
 			all_metadata_downloaded = True
+
 		else:
+
 			all_metadata_downloaded = False
+
+			if org.status == 'Error':
+				job.status = 'Error'
+				job.error = org.error
+				job.save()
 
 	# If the metadata is downloaded and the job is ready
 	if all_metadata_downloaded and job.status == 'Downloading Metadata':
@@ -137,6 +155,7 @@ def compare_orgs(request, job_id):
 
 	# Do logic for job
 	for org in job.sorted_orgs:
+
 		download_metadata.delay(job, org)
 
 	return render_to_response('loading.html', RequestContext(request, {'job': job}))	
