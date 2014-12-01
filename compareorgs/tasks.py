@@ -70,7 +70,7 @@ def download_metadata(job, org):
 						component_record = Component()
 						component_record.component_type = component_type_query[0]
 						component_record.name = component.fullName
-						component_record.content = #xxx
+						#component_record.content = #xxx
 						component_record.save()
 		
 				# clear list once done. This list will re-build to 3 components and re-query the service
@@ -93,7 +93,7 @@ def download_metadata(job, org):
 
 @app.task
 def compare_orgs(job):
-	
+
 	try:
 		pass
 
