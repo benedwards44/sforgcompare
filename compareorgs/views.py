@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
-from compareorgs.models import Job, Org
+from compareorgs.models import Job, Org, ComponentType, Component
 from compareorgs.forms import JobForm
 import json	
 import requests
@@ -105,13 +105,13 @@ def oauth_response(request):
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):
-	job = get_object_or_404(Schema, pk = job_id)
+	job = get_object_or_404(Job, pk = job_id)
 	return HttpResponse(job.status + ':::' + job.error)
 
 # Page for user to wait for job to run
-def compare_orgs(request, schema_id):
+def compare_orgs(request, job_id):
 
-	job = get_object_or_404(Schema, pk = schema_id)
+	job = get_object_or_404(Job, pk = job_id)
 
 	# Do logic for job
 
