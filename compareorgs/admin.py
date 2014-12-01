@@ -2,7 +2,7 @@ from django.contrib import admin
 from compareorgs.models import Job, Org
 
 class OrgInline(admin.TabularInline):
-	fields = ['org_number','org_name', 'username']
+	fields = ['org_number','org_name', 'username', 'status', 'error']
 	ordering = ['org_number']
 	model = Org
 	extra = 0

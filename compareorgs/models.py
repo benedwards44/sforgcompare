@@ -13,6 +13,8 @@ class Org(models.Model):
 	org_id = models.CharField(max_length=255)
 	org_name = models.CharField(max_length=255, blank=True)
 	username = models.CharField(max_length=255, blank=True)
+	status = models.CharField(max_length=255, blank=True)
+	error = models.TextField(blank=True)
 
 	def sorted_component_types(self):
 		return self.componenttype_set.order_by('name')
