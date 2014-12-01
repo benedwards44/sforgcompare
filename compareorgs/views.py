@@ -114,5 +114,7 @@ def compare_orgs(request, job_id):
 	job = get_object_or_404(Job, pk = job_id)
 
 	# Do logic for job
+	for Org in job.sorted_orgs:
+		pass
 
 	return render_to_response('loading.html', RequestContext(request, {'job': job}))	

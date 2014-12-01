@@ -5,6 +5,9 @@ class Job(models.Model):
 	status = models.CharField(max_length=255, blank=True)
 	error = models.TextField(blank=True)
 
+	def sorted_orgs(self):
+		return self.org_set.order_by('org_number')
+
 class Org(models.Model):
 	job = models.ForeignKey(Job, blank=True, null=True)
 	org_number = models.PositiveSmallIntegerField()
