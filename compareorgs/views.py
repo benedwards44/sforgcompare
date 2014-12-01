@@ -24,7 +24,7 @@ def index(request):
 
 			job = Job()
 			job.created_date = datetime.datetime.now()
-			job.status = 'In Progress'
+			job.status = 'Not Started'
 			job.save()
 
 			org_one = Org.objects.get(pk = job_form.cleaned_data['org_one'])
@@ -106,13 +106,34 @@ def oauth_response(request):
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):
+
 	job = get_object_or_404(Job, pk = job_id)
+
+	# Check that both Orgs have finished downloading metadata
+	all_metadata_downloaded = False
+	for org in job.sorted_orgs:
+		if org.status == 'Finished':
+			all_metadata_downloaded = True
+		else:
+			all_metadata_downloaded = False
+
+	# If the metadata is downloaded and the job is ready
+	if all_metadata_downloaded and job.status == 'Downloading Metadata':
+
+		job.status = 'Comparing'
+		job.save()
+
+		compare_orgs.delay(job)
+
 	return HttpResponse(job.status + ':::' + job.error)
 
 # Page for user to wait for job to run
 def compare_orgs(request, job_id):
 
 	job = get_object_or_404(Job, pk = job_id)
+
+	job.status = 'Downloading Metadata'
+	job.save()
 
 	# Do logic for job
 	for org in job.sorted_orgs:

@@ -93,4 +93,14 @@ def download_metadata(job, org):
 
 @app.task
 def compare_orgs(job):
-	pass
+	
+	try:
+		pass
+
+	except Exception as error:
+		job.status = 'Error'
+		job.error = error
+
+	job.save()
+
+
