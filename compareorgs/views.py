@@ -34,7 +34,7 @@ def index(request):
 			org_two.job = job
 			org_two.save()
 
-			return HttpResponseRedirect('/loading/' + str(job.id))
+			return HttpResponseRedirect('/compare_orgs/' + str(job.id))
 
 	else:
 		job_form = JobForm()
@@ -102,3 +102,17 @@ def oauth_response(request):
 			org.save()
 			
 	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org}))
+
+# AJAX endpoint for page to constantly check if job is finished
+def job_status(request, job_id):
+	job = get_object_or_404(Schema, pk = job_id)
+	return HttpResponse(job.status + ':::' + job.error)
+
+# Page for user to wait for job to run
+def compare_orgs(request, schema_id):
+
+	job = get_object_or_404(Schema, pk = schema_id)
+
+	# Do logic for job
+
+	return render_to_response('loading.html', RequestContext(request, {'job': job}))	

@@ -7,4 +7,6 @@ urlpatterns = patterns('',
     url(r'^$', 'compareorgs.views.index', name='index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^oauth_response/$', 'compareorgs.views.oauth_response', name='oauth_response'),
+    url(r'^job_status/(?P<job_id>\d+)/$', 'compareorgs.views.job_status'),
+    url(r'^compare_orgs/(?P<job_id>\d+)/$', 'compareorgs.views.compare_orgs'),
 )

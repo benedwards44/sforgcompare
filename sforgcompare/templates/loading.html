@@ -4,9 +4,9 @@
 
 	<div class="inner">
 
-		<h1>Salesforce Schema Lister</h1>
+		<h1>Salesforce Org Compare</h1>
 		<p>
-			This tool uses the Salesforce REST API to build a list of objects, fields and field attributes from within your Salesforce Org.
+			This tool uses the Salesforce Metadata API to compare all the metadata between two Orgs. This is useful when planning deployments or building deployment packages, as well as seeing what configuration exists in Production to Sandbox or between Sandbox environments.
 		</p>
 		<p>
 			None of your organisation information or data is captured or kept from running this tool.
@@ -19,8 +19,8 @@
 			</div>
 
 			<div style="float:left;margin-left:20px;">
-				<h1 style="font-size:1.5em;margin-top:20px;">Querying objects and fields...</h1>
-				<p>This can take a few minutes.</p>
+				<h1 style="font-size:1.5em;margin-top:20px;">Querying all metadata and comparing...</h1>
+				<p>This can take some time, depending on size of Orgs</p>
 			</div>
 
 		</div>
@@ -39,13 +39,13 @@
  		window.setInterval(function () 
  		{
        		$.ajax({
-			    url: '/job_status/{{ schema.id }}',
+			    url: '/job_status/{{ job.id }}',
 			    type: 'get', //this is the default though, you don't actually need to always mention it
 			    success: function(resp) 
 			    {
 			        if (resp.split(':::')[0].trim() == 'Finished')
 			        {
-			        	window.location = '/schema/{{ schema.id }}/';
+			        	window.location = '/compare/{{ job.id }}/';
 			        } 
 			        else if (resp.split(':::')[0].trim() == 'Error')
 			        {
