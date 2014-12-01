@@ -85,3 +85,4 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 SALESFORCE_CONSUMER_KEY = '3MVG99qusVZJwhsnmdmjq1uHdUla25CKqXcVfJZBNH.S.AfNwV2hKu0opXFQu0gBSs8fBj8otutrcaqjQxCOT'
 SALESFORCE_CONSUMER_SECRET = '8518319892876668470'
 SALESFORCE_REDIRECT_URI = 'https://sforgcompare.herokuapp.com/oauth_response'
+SALESFORCE_API_VERSION = 32

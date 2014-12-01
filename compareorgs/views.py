@@ -8,6 +8,7 @@ import json
 import requests
 import datetime
 from time import sleep
+from compareorgs.tasks import download_metadata, compare_orgs
 
 
 def index(request):
@@ -79,12 +80,12 @@ def oauth_response(request):
 			org_id = org_id[-18:]
 
 			# get username of the authenticated user
-			r = requests.get(instance_url + '/services/data/v32.0/sobjects/User/' + user_id + '?fields=Username', headers={'Authorization': 'OAuth ' + access_token})
+			r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/User/' + user_id + '?fields=Username', headers={'Authorization': 'OAuth ' + access_token})
 			query_response = json.loads(r.text)
 			username = query_response['Username']
 
 			# get the org name of the authenticated user
-			r = requests.get(instance_url + '/services/data/v32.0/sobjects/Organization/' + org_id + '?fields=Name', headers={'Authorization': 'OAuth ' + access_token})
+			r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/Organization/' + org_id + '?fields=Name', headers={'Authorization': 'OAuth ' + access_token})
 			org_name = json.loads(r.text)['Name']
 
 			org = Org()
@@ -114,7 +115,7 @@ def compare_orgs(request, job_id):
 	job = get_object_or_404(Job, pk = job_id)
 
 	# Do logic for job
-	for Org in job.sorted_orgs:
-		pass
+	for org in job.sorted_orgs:
+		download_metadata.delay(job, org)
 
 	return render_to_response('loading.html', RequestContext(request, {'job': job}))	
