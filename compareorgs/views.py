@@ -8,7 +8,7 @@ import json
 import requests
 import datetime
 from time import sleep
-from compareorgs.tasks import download_metadata, compare_orgs
+from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling, compare_orgs
 
 
 def index(request):
