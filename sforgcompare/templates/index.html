@@ -15,7 +15,7 @@
 
 		<h1>Salesforce Org Compare</h1>
 		<p>
-			This tool uses the Salesforce Tooling API to compare all the metadata between two Orgs. This is useful when planning deployments or building deployment packages, as well as seeing what configuration exists in Production to Sandbox or between Sandbox environments.
+			This tool uses the Salesforce Tooling or Metadata API (user selection) to compare metadata between two Orgs. This is useful when planning deployments or building deployment packages, as well as seeing what configuration exists in Production to Sandbox or between Sandbox environments.
 		</p>
 		<p>
 			None of your organisation information or data is captured or kept from running this tool.
@@ -170,6 +170,8 @@
 	        		</h4>
 	        		<p>
 	        			The Metadata API is slower but returns the full set of queryable metadata for your Org. Use the Metadata API if there are components not contained in the Tooling API that you would like to compare. This should be used if you want a true <strong>full</strong> comparison between two Orgs.
+	        			<br/><br/>
+	        			Note: The Metadata API is limited to 5,000 files retrieved in a single call.
 	        		</p>
 	      		</div>
 	    	</div>
