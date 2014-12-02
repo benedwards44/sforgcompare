@@ -35,7 +35,7 @@ def index(request):
 			org_two.job = job
 			org_two.save()
 
-			return HttpResponseRedirect('/compare_orgs/' + str(job.id))
+			return HttpResponseRedirect('/compare_orgs/' + str(job.id) + '/?api=' + job_form.cleaned_data['api_choice'])
 
 	else:
 		job_form = JobForm()
@@ -153,9 +153,17 @@ def compare_orgs(request, job_id):
 	job.status = 'Downloading Metadata'
 	job.save()
 
+	api_choice = request.GET.get('api')
+
 	# Do logic for job
 	for org in job.sorted_orgs:
 
-		download_metadata.delay(job, org)
+		if api_choice == 'metadata':
+
+			download_metadata_metadata.delay(job, org)
+
+		else:
+
+			download_metadata_tooling.delay(job, org)
 
 	return render_to_response('loading.html', RequestContext(request, {'job': job}))	

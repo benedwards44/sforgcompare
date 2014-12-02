@@ -12,7 +12,7 @@ import json
 import requests
 
 @app.task
-def download_metadata(job, org):
+def download_metadata_metadata(job, org):
 
 	try:
 
@@ -90,6 +90,10 @@ def download_metadata(job, org):
 		org.error = error
 
 	org.save()
+
+@app.task
+def download_metadata_tooling(job, org):
+	pass
 
 @app.task
 def compare_orgs(job):
