@@ -114,6 +114,11 @@
 
 				{% csrf_token %}
 
+				<select id="api_choice" name="api_choice" class="form-control">
+					<option value="tooling">Tooling API</option>
+					<option value="metadata">Metadata API</option>
+				</select>
+
 				<input type="submit" value="Compare Orgs" />
 
 				<input type="hidden" id="client_id" value="{{ client_id }}" />
