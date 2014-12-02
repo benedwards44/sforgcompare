@@ -120,7 +120,7 @@ def job_status(request, job_id):
 	# Check that both Orgs have finished downloading metadata
 	all_metadata_downloaded = False
 
-	for org in job.sorted_orgs:
+	for org in job.sorted_orgs():
 
 		if org.status == 'Finished':
 
