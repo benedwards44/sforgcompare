@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 
+{% block scripts %}
+	<script>
+		$(document).ready(function() 
+		{
+			$('[data-toggle="popover"]').popover();
+		});
+	</script>
+{% endblock %}
+
 {% block content %}
 
 	<div class="inner">
@@ -108,18 +117,20 @@
 
 		<div class="clear"></div>
 
-		<div id="compareOrgs" style="display:none;width:80%;text-align:center;margin-top:30px;">
+		<div id="compareOrgs">
 
 			<form action="." method="POST">
 
 				{% csrf_token %}
 
-				<select id="api_choice" name="api_choice" class="form-control">
+				<select id="id_api_choice" name="api_choice" class="form-control" style="float:left;">
 					<option value="tooling">Tooling API</option>
 					<option value="metadata">Metadata API</option>
 				</select>
 
-				<input type="submit" value="Compare Orgs" />
+				<img src="/static/images/i-icon.png" id="info_icon" data-toggle="modal" data-target="#apiModal" />
+
+				<input type="submit" id="submitCompare" value="Compare Orgs" style="float:left;"/>
 
 				<input type="hidden" id="client_id" value="{{ client_id }}" />
 				<input type="hidden" id="redirect_uri" value="{{ redirect_uri }}" />
@@ -130,6 +141,39 @@
 
 		</div>
 
+	</div>
+
+	<div class="modal fade" id="apiModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">
+	        			<span aria-hidden="true">&times;</span>
+	        			<span class="sr-only">Close</span>
+	        		</button>
+	        		<h3 class="modal-title" id="myModalLabel">
+	        			API Selection
+	        		</h3>
+	      		</div>
+	      		<div class="modal-body">
+	        		<h4>
+	        			Tooling API
+	        		</h4>
+	        		<p>
+	        			The Tooling API is much faster and will mean the org compare results will be returned a lot faster. However, the Tooling API is limited in the <a href="#" data-toggle="popover" title="Supported Metadata" data-content="ApexClass <br/>ApexComponent<br/>ApexPage<br/>ApexTrigger<br/>CompactLayout<br/>CustomField<br/>CustomObject<br/>EmailTemplate<br/>Layout<br/>Profile<br/>RecordType<br/>StaticResource<br/>ValidationRule<br/>WorkflowAlert<br/>WorkflowFieldUpdate<br/>WorkflowOutboundMessage<br/>WorkflowRule<br/>WorkflowTask" data-html="true" data-trigger="focus">type of metadata it returns</a>.
+	        		</p>
+
+	        		<br/>
+
+	        		<h4>
+	        			Metadata API
+	        		</h4>
+	        		<p>
+	        			The Metadata API is slower but returns the full set of queryable metadata for your Org. Use the Metadata API if there are components not contained in the Tooling API that you would like to compare.
+	        		</p>
+	      		</div>
+	    	</div>
+	  	</div>
 	</div>
 
 	<!-- Force logout when page is loaded -->

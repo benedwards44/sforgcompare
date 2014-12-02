@@ -52,6 +52,9 @@ h2 {
     line-height: 1.1em;
     color: #ff6600;
 }
+h3, h4 {
+    color: #ff6600;
+}
 #mti_wfs_colophon {
     display: none !important;
 }
@@ -108,6 +111,32 @@ a.object_link:hover {
     color: #900;
 }
 
+#compareOrgs {
+    display:none;
+    width:500px;
+    text-align:center;
+    margin-top:30px;
+    padding-left: 200px;
+}
+
+#id_api_choice {
+    width: 150px;
+    float:left;
+}
+
+#info_icon {
+    float: left;
+    margin-left: 10px;
+    margin-top: 5px;
+    cursor:pointer;
+}
+
+#submitCompare {
+    width: 150px;
+    clear:left;
+    margin-top: 10px;
+}
+
 .back-to-top {
     position: fixed;
     bottom: 2em;
@@ -135,4 +164,8 @@ a.object_link:hover {
     margin-left: 10%x;
     width:45%;
     float: left;
+}
+
+.popover {
+    width:500px !important;
 }

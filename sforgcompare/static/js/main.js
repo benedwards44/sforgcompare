@@ -1,5 +1,6 @@
 $(document).ready(function ()
-{	var urlPrefix =  'https://';
+{	
+	var urlPrefix =  'https://';
 	var urlSuffix = '.salesforce.com/services/oauth2/authorize?response_type=code&client_id=' + $('#client_id').val() + '&redirect_uri=' + $('#redirect_uri').val() + '&scope=api&state=';
 
 	$('#orgOneButton').click(function()
