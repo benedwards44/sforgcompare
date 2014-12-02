@@ -2,15 +2,18 @@ from __future__ import absolute_import
 from celery import Celery
 from django.conf import settings
 import os
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
-
-app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'))
-
-from compareorgs.models import Job, Org, ComponentType, Component
 import json	
 import requests
 
+# Celery config
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
+app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'))
+
+# Import models
+from compareorgs.models import Job, Org, ComponentType, Component
+
+# Downloading metadata using the Tooling API
+# https://www.salesforce.com/us/developer/docs/api_meta/
 @app.task
 def download_metadata_metadata(job, org):
 
@@ -91,10 +94,57 @@ def download_metadata_metadata(job, org):
 
 	org.save()
 
+# Downloading metadata using the Tooling API
+# http://www.salesforce.com/us/developer/docs/api_tooling/index.htm
 @app.task
 def download_metadata_tooling(job, org):
-	pass
+	
+	try:
+		
+		tooling_url = org.instance_url + '/services/data/v' + settings.SALESFORCE_API_VERSION + '.0/tooling/'
+		headers = { 
+			'Accept': 'application/json',
+			'Authorization': 'Bearer ' + org.access_token
+		}
 
+		metadata_types = []
+
+		for component_type in requests.get(tooling_url + 'sobjects/', headers = headers).json()['sobjects']:
+			metadata_types.append(component_type['name'])
+
+		for component_type in metadata_types:
+
+			# create the component type record and save
+			component_type_record = ComponentType()
+			component_type_record.org = org
+			component_type_record.name = component_type
+			component_type_record.save()
+
+			data_query = 'select+id+from+' + component_type
+
+			for object in requests.get(tooling_url + 'query/?=' + data_query, headers = headers).json()['records']:
+
+				metadata_url = org.instance_url + object['attributes']['url']
+				object_metadata = requests.get(metadata_url, headers = headers).json()['body']
+
+				if object_metadata:
+
+					# create the component record and save
+					component_record = Component()
+					component_record.component_type = component_type_record
+					component_record.name = component_type
+					component_record.content = object_metadata
+					component_record.save()
+
+
+	except Exception as error:
+		org.status = 'Error'
+		org.error = error
+
+	org.save()
+
+
+# Compare two Org's metadata and return results
 @app.task
 def compare_orgs(job):
 
