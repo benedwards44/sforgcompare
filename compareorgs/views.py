@@ -156,7 +156,7 @@ def compare_orgs(request, job_id):
 	api_choice = request.GET.get('api')
 
 	# Do logic for job
-	for org in job.sorted_orgs:
+	for org in job.org_set.all():
 
 		if api_choice == 'metadata':
 
