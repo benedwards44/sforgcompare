@@ -121,6 +121,7 @@ def download_metadata_tooling(job, org):
 		]
 
 		"""
+		No longer doing logic for wider components. Too clunky and not supported
 
 		desribe_result = requests.get(tooling_url + 'sobjects/', headers = headers)
 
