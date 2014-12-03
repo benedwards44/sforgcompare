@@ -112,7 +112,7 @@ def download_metadata_tooling(job, org):
 		desribe_result = requests.get(tooling_url + 'sobjects/', headers = headers)
 
 		# Success
-		if desribe_result.status_code == requests.codes.ok
+		if desribe_result.status_code == requests.codes.ok:
 
 			for component_type in requests.get(tooling_url + 'sobjects/', headers = headers).json()['sobjects']:
 				
@@ -146,7 +146,7 @@ def download_metadata_tooling(job, org):
 							# create the component record and save
 							component_record = Component()
 							component_record.component_type = component_type_record
-							component_record.name = record.json()['FullName']
+							component_record.name = record.json()['FullName ']
 							component_record.content = record.json()['Body']
 							component_record.save()
 
