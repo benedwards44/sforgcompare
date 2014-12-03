@@ -14,9 +14,10 @@ class ComponentInline(admin.TabularInline):
 	extra = 0
 
 class ComponentTypeAdmin(admin.ModelAdmin):
-	fields = ['org','name']
+	list_display = ['org','name']
+	ordering = ['org', 'name']
 	inlines = [ComponentInline]
-
+	
 class JobAdmin(admin.ModelAdmin):
     list_display = ('created_date','status','error')
     inlines = [OrgInline]
