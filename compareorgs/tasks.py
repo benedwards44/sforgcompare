@@ -113,29 +113,14 @@ def download_metadata_tooling(job, org):
 			'Authorization': 'Bearer ' + org.access_token
 		}
 
-		metadata_types = []
+		metadata_types = [
+			'ApexClass',
+			'ApexComponent',
+			'ApexPage',
+			'ApexTrigger',
+		]
 
-		metadata_exclude = (
-			'ApexClassMember',
-			'ApexCodeCoverage',
-			'ApexCodeCoverageAggregate',
-			'ApexComponentMember',
-			'ApexExecutionOverlayAction',
-			'ApexExecutionOverlayResult',
-			'ApexLog',
-			'ApexOrgWideCoverage',
-			'ApexPageMember',
-			'ApexTestQueueItem',
-			'ApexTestResult',
-			'ApexTriggerMember',
-			'ContainerAsyncRequest',
-			'EntityDefinition',
-			'FieldDefinition',
-			'FlexiPage',
-			'MetadataContainer',
-			'ProfileLayout'
-			'TraceFlag',
-		)
+		"""
 
 		desribe_result = requests.get(tooling_url + 'sobjects/', headers = headers)
 
@@ -147,51 +132,45 @@ def download_metadata_tooling(job, org):
 				# Only add retrieveable components and components not in the exclude list
 				if component_type['retrieveable'] == True and component_type['name'] not in metadata_exclude:	
 					metadata_types.append(component_type['name'])
+		"""
 
-			for component_type in metadata_types:
+		for component_type in metadata_types:
 
-				data_query = 'select+id+from+' + component_type
-				metadata_records = requests.get(tooling_url + 'query/?q=' + data_query, headers = headers)
-				
-				# Only continue if records exist to query
-				if 'records' in metadata_records.json():
+			data_query = 'select+id+from+' + component_type
+			metadata_records = requests.get(tooling_url + 'query/?q=' + data_query, headers = headers)
+			
+			# Only continue if records exist to query
+			if 'records' in metadata_records.json():
 
-					# create the component type record and save
-					component_type_record = ComponentType()
-					component_type_record.org = org
-					component_type_record.name = component_type
-					component_type_record.save()
+				# create the component type record and save
+				component_type_record = ComponentType()
+				component_type_record.org = org
+				component_type_record.name = component_type
+				component_type_record.save()
 
-					count_children = 0
+				count_children = 0
 
-					for component in metadata_records.json()['records']:
+				for component in metadata_records.json()['records']:
 
-						metadata_url = org.instance_url + component['attributes']['url']
+					metadata_url = org.instance_url + component['attributes']['url']
 
-						record = requests.get(metadata_url, headers = headers)
+					record = requests.get(metadata_url, headers = headers)
 
-						if 'Body' in record.json() and 'Member' not in record.json()['FullName']:
+					if 'Body' in record.json() and 'Member' not in record.json()['FullName']:
 
-							# create the component record and save
-							component_record = Component()
-							component_record.component_type = component_type_record
-							component_record.name = record.json()['FullName']
-							component_record.content = record.json()['Body']
-							component_record.save()
+						# create the component record and save
+						component_record = Component()
+						component_record.component_type = component_type_record
+						component_record.name = record.json()['FullName']
+						component_record.content = record.json()['Body']
+						component_record.save()
 
-							count_children += 1
+						count_children += 1
 
-					if count_children == 0:
-						component_type_record.delete()
+				if count_children == 0:
+					component_type_record.delete()
 
 			org.status = 'Finished'
-
-		# Error in REST request
-		else:
-
-			org.status = 'Error'
-			org.error = metadata_types.json()[0]['message']
-
 
 	except Exception as error:
 		org.status = 'Error'
