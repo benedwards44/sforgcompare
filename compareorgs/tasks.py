@@ -157,16 +157,23 @@ def download_metadata_tooling(job, org):
 
 					record = requests.get(metadata_url, headers = headers)
 
-					if 'Body' in record.json() and 'Member' not in record.json()['FullName']:
+					# create the component record and save
+					component_record = Component()
+					component_record.component_type = component_type_record
+					component_record.name = record.json()['FullName']
 
-						# create the component record and save
-						component_record = Component()
-						component_record.component_type = component_type_record
-						component_record.name = record.json()['FullName']
+					if component_type == 'ApexPage' or component_type = 'ApexComponent':
+
+						component_record.content = record.json()['Markup']
+
+					#ApexClass or ApexTrigger
+					else:
+
 						component_record.content = record.json()['Body']
-						component_record.save()
+						
+					component_record.save()
 
-						count_children += 1
+					count_children += 1
 
 				if count_children == 0:
 					component_type_record.delete()
