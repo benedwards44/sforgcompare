@@ -150,7 +150,7 @@ def download_metadata_tooling(job, org):
 							component_record.content = record.json()['Body']
 							component_record.save()
 
-			org.status = 'Done'
+			org.status = 'Finished'
 
 		# Error in REST request
 		else:
