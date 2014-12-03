@@ -101,7 +101,7 @@ def download_metadata_tooling(job, org):
 	
 	try:
 		
-		tooling_url = org.instance_url + '/services/data/v' + settings.SALESFORCE_API_VERSION + '.0/tooling/'
+		tooling_url = org.instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/tooling/'
 		headers = { 
 			'Accept': 'application/json',
 			'Authorization': 'Bearer ' + org.access_token
