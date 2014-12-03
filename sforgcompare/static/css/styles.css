@@ -135,6 +135,7 @@ a.object_link:hover {
     width: 150px;
     clear:left;
     margin-top: 10px;
+    float:left;
 }
 
 .back-to-top {
