@@ -8,7 +8,7 @@ class OrgInline(admin.TabularInline):
 	extra = 0
 
 class JobAdmin(admin.ModelAdmin):
-    list_display = ('created_date','status','error')
+    list_display = ('created_date','access_token','username','status','error')
     inlines = [OrgInline]
 
 admin.site.register(Job, JobAdmin)
