@@ -162,7 +162,7 @@ def download_metadata_tooling(job, org):
 					component_record.component_type = component_type_record
 					component_record.name = record.json()['FullName']
 
-					if component_type == 'ApexPage' or component_type = 'ApexComponent':
+					if component_type == 'ApexPage' or component_type == 'ApexComponent':
 
 						component_record.content = record.json()['Markup']
 
