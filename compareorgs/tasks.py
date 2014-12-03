@@ -140,6 +140,8 @@ def download_metadata_tooling(job, org):
 					component_type_record.name = component_type
 					component_type_record.save()
 
+					count_children = 0
+
 					for component in metadata_records.json()['records']:
 
 						metadata_url = org.instance_url + component['attributes']['url']
@@ -155,9 +157,10 @@ def download_metadata_tooling(job, org):
 							component_record.content = record.json()['Body']
 							component_record.save()
 
-				# If a component type has no child components, remove the component type altogether			
-				if not Component.objects.filter(component_type = component_type_record):
-					component_type_record.delete()
+							count_children += 1
+
+					if count_children == 0:
+						component_type_record.delete()
 
 			org.status = 'Finished'
 
