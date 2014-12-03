@@ -13,7 +13,7 @@ class ComponentTypeInline(admin.TabularInline):
 	model = ComponentType
 	extra = 0
 
-class ComponentAdmin(admin.ModelAdmin):
+class ComponentTypeAdmin(admin.ModelAdmin):
 	fields = ['org','name']
 	inlines = [ComponentTypeInline]
 
@@ -22,4 +22,4 @@ class JobAdmin(admin.ModelAdmin):
     inlines = [OrgInline]
 
 admin.site.register(Job, JobAdmin)
-admin.site.register(Component, ComponentAdmin)
+admin.site.register(ComponentType, ComponentTypeAdmin)
