@@ -17,6 +17,9 @@ from compareorgs.models import Job, Org, ComponentType, Component
 @app.task
 def download_metadata_metadata(job, org):
 
+	org.status = 'Downloading Metadata'
+	org.save()
+
 	try:
 
 		# instantiate the metadata WSDL
@@ -98,6 +101,9 @@ def download_metadata_metadata(job, org):
 # http://www.salesforce.com/us/developer/docs/api_tooling/index.htm
 @app.task
 def download_metadata_tooling(job, org):
+
+	org.status = 'Downloading Metadata'
+	org.save()
 	
 	try:
 		
@@ -146,8 +152,7 @@ def download_metadata_tooling(job, org):
 							# create the component record and save
 							component_record = Component()
 							component_record.component_type = component_type_record
-							#component_record.name = record.json()['FullName']
-							component_record.name = 'Hello'
+							component_record.name = record.json()['FullName']
 							component_record.content = record.json()['Body']
 							component_record.save()
 

@@ -13,8 +13,13 @@ class ComponentTypeInline(admin.TabularInline):
 	model = ComponentType
 	extra = 0
 
+class ComponentAdmin(admin.ModelAdmin):
+	fields = ['org','name']
+	inlines = [ComponentTypeInline]
+
 class JobAdmin(admin.ModelAdmin):
     list_display = ('created_date','status','error')
     inlines = [OrgInline]
 
 admin.site.register(Job, JobAdmin)
+admin.site.register(Component, ComponentAdmin)
