@@ -156,6 +156,11 @@ def download_metadata_tooling(job, org):
 							component_record.content = record.json()['Body']
 							component_record.save()
 
+			# If a component type has no child components, remove the component type altogether
+			for component_type in ComponentType.objects.filter(org = org.id):
+				if not component_type.component_set.all():
+					component_type.delete()
+
 			org.status = 'Finished'
 
 		# Error in REST request

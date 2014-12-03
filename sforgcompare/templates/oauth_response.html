@@ -43,9 +43,6 @@
 
                 <button onclick="window.close();">Close</button>
 
-                <iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
-                <iframe src="https://test.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
-
       			<script>
       				window.opener.updateOrgDetails('{{ org_choice }}','{{ username }}', '{{ org_name }}', '{{ org.id }}');
                     setTimeout(function() 
@@ -57,6 +54,9 @@
       			</script>
 
       		{% endif %}
+
+          <iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+          <iframe src="https://test.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
 
         </div>
 
