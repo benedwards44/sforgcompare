@@ -109,32 +109,54 @@ def download_metadata_tooling(job, org):
 
 		metadata_types = []
 
-		for component_type in requests.get(tooling_url + 'sobjects/', headers = headers).json()['sobjects']:
-			metadata_types.append(component_type['name'])
+		desribe_result = requests.get(tooling_url + 'sobjects/', headers = headers)
 
-		for component_type in metadata_types:
+		# Success
+		if desribe_result.status_code == requests.codes.ok
 
-			# create the component type record and save
-			component_type_record = ComponentType()
-			component_type_record.org = org
-			component_type_record.name = component_type
-			component_type_record.save()
+			for component_type in requests.get(tooling_url + 'sobjects/', headers = headers).json()['sobjects']:
+				
+				# Only add retrieveable components
+				if component_type['retrieveable'] == True:	
+					metadata_types.append(component_type['name'])
 
-			data_query = 'select+id+from+' + component_type
+			for component_type in metadata_types:
 
-			for object in requests.get(tooling_url + 'query/?=' + data_query, headers = headers).json()['records']:
+				# create the component type record and save
+				component_type_record = ComponentType()
+				component_type_record.org = org
+				component_type_record.name = component_type
+				component_type_record.save()
 
-				metadata_url = org.instance_url + object['attributes']['url']
-				object_metadata = requests.get(metadata_url, headers = headers).json()['body']
+				data_query = 'select+id+from+' + component_type
 
-				if object_metadata:
+				metadata_records = requests.get(tooling_url + 'query/?q=' + data_query, headers = headers)
 
-					# create the component record and save
-					component_record = Component()
-					component_record.component_type = component_type_record
-					component_record.name = component_type
-					component_record.content = object_metadata
-					component_record.save()
+				# Only continue if records exist to query
+				if 'records' in metadata_records.json():
+
+					for component in metadata_records.json()['records']:
+
+						metadata_url = org.instance_url + component['attributes']['url']
+
+						record = requests.get(metadata_url, headers = headers)
+
+						if 'Body' in record.json():
+
+							# create the component record and save
+							component_record = Component()
+							component_record.component_type = component_type_record
+							component_record.name = component_type
+							component_record.content = record.json()['Body']
+							component_record.save()
+
+			org.status = 'Done'
+
+		# Error in REST request
+		else:
+
+			org.status = 'Error'
+			org.error = metadata_types.json()[0]['message']
 
 
 	except Exception as error:
