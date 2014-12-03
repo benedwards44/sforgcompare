@@ -14,7 +14,7 @@ class ComponentInline(admin.TabularInline):
 	extra = 0
 
 class ComponentTypeAdmin(admin.ModelAdmin):
-	list_display = ['org__org_name','name']
+	list_display = ['org_name','name']
 	ordering = ['org', 'name']
 	inlines = [ComponentInline]
 

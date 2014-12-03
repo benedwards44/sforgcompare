@@ -29,6 +29,9 @@ class ComponentType(models.Model):
 	def sorted_components(self):
 		return self.component_set.order_by('name')
 
+	def org_name(self):
+		return self.org.org_name
+
 class Component(models.Model):
 	component_type = models.ForeignKey(ComponentType)
 	name = models.CharField(max_length=255)
