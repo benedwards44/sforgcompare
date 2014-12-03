@@ -115,6 +115,28 @@ def download_metadata_tooling(job, org):
 
 		metadata_types = []
 
+		metadata_exclude = (
+			'ApexClassMember',
+			'ApexCodeCoverage',
+			'ApexCodeCoverageAggregate',
+			'ApexComponentMember',
+			'ApexExecutionOverlayAction',
+			'ApexExecutionOverlayResult',
+			'ApexLog',
+			'ApexOrgWideCoverage',
+			'ApexPageMember',
+			'ApexTestQueueItem',
+			'ApexTestResult',
+			'ApexTriggerMember',
+			'ContainerAsyncRequest',
+			'EntityDefinition',
+			'FieldDefinition',
+			'FlexiPage',
+			'MetadataContainer',
+			'ProfileLayout'
+			'TraceFlag',
+		)
+
 		desribe_result = requests.get(tooling_url + 'sobjects/', headers = headers)
 
 		# Success
@@ -122,8 +144,8 @@ def download_metadata_tooling(job, org):
 
 			for component_type in requests.get(tooling_url + 'sobjects/', headers = headers).json()['sobjects']:
 				
-				# Only add retrieveable components
-				if component_type['retrieveable'] == True:	
+				# Only add retrieveable components and components not in the exclude list
+				if component_type['retrieveable'] == True and component_type['name'] not in metadata_exclude:	
 					metadata_types.append(component_type['name'])
 
 			for component_type in metadata_types:
@@ -148,7 +170,7 @@ def download_metadata_tooling(job, org):
 
 						record = requests.get(metadata_url, headers = headers)
 
-						if 'Body' in record.json():
+						if 'Body' in record.json() and 'Member' not in record.json()['FullName']:
 
 							# create the component record and save
 							component_record = Component()
