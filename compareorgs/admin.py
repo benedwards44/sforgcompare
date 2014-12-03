@@ -7,10 +7,10 @@ class OrgInline(admin.TabularInline):
 	model = Org
 	extra = 0
 
-class ComponentTypeInline(admin.TabularInline):
+class ComponentInline(admin.TabularInline):
 	fields = ['name', 'content']
 	ordering = ['name']
-	model = ComponentType
+	model = Component
 	extra = 0
 
 class ComponentTypeAdmin(admin.ModelAdmin):
