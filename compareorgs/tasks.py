@@ -196,43 +196,77 @@ def compare_orgs(job):
 
 	try:
 
-		org_one = job.sorted_orgs()[0]
-		org_two = job.sorted_orgs()[1]
+		org_left = job.sorted_orgs()[0]
+		org_right = job.sorted_orgs()[1]
 
-		html_output = '<table class="table">'
+		html_output = '<table class="table" id="compare_results_table">'
 		html_output += '<thead>'
 		html_output += '<tr>'
-		html_output += '<th>' + org_one.org_name + '</th>'
-		html_output += '<th>' + org_two.org_name + '</th>'
+		html_output += '<th>' + org_left.org_name + '</th>'
+		html_output += '<th>' + org_right.org_name + '</th>'
 		html_output += '</th>'
 		html_output += '</thead>'
 		html_output += '<tbody>'
 		
-		for component_type_one in org_one.sorted_component_types():
+		for component_type_left in org_left.sorted_component_types():
 
 			count_left_rows = 0
 			count_right_rows = 0
 
-			for component_type_two in org_two.sorted_component_types():
+			for component_type_right in org_right.sorted_component_types():
 
-				if component_type_one.name == component_type_two.name:
+				# Match on component types
+				if component_type_left.name == component_type_right.name:
 
-					html_output += '<tr>'
-					html_output += '<td>' + component_type_one.name + '</td>'
-					html_output += '<td>' + component_type_two.name + '</td>'
-					html_output += '</tr>'
+					html_output += add_html_row('type', component_type_left.name, component_type_right.name)
 
+
+					"""
+					for component_left in component_type_left.sorted_components():
+
+						for component_right in component_type_right.sorted_components():
+
+							if component_left.name == component_right.name:
+
+								html_output += '<tr class="component">'
+								html_output += '<td>' + component.name + '</td>'
+								html_output += '<td>&nbsp;</td>'
+								html_output += '</tr>'
+
+							else if component_left.name < component_right.name:
+
+
+
+							else:
+					"""
+
+
+
+					# Break we we're ready for next component one record
+					break
+
+				# Component name one is alphabetically before component name two
+				else if component_type_left.name < component_type_right.name:
+
+					html_output += add_html_row('type', component_type_left.name, '  ')
+
+					# Append all files for component_type one
+					for component in component_type_left.sorted_components():
+
+						html_output += add_html_row('component', component.name, '  ')
+
+					# Break to go to next component one record
+					break
+
+				# Component name two is alphabetically before component name one
 				else:
 
-					html_output += '<tr>'
-					html_output += '<td>' + component_type_one.name + '</td>'
-					html_output += '<td>&nbsp;</td>'
-					html_output += '</tr>'
+					html_output += add_html_row('type', '  ', component_type_right.name)
 
+					# Append all files for component_type two
+					for component in component_type_right.sorted_components():
 
-			#for component in component_type.sorted_components():
-
-				#pass
+						html_output += add_html_row('component', component.name, '  ')
 
 		html_output += '</tbody>'
 		html_output += '</table>'
@@ -246,4 +280,5 @@ def compare_orgs(job):
 
 	job.save()
 
-
+def add_html_row(class_name, cell_one, cell_two):
+	return '<tr class="' + class_name + '"><td>' +   cell_one + '</td><td>' + cell_two + '</td></tr>'
