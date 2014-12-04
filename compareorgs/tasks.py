@@ -246,7 +246,7 @@ def compare_orgs(job):
 					break
 
 				# Component name one is alphabetically before component name two
-				else if str(component_type_left.name) < str(component_type_right.name):
+				else if earlier_in_alphabet(component_type_left.name, component_type_right.name):
 
 					html_output += add_html_row('type', component_type_left.name, '  ')
 
@@ -280,5 +280,14 @@ def compare_orgs(job):
 
 	job.save()
 
+# Method to add HTML row
 def add_html_row(class_name, cell_one, cell_two):
 	return '<tr class="' + class_name + '"><td>' +   cell_one + '</td><td>' + cell_two + '</td></tr>'
+
+# Confirm that value one is alphabetically before value_two or not
+def earlier_in_alphabet(value_one, value_two):
+	if min(value_one, value_two) == value_one:
+		return True
+	else:
+		return False
+
