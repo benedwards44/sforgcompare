@@ -171,6 +171,11 @@ a.object_link:hover {
     width:500px !important;
 }
 
+#compare_results_table tr.type td {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
 #compare_results_table tr.component td {
-    padding-left: 20px;
+    padding-left: 50px;
 }
