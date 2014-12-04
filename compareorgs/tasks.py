@@ -187,15 +187,12 @@ def download_metadata_tooling(job, org):
 
 	org.save()
 
+
 # Compare two Org's metadata and return results
 @app.task
 def compare_orgs(job):
 
-	print 'HELLO'
-
 	job = get_object_or_404(Job, pk = job_id)
-
-	print 'HELLO2'
 
 	try:
 
@@ -210,19 +207,13 @@ def compare_orgs(job):
 		html_output += '</th>'
 		html_output += '</thead>'
 		html_output += '<tbody>'
-
-		print 'HELLO3'
 		
 		for component_type_left in org_left.sorted_component_types():
 
 			count_left_rows = 0
 			count_right_rows = 0
 
-			print 'HELLO4'
-
 			for component_type_right in org_right.sorted_component_types():
-
-				print 'HELLO5'
 
 				# Match on component types
 				if component_type_left.name == component_type_right.name:
@@ -248,6 +239,8 @@ def compare_orgs(job):
 
 							else:
 					"""
+
+
 
 					# Break we we're ready for next component one record
 					break
@@ -289,5 +282,6 @@ def compare_orgs(job):
 	job.save()
 
 # Method to add HTML row
+@staticmethod
 def add_html_row(class_name, cell_one, cell_two):
 	return '<tr class="' + class_name + '"><td>' +   cell_one + '</td><td>' + cell_two + '</td></tr>'
