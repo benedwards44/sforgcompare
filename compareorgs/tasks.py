@@ -245,6 +245,7 @@ def compare_orgs(job):
 					# Break we we're ready for next component one record
 					break
 
+
 				# Component name one is alphabetically before component name two
 				else if earlier_in_alphabet(component_type_left.name, component_type_right.name):
 
@@ -286,7 +287,7 @@ def add_html_row(class_name, cell_one, cell_two):
 
 # Confirm that value one is alphabetically before value_two or not
 def earlier_in_alphabet(value_one, value_two):
-	if min(value_one, value_two) == value_one:
+	if sorted(value_one, value_two)[0] == value_one:
 		return True
 	else:
 		return False
