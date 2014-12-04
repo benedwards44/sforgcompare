@@ -86,29 +86,44 @@ def oauth_response(request):
 
 			# get username of the authenticated user
 			r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/User/' + user_id + '?fields=Username', headers={'Authorization': 'OAuth ' + access_token})
-			print r.text
-			username = r.json()['Username']
-
-			# get the org name of the authenticated user
-			r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/Organization/' + org_id + '?fields=Name', headers={'Authorization': 'OAuth ' + access_token})
-			org_name = r.json()['Name']
-
-			org = Org()
-			org.access_token = access_token
-			org.instance_url = instance_url
-			org.org_id = org_id
-			org.org_name = org_name
-			org.username = username
 			
-			if org_choice == 'org1':
+			if 'errorCode' in r.text:
 
-				org.org_number = 1
+				error_exists = True
+				error_message = r.json()['message']
 
 			else:
 
-				org.org_number = 2
+				username = r.json()['Username']
 
-			org.save()
+				# get the org name of the authenticated user
+				r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/Organization/' + org_id + '?fields=Name', headers={'Authorization': 'OAuth ' + access_token})
+				
+				if 'errorCode' in r.text:
+
+					error_exists = True
+					error_message = r.json()['message']
+					
+				else:
+
+					org_name = r.json()['Name']
+
+					org = Org()
+					org.access_token = access_token
+					org.instance_url = instance_url
+					org.org_id = org_id
+					org.org_name = org_name
+					org.username = username
+					
+					if org_choice == 'org1':
+
+						org.org_number = 1
+
+					else:
+
+						org.org_number = 2
+
+					org.save()
 			
 	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org}))
 
