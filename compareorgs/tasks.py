@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 from celery import Celery
 from django.conf import settings
+from difflib import HtmlDiff
 import os
 import json	
 import requests
@@ -191,12 +192,20 @@ def download_metadata_tooling(job, org):
 @app.task
 def compare_orgs(job):
 
+	job = get_object_or_404(Job, pk = job_id)
+
 	try:
-		pass
+		
+		for org in job.org_set.all():
+			pass
+
+		job.status = 'Finished'
 
 	except Exception as error:
 		job.status = 'Error'
 		job.error = error
+
+
 
 	job.save()
 
