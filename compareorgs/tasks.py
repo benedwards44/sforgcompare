@@ -209,9 +209,9 @@ def compare_orgs(job):
 
 			pass
 
-				for component in component_type.sorted_components():
+			for component in component_type.sorted_components():
 
-					pass
+				pass
 
 		html_output += '</tbody>'
 		html_output += '</table>'
