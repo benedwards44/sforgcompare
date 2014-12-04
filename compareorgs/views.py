@@ -167,3 +167,9 @@ def compare_orgs(request, job_id):
 			download_metadata_tooling.delay(job, org)
 
 	return render_to_response('loading.html', RequestContext(request, {'job': job}))	
+
+# Page to display compare results
+def compare_results(request, job_id):
+
+	job = get_object_or_404(Job, pk = job_id)
+	return render_to_response('compare_results.html', RequestContext(request, {'job': job}))
