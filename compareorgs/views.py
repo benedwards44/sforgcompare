@@ -242,9 +242,8 @@ def compare_orgs_now(job):
 
 	job.save()
 
-def get_row_value(row_value, match_type):
+def get_row_value(row_value):
 	if '.' not in row_value:
-
 		return row_value
 	else:
 		return row_value.split('.')[1]
