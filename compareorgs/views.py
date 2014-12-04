@@ -256,6 +256,10 @@ def compare_orgs_now(job):
 
 	job.save()
 
+# Method to add HTML row
+def add_html_row(class_name, cell_one, cell_two):
+	return '<tr class="' + class_name + '"><td>' +   cell_one + '</td><td>' + cell_two + '</td></tr>'
+
 # Page for user to wait for job to run
 def compare_orgs(request, job_id):
 
