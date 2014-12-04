@@ -282,6 +282,5 @@ def compare_orgs(job):
 	job.save()
 
 # Method to add HTML row
-@staticmethod
 def add_html_row(class_name, cell_one, cell_two):
 	return '<tr class="' + class_name + '"><td>' +   cell_one + '</td><td>' + cell_two + '</td></tr>'
