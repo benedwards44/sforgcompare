@@ -86,6 +86,7 @@ def oauth_response(request):
 
 			# get username of the authenticated user
 			r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/User/' + user_id + '?fields=Username', headers={'Authorization': 'OAuth ' + access_token})
+			print r.text
 			username = r.json()['Username']
 
 			# get the org name of the authenticated user
