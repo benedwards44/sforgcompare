@@ -202,6 +202,8 @@ def compare_orgs_now(job):
 					# Ensure the component on the right isn't added twice
 					unique_type_set.append(component_type_right.name)
 
+					break
+
 				# Component name one is alphabetically before component name two
 				elif component_type_left.name < component_type_right.name:
 
@@ -224,6 +226,8 @@ def compare_orgs_now(job):
 					#for component in component_type_right.sorted_components():
 
 						#html_output += add_html_row('component', component.name, '  ')
+
+					break
 
 		html_output += '</tbody>'
 		html_output += '</table>'
