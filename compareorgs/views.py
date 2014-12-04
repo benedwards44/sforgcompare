@@ -191,7 +191,7 @@ def compare_orgs_now(job):
 		# Create a list of the right component type names
 		right_components = []
 		for component_type in org_right.sorted_component_types():
-			left_components.append(component_type.name)
+			right_components.append(component_type.name)
 
 		# Start the unique list
 		all_components_unique = list(left_components)
@@ -205,7 +205,6 @@ def compare_orgs_now(job):
 		all_components_unique.sort()
 
 		# Start to build the HTML for the table
-
 		for row_value in all_components_unique:
 
 			html_output += '<tr><td>'
