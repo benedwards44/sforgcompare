@@ -185,68 +185,45 @@ def compare_orgs_now(job):
 		
 		for component_type_left in org_left.sorted_component_types():
 
+			# Used to determine right side components aren't added twice
 			unique_type_set = []
 
 			for component_type_right in org_right.sorted_component_types():
 
-				if component_type_right.name not in unique_type_set:
+				# Skip the right side record if it's already been added
+				if component_type_right.name in unique_type_set:
+					continue
 
-					# Match on component types
-					if component_type_left.name == component_type_right.name:
+				# Match on component types
+				if component_type_left.name == component_type_right.name:
 
-						html_output += add_html_row('type', component_type_left.name, component_type_right.name)
+					html_output += add_html_row('type', component_type_left.name, component_type_right.name)
 
-						unique_type_set.append(component_type_right.name)
+					# Ensure the component on the right isn't added twice
+					unique_type_set.append(component_type_right.name)
 
-						"""
-						for component_left in component_type_left.sorted_components():
+				# Component name one is alphabetically before component name two
+				elif component_type_left.name < component_type_right.name:
 
-							for component_right in component_type_right.sorted_components():
+					html_output += add_html_row('type', component_type_left.name, '  ')
 
-								if component_left.name == component_right.name:
+					# Append all files for component_type one
+					for component in component_type_left.sorted_components():
 
-									html_output += '<tr class="component">'
-									html_output += '<td>' + component.name + '</td>'
-									html_output += '<td>&nbsp;</td>'
-									html_output += '</tr>'
+						html_output += add_html_row('component', component.name, '  ')
 
-								else if component_left.name < component_right.name:
+				# Component name two is alphabetically before component name one
+				else:
 
+					html_output += add_html_row('type', '  ', component_type_right.name)
 
+					# Ensure the component on the right isn't added twice
+					unique_type_set.append(component_type_right.name)
 
-								else:
-						"""
+					# Append all files for component_type two
+					for component in component_type_right.sorted_components():
 
-
-
-						# Break we we're ready for next component one record
-						break
-
-
-					# Component name one is alphabetically before component name two
-					elif component_type_left.name < component_type_right.name:
-
-						html_output += add_html_row('type', component_type_left.name, '  ')
-
-						# Append all files for component_type one
-						for component in component_type_left.sorted_components():
-
-							html_output += add_html_row('component', component.name, '  ')
-
-						# Break to go to next component one record
-						break
-
-					# Component name two is alphabetically before component name one
-					else:
-
-						html_output += add_html_row('type', '  ', component_type_right.name)
-
-						unique_type_set.append(component_type_right.name)
-
-						# Append all files for component_type two
-						for component in component_type_right.sorted_components():
-
-							html_output += add_html_row('component', component.name, '  ')
+						html_output += add_html_row('component', component.name, '  ')
 
 		html_output += '</tbody>'
 		html_output += '</table>'
