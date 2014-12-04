@@ -208,9 +208,9 @@ def compare_orgs_now(job):
 					html_output += add_html_row('type', component_type_left.name, '  ')
 
 					# Append all files for component_type one
-					for component in component_type_left.sorted_components():
+					#for component in component_type_left.sorted_components():
 
-						html_output += add_html_row('component', component.name, '  ')
+						#html_output += add_html_row('component', component.name, '  ')
 
 				# Component name two is alphabetically before component name one
 				else:
@@ -221,9 +221,9 @@ def compare_orgs_now(job):
 					unique_type_set.append(component_type_right.name)
 
 					# Append all files for component_type two
-					for component in component_type_right.sorted_components():
+					#for component in component_type_right.sorted_components():
 
-						html_output += add_html_row('component', component.name, '  ')
+						#html_output += add_html_row('component', component.name, '  ')
 
 		html_output += '</tbody>'
 		html_output += '</table>'
