@@ -219,18 +219,15 @@ def compare_orgs_now(job):
 			else:
 				html_output += '<tr class="component">'
 
-			html_output += '<td>'
+			if row_value in left_components and row_value not in right_components:
+				html_output += '<td>' + get_row_value(row_value) + '</td><td></td>'
 
-			if row_value in left_components:
-				html_output += get_row_value(row_value)
+			if row_value not in left_components and row_value in left_components:
+				html_output += '<td></td><td>' + get_row_value(row_value) + '</td>'
 
-			html_output += '</td>'
-			html_output += '<td>'
+			if row_value in left_components and row_value in right_components:
+				html_output += '<td>' + get_row_value(row_value) + '</td><td>' + get_row_value(row_value) + '</td>'
 
-			if row_value in right_components:
-				html_output += get_row_value(row_value)
-
-			html_output += '</td>'
 			html_output += '</tr>'
 
 		html_output += '</tbody>'
@@ -245,8 +242,9 @@ def compare_orgs_now(job):
 
 	job.save()
 
-def get_row_value(row_value):
+def add_html_row(row_value, match_type):
 	if '.' not in row_value:
+
 		return row_value
 	else:
 		return row_value.split('.')[1]
