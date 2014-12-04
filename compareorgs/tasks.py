@@ -195,17 +195,33 @@ def compare_orgs(job):
 	job = get_object_or_404(Job, pk = job_id)
 
 	try:
+
+		html_output = '<table class="table">'
+		html_output += '<thead>'
+		html_output += '<tr>'
+		html_output += '<th>' + job.sorted_orgs()[0].org_name + '</th>'
+		html_output += '<th>' + job.sorted_orgs()[1].org_name + '</th>'
+		html_output += '</th>'
+		html_output += '</thead>'
+		html_output += '<tbody>'
 		
-		for org in job.org_set.all():
+		for component_type in org.sorted_component_types()[0]:
+
 			pass
 
+				for component in component_type.sorted_components():
+
+					pass
+
+		html_output += '</tbody>'
+		html_output += '</table>'
+
+		job.compare_result_html = html_output
 		job.status = 'Finished'
 
 	except Exception as error:
 		job.status = 'Error'
 		job.error = error
-
-
 
 	job.save()
 
