@@ -249,8 +249,6 @@ def compare_orgs(job):
 							else:
 					"""
 
-
-
 					# Break we we're ready for next component one record
 					break
 
