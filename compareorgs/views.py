@@ -188,10 +188,17 @@ def compare_orgs_now(job):
 		for component_type in org_left.sorted_component_types():
 			left_components.append(component_type.name)
 
+			# Append components
+			for component in component_type.sorted_components():
+				left_components.append(component_type.name + '.' + component.name)
+
 		# Create a list of the right component type names
 		right_components = []
 		for component_type in org_right.sorted_component_types():
 			right_components.append(component_type.name)
+			
+			for component in component_type.sorted_components():
+				right_components.append(component_type.name + '.' + component.name)
 
 		# Start the unique list
 		all_components_unique = list(left_components)
