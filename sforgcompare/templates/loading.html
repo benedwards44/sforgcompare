@@ -50,6 +50,8 @@
 			    success: function(resp) 
 			    {
 			    	console.log(resp);
+			    	console.log(resp.split(':::'));
+			    	console.log(resp.split(':::')[0]);
 
 			        if (resp.split(':::')[0].trim() == 'Finished')
 			        {
