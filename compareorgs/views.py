@@ -90,7 +90,7 @@ def oauth_response(request):
 			if 'errorCode' in r.text:
 
 				error_exists = True
-				error_message = r.json()['message']
+				error_message = r.json()[0]['message']
 
 			else:
 
@@ -102,8 +102,8 @@ def oauth_response(request):
 				if 'errorCode' in r.text:
 
 					error_exists = True
-					error_message = r.json()['message']
-					
+					error_message = r.json()[0]['message']
+
 				else:
 
 					org_name = r.json()['Name']
