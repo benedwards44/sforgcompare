@@ -204,6 +204,8 @@ def compare_orgs_now(job):
 
 					break
 
+				"""
+
 				# Component name one is alphabetically before component name two
 				elif component_type_left.name < component_type_right.name:
 
@@ -228,6 +230,7 @@ def compare_orgs_now(job):
 						#html_output += add_html_row('component', component.name, '  ')
 
 					break
+				"""
 
 		html_output += '</tbody>'
 		html_output += '</table>'
