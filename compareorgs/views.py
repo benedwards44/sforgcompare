@@ -214,17 +214,24 @@ def compare_orgs_now(job):
 		# Start to build the HTML for the table
 		for row_value in all_components_unique:
 
-			html_output += '<tr><td>'
+			if '.' not in row_value:
+				html_output += '<tr class="type">'
+			else:
+				html_output += '<tr class="component">'
+
+			html_output += '<td>'
 
 			if row_value in left_components:
-				html_output += row_value
+				html_output += get_row_value(row_value)
 
-			html_output += '</td><td>'
+			html_output += '</td>'
+			html_output += '<td>'
 
 			if row_value in right_components:
-				html_output += row_value
+				html_output += get_row_value(row_value)
 
-			html_output += '</td></tr>'
+			html_output += '</td>'
+			html_output += '</tr>'
 
 		html_output += '</tbody>'
 		html_output += '</table>'
@@ -237,6 +244,12 @@ def compare_orgs_now(job):
 		job.error = error
 
 	job.save()
+
+def get_row_value(row_value):
+	if '.' not in row_value:
+		return row_value
+	else:
+		return row_value.split('.')[1]
 
 # Page for user to wait for job to run
 def compare_orgs(request, job_id):
