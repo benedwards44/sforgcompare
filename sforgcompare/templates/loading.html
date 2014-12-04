@@ -49,10 +49,6 @@
 			    type: 'get', //this is the default though, you don't actually need to always mention it
 			    success: function(resp) 
 			    {
-			    	console.log(resp);
-			    	console.log(resp.split(':::'));
-			    	console.log(resp.split(':::')[0]);
-
 			        if (resp.split(':::')[0].trim() == 'Finished')
 			        {
 			        	window.location = '/compare_result/{{ job.id }}/';

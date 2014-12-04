@@ -187,7 +187,6 @@ def download_metadata_tooling(job, org):
 
 	org.save()
 
-
 # Compare two Org's metadata and return results
 @app.task
 def compare_orgs(job):

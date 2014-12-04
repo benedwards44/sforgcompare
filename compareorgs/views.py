@@ -117,31 +117,38 @@ def job_status(request, job_id):
 
 	job = get_object_or_404(Job, pk = job_id)
 
-	# Check that both Orgs have finished downloading metadata
-	all_metadata_downloaded = False
+	try:
 
-	for org in job.sorted_orgs():
+		# Check that both Orgs have finished downloading metadata
+		all_metadata_downloaded = False
 
-		if org.status == 'Finished':
+		for org in job.sorted_orgs():
 
-			all_metadata_downloaded = True
+			if org.status == 'Finished':
 
-		else:
+				all_metadata_downloaded = True
 
-			all_metadata_downloaded = False
+			else:
 
-			if org.status == 'Error':
-				job.status = 'Error'
-				job.error = org.error
-				job.save()
+				all_metadata_downloaded = False
 
-	# If the metadata is downloaded and the job is ready
-	if all_metadata_downloaded and job.status == 'Downloading Metadata':
+				if org.status == 'Error':
+					job.status = 'Error'
+					job.error = org.error
+					job.save()
 
-		job.status = 'Comparing'
+		# If the metadata is downloaded and the job is ready
+		if all_metadata_downloaded and job.status == 'Downloading Metadata':
+
+			job.status = 'Comparing'
+			job.save()
+
+			compare_orgs.delay(job)
+
+	except Exception as error:
+		job.status = 'Error'
+		job.error = org.error
 		job.save()
-
-		compare_orgs.delay(job)
 
 	return HttpResponse(job.status + ':::' + job.error)
 
