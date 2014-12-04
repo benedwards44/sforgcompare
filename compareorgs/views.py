@@ -185,64 +185,68 @@ def compare_orgs_now(job):
 		
 		for component_type_left in org_left.sorted_component_types():
 
-			count_left_rows = 0
-			count_right_rows = 0
+			unique_type_set = []
 
 			for component_type_right in org_right.sorted_component_types():
 
-				# Match on component types
-				if component_type_left.name == component_type_right.name:
+				if component_type_right.name not in unique_type_set:
 
-					html_output += add_html_row('type', component_type_left.name, component_type_right.name)
+					# Match on component types
+					if component_type_left.name == component_type_right.name:
 
+						html_output += add_html_row('type', component_type_left.name, component_type_right.name)
 
-					"""
-					for component_left in component_type_left.sorted_components():
+						unique_type_set.append(component_type_right.name)
 
-						for component_right in component_type_right.sorted_components():
+						"""
+						for component_left in component_type_left.sorted_components():
 
-							if component_left.name == component_right.name:
+							for component_right in component_type_right.sorted_components():
 
-								html_output += '<tr class="component">'
-								html_output += '<td>' + component.name + '</td>'
-								html_output += '<td>&nbsp;</td>'
-								html_output += '</tr>'
+								if component_left.name == component_right.name:
 
-							else if component_left.name < component_right.name:
+									html_output += '<tr class="component">'
+									html_output += '<td>' + component.name + '</td>'
+									html_output += '<td>&nbsp;</td>'
+									html_output += '</tr>'
 
-
-
-							else:
-					"""
+								else if component_left.name < component_right.name:
 
 
 
-					# Break we we're ready for next component one record
-					break
+								else:
+						"""
 
 
-				# Component name one is alphabetically before component name two
-				elif component_type_left.name < component_type_right.name:
 
-					html_output += add_html_row('type', component_type_left.name, '  ')
+						# Break we we're ready for next component one record
+						break
 
-					# Append all files for component_type one
-					for component in component_type_left.sorted_components():
 
-						html_output += add_html_row('component', component.name, '  ')
+					# Component name one is alphabetically before component name two
+					elif component_type_left.name < component_type_right.name:
 
-					# Break to go to next component one record
-					break
+						html_output += add_html_row('type', component_type_left.name, '  ')
 
-				# Component name two is alphabetically before component name one
-				else:
+						# Append all files for component_type one
+						for component in component_type_left.sorted_components():
 
-					html_output += add_html_row('type', '  ', component_type_right.name)
+							html_output += add_html_row('component', component.name, '  ')
 
-					# Append all files for component_type two
-					for component in component_type_right.sorted_components():
+						# Break to go to next component one record
+						break
 
-						html_output += add_html_row('component', component.name, '  ')
+					# Component name two is alphabetically before component name one
+					else:
+
+						html_output += add_html_row('type', '  ', component_type_right.name)
+
+						unique_type_set.append(component_type_right.name)
+
+						# Append all files for component_type two
+						for component in component_type_right.sorted_components():
+
+							html_output += add_html_row('component', component.name, '  ')
 
 		html_output += '</tbody>'
 		html_output += '</table>'
