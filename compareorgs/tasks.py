@@ -246,7 +246,7 @@ def compare_orgs(job):
 					break
 
 				# Component name one is alphabetically before component name two
-				else if component_type_left.name < component_type_right.name:
+				else if str(component_type_left.name) < str(component_type_right.name):
 
 					html_output += add_html_row('type', component_type_left.name, '  ')
 
