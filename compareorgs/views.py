@@ -247,7 +247,7 @@ def job_status(request, job_id):
 
 	except Exception as error:
 		job.status = 'Error'
-		job.error = org.error
+		job.error = error
 		job.save()
 
 	return HttpResponse(job.status + ':::' + job.error)
