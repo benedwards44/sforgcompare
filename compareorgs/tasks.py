@@ -196,22 +196,43 @@ def compare_orgs(job):
 
 	try:
 
+		org_one = job.sorted_orgs()[0]
+		org_two = job.sorted_orgs()[1]
+
 		html_output = '<table class="table">'
 		html_output += '<thead>'
 		html_output += '<tr>'
-		html_output += '<th>' + job.sorted_orgs()[0].org_name + '</th>'
-		html_output += '<th>' + job.sorted_orgs()[1].org_name + '</th>'
+		html_output += '<th>' + org_one.org_name + '</th>'
+		html_output += '<th>' + org_two.org_name + '</th>'
 		html_output += '</th>'
 		html_output += '</thead>'
 		html_output += '<tbody>'
 		
-		for component_type in org.sorted_component_types()[0]:
+		for component_type_one in org_one.sorted_component_types():
 
-			pass
+			count_left_rows = 0
+			count_right_rows = 0
 
-			for component in component_type.sorted_components():
+			for component_type_two in org_two.sorted_component_types():
 
-				pass
+				if component_type_one.name == component_type_two.name:
+
+					html_output += '<tr>'
+					html_output += '<td>' + component_type_one.name + '</td>'
+					html_output += '<td>' + component_type_two.name + '</td>'
+					html_output += '</tr>'
+
+				else:
+
+					html_output += '<tr>'
+					html_output += '<td>' + component_type_one.name + '</td>'
+					html_output += '<td>&nbsp;</td>'
+					html_output += '</tr>'
+
+
+			#for component in component_type.sorted_components():
+
+				#pass
 
 		html_output += '</tbody>'
 		html_output += '</table>'
