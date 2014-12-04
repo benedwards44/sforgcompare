@@ -218,7 +218,8 @@ def compare_orgs_task(job):
 				# Match on component types
 				if component_type_left.name == component_type_right.name:
 
-					html_output += '<tr class="type"><td>' +   component_type_left.name + '</td><td>' + component_type_right.name + '</td></tr>'
+					html_output += add_html_row('type', component_type_left.name, component_type_right.name)
+
 
 					"""
 					for component_left in component_type_left.sorted_components():
@@ -248,12 +249,12 @@ def compare_orgs_task(job):
 				# Component name one is alphabetically before component name two
 				elif component_type_left.name < component_type_right.name:
 
-					html_output += '<tr class="type"><td>' +   component_type_left.name + '</td><td>  </td></tr>'
+					html_output += add_html_row('type', component_type_left.name, '  ')
 
 					# Append all files for component_type one
 					for component in component_type_left.sorted_components():
 
-						html_output += '<tr class="component"><td>' + component.name + '</td><td>  </td></tr>'
+						html_output += add_html_row('component', component.name, '  ')
 
 					# Break to go to next component one record
 					break
@@ -261,12 +262,12 @@ def compare_orgs_task(job):
 				# Component name two is alphabetically before component name one
 				else:
 
-					html_output += '<tr class="type"><td>  </td><td>' + component_type_right.name + '</td></tr>'
+					html_output += add_html_row('type', '  ', component_type_right.name)
 
 					# Append all files for component_type two
 					for component in component_type_right.sorted_components():
 
-						html_output += '<tr class="component"><td>   </td><td>' + component.name + '</td></tr>'
+						html_output += add_html_row('component', component.name, '  ')
 
 		html_output += '</tbody>'
 		html_output += '</table>'
@@ -279,3 +280,7 @@ def compare_orgs_task(job):
 		job.error = error
 
 	job.save()
+
+# Method to add HTML row
+def add_html_row(class_name, cell_one, cell_two):
+	return '<tr class="' + class_name + '"><td>' +   cell_one + '</td><td>' + cell_two + '</td></tr>'

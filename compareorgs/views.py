@@ -158,7 +158,7 @@ def job_status(request, job_id):
 			job.status = 'Comparing'
 			job.save()
 
-			compare_orgs_task.delay(job)
+			compare_orgs_now(job)
 
 	except Exception as error:
 		job.status = 'Error'
@@ -166,6 +166,95 @@ def job_status(request, job_id):
 		job.save()
 
 	return HttpResponse(job.status + ':::' + job.error)
+
+def compare_orgs_now(job):
+
+	try:
+
+		org_left = job.sorted_orgs()[0]
+		org_right = job.sorted_orgs()[1]
+
+		html_output = '<table class="table" id="compare_results_table">'
+		html_output += '<thead>'
+		html_output += '<tr>'
+		html_output += '<th>' + org_left.org_name + '</th>'
+		html_output += '<th>' + org_right.org_name + '</th>'
+		html_output += '</th>'
+		html_output += '</thead>'
+		html_output += '<tbody>'
+		
+		for component_type_left in org_left.sorted_component_types():
+
+			count_left_rows = 0
+			count_right_rows = 0
+
+			for component_type_right in org_right.sorted_component_types():
+
+				# Match on component types
+				if component_type_left.name == component_type_right.name:
+
+					html_output += add_html_row('type', component_type_left.name, component_type_right.name)
+
+
+					"""
+					for component_left in component_type_left.sorted_components():
+
+						for component_right in component_type_right.sorted_components():
+
+							if component_left.name == component_right.name:
+
+								html_output += '<tr class="component">'
+								html_output += '<td>' + component.name + '</td>'
+								html_output += '<td>&nbsp;</td>'
+								html_output += '</tr>'
+
+							else if component_left.name < component_right.name:
+
+
+
+							else:
+					"""
+
+
+
+					# Break we we're ready for next component one record
+					break
+
+
+				# Component name one is alphabetically before component name two
+				elif component_type_left.name < component_type_right.name:
+
+					html_output += add_html_row('type', component_type_left.name, '  ')
+
+					# Append all files for component_type one
+					for component in component_type_left.sorted_components():
+
+						html_output += add_html_row('component', component.name, '  ')
+
+					# Break to go to next component one record
+					break
+
+				# Component name two is alphabetically before component name one
+				else:
+
+					html_output += add_html_row('type', '  ', component_type_right.name)
+
+					# Append all files for component_type two
+					for component in component_type_right.sorted_components():
+
+						html_output += add_html_row('component', component.name, '  ')
+
+		html_output += '</tbody>'
+		html_output += '</table>'
+
+		job.compare_result_html = html_output
+		job.status = 'Finished'
+
+	except Exception as error:
+		job.status = 'Error'
+		job.error = error
+
+	job.save()
 
 # Page for user to wait for job to run
 def compare_orgs(request, job_id):
