@@ -170,3 +170,7 @@ a.object_link:hover {
 .popover {
     width:500px !important;
 }
+
+#compare_results_table tr.component td {
+    padding-left: 20px;
+}
