@@ -182,55 +182,43 @@ def compare_orgs_now(job):
 		html_output += '</th>'
 		html_output += '</thead>'
 		html_output += '<tbody>'
-		
-		for component_type_left in org_left.sorted_component_types():
 
-			# Used to determine right side components aren't added twice
-			unique_type_set = []
+		# Create a list of the left component type names
+		left_components = []
+		for component_type in org_left.sorted_component_types():
+			left_components.append(component_type.name)
 
-			for component_type_right in org_right.sorted_component_types():
+		# Create a list of the right component type names
+		right_components = []
+		for component_type in org_right.sorted_component_types():
+			left_components.append(component_type.name)
 
-				# Skip the right side record if it's already been added
-				if component_type_right.name in unique_type_set:
-					continue
+		# Start the unique list
+		all_components_unique = list(left_components)
 
-				# Match on component types
-				if component_type_left.name == component_type_right.name:
+		# Add all right components that aren't in the list
+		for component_type in right_components:
+			if component_type not in all_components_unique:
+				all_components_unique.append(component_type)
 
-					html_output += add_html_row('type', component_type_left.name, component_type_right.name)
+		# Sort alphabetically
+		all_components_unique.sort()
 
-					# Ensure the component on the right isn't added twice
-					unique_type_set.append(component_type_right.name)
+		# Start to build the HTML for the table
 
-					break
+		for row_value in all_components_unique:
 
-				"""
+			html_output += '<tr><td>'
 
-				# Component name one is alphabetically before component name two
-				elif component_type_left.name < component_type_right.name:
+			if row_value in left_components:
+				html_output += row_value
 
-					html_output += add_html_row('type', component_type_left.name, '  ')
+			html_output += '</td><td>'
 
-					# Append all files for component_type one
-					#for component in component_type_left.sorted_components():
+			if row_value in right_components:
+				html_output += row_value
 
-						#html_output += add_html_row('component', component.name, '  ')
-
-				# Component name two is alphabetically before component name one
-				else:
-
-					html_output += add_html_row('type', '  ', component_type_right.name)
-
-					# Ensure the component on the right isn't added twice
-					unique_type_set.append(component_type_right.name)
-
-					# Append all files for component_type two
-					#for component in component_type_right.sorted_components():
-
-						#html_output += add_html_row('component', component.name, '  ')
-
-					break
-				"""
+			html_output += '</td></tr>'
 
 		html_output += '</tbody>'
 		html_output += '</table>'
@@ -243,10 +231,6 @@ def compare_orgs_now(job):
 		job.error = error
 
 	job.save()
-
-# Method to add HTML row
-def add_html_row(class_name, cell_one, cell_two):
-	return '<tr class="' + class_name + '"><td>' +   cell_one + '</td><td>' + cell_two + '</td></tr>'
 
 # Page for user to wait for job to run
 def compare_orgs(request, job_id):
