@@ -8,7 +8,7 @@ import json
 import requests
 import datetime
 from time import sleep
-from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling, compare_orgs
+from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling, compare_orgs_task
 
 
 def index(request):
@@ -158,7 +158,7 @@ def job_status(request, job_id):
 			job.status = 'Comparing'
 			job.save()
 
-			compare_orgs.delay(job)
+			compare_orgs_task.delay(job)
 
 	except Exception as error:
 		job.status = 'Error'
