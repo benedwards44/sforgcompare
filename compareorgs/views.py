@@ -158,7 +158,8 @@ def job_status(request, job_id):
 			job.status = 'Comparing'
 			job.save()
 
-			compare_orgs.delay(job)
+			#compare_orgs.delay(job)
+			compare_orgs(job)
 
 	except Exception as error:
 		job.status = 'Error'
