@@ -173,13 +173,17 @@ a.object_link:hover {
 
 #compare_results_table tr.type td {
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1.1em;
+    cursor: pointer;
+    width: 50%;
 }
 
 #compare_results_table tr.component td {
     padding-left: 50px;
+    cursor: pointer;
+    width: 50%;
 }
 
 #compare_results_table td.diff {
-    
+
 }

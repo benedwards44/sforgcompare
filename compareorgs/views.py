@@ -215,9 +215,9 @@ def compare_orgs_now(job):
 		for row_value in all_components_unique:
 
 			if '.' not in row_value:
-				html_output += '<tr class="type">'
+				html_output += '<tr class="type type_' + get_row_value(row_value) + '">'
 			else:
-				html_output += '<tr class="component">'
+				html_output += '<tr class="component component_' + get_row_value(row_value) + '">'
 
 			if row_value in left_components and row_value not in right_components:
 				html_output += '<td class="bg-success">+ ' + get_row_value(row_value) + '</td><td></td>'
