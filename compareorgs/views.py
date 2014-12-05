@@ -177,8 +177,8 @@ def compare_orgs_now(job):
 		html_output = '<table class="table" id="compare_results_table">'
 		html_output += '<thead>'
 		html_output += '<tr>'
-		html_output += '<th>' + org_left.username  + '( ' + org_left.org_name + ')</th>'
-		html_output += '<th>' + org_right.username + '( ' + org_right.org_name + ')</th>'
+		html_output += '<th>' + org_left.username  + ' (' + org_left.org_name + ')</th>'
+		html_output += '<th>' + org_right.username + ' (' + org_right.org_name + ')</th>'
 		html_output += '</th>'
 		html_output += '</thead>'
 		html_output += '<tbody>'
@@ -215,15 +215,15 @@ def compare_orgs_now(job):
 		for row_value in all_components_unique:
 
 			if '.' not in row_value:
-				html_output += '<tr class="type type_' + get_row_value(row_value) + '">'
+				html_output += '<tr class="type type_' + row_value + '">'
 			else:
-				html_output += '<tr class="component component_' + get_row_value(row_value) + '">'
+				html_output += '<tr class="component component_' + row_value.split('.')[0] + '">'
 
 			if row_value in left_components and row_value not in right_components:
-				html_output += '<td class="bg-success">+ ' + get_row_value(row_value) + '</td><td></td>'
+				html_output += '<td class="bg-danger">+ ' + get_row_value(row_value) + '</td><td></td>'
 
 			if row_value not in left_components and row_value in left_components:
-				html_output += '<td></td><td class="bg-success">+ ' + get_row_value(row_value) + '</td>'
+				html_output += '<td></td><td class="bg-danger">+ ' + get_row_value(row_value) + '</td>'
 
 			if row_value in left_components and row_value in right_components:
 				html_output += '<td>' + get_row_value(row_value) + '</td><td>' + get_row_value(row_value) + '</td>'
