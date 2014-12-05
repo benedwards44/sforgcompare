@@ -217,8 +217,6 @@ def download_metadata_tooling(job, org):
 # Compare two Org's metadata and return results
 def compare_orgs_task(job):
 
-	job = get_object_or_404(Job, pk = job_id)
-
 	job.status = 'Comparing'
 	job.save()
 
