@@ -219,7 +219,7 @@ def compare_orgs_now(job):
 		# Start to build the HTML for the table
 		for row_value in all_components_unique:
 
-			add_html_row(row_value, left_components, right_components)
+			add_html_row(row_value, left_components, right_components, component_map)
 
 		html_output += '</tbody>'
 		html_output += '</table>'
