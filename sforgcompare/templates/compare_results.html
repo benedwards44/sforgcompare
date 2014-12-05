@@ -9,8 +9,12 @@ $(document).ready(function ()
 	$('tr.type td').click(function() 
 	{
 		var componentType = $(this).parent().attr('class').split('_')[1];
-		console.log(componentType);
 		$('.component_' + componentType).toggle();
+
+		var componentName = $(this).attr('id').split('.')[1];
+
+		$('#codeModalLabel').text(componentType + ' - ' + componentName);
+		$('#codeModalBody').text($(this).find('span').text());
 	});
 });
 </script>
