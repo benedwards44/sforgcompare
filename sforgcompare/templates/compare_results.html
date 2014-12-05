@@ -11,9 +11,14 @@ $(document).ready(function ()
 		var componentType = $(this).parent().attr('class').split('_')[1];
 		$('.component_' + componentType).toggle();
 
-		var componentName = $(this).attr('id').split('.')[1];
+		
+	});
 
-		$('#codeModalLabel').text(componentType + ' - ' + componentName);
+	$('tr.component td').click(function() 
+	{
+		var componentName = $(this).attr('id').split('.');
+
+		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
 		$('#codeModalBody').text($(this).find('span').text());
 
 		$('#viewCodeModal').modal();
