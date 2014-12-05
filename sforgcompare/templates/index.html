@@ -1,14 +1,5 @@
 {% extends 'base.html' %}
 
-{% block scripts %}
-	<script>
-		$(document).ready(function() 
-		{
-			$('[data-toggle="popover"]').popover();
-		});
-	</script>
-{% endblock %}
-
 {% block content %}
 
 	<div class="inner">
@@ -128,9 +119,20 @@
 					<option value="metadata">Metadata API</option>
 				</select>
 
-				<img src="/static/images/i-icon.png" id="info_icon" data-toggle="modal" data-target="#apiModal" />
+				<img src="/static/images/i-icon.png" class="info_icon" data-toggle="modal" data-target="#apiModal" />
 
-				<div style="clear:both;"></div>
+				<div style="clear:both;margin: 5px 0;"></div>
+
+				<select id="id_email_choice" name="email_choice" class="form-control">
+					<option value="yes" selected="selected">Email me when ready</option>
+					<option value="no">Don't email me</option>
+				</select>
+
+				<img src="/static/images/i-icon.png" class="info_icon" data-toggle="modal" data-target="#emailModal" />
+
+				<div style="clear:both;margin: 5px 0;"></div>
+
+				<input type="email" id="id_email" name="email" class="form-control" />
 
 				<input type="submit" id="submitCompare" value="Compare Orgs" />
 
@@ -145,15 +147,15 @@
 
 	</div>
 
-	<div class="modal fade" id="apiModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
+	<div class="modal fade" id="apiModal" tabindex="-1" role="dialog" aria-labelledby="apiModalLabel" aria-hidden="true">
+		<div class="modal-dialog small_dialog">
 	    	<div class="modal-content">
 	      		<div class="modal-header">
 	        		<button type="button" class="close" data-dismiss="modal">
 	        			<span aria-hidden="true">&times;</span>
 	        			<span class="sr-only">Close</span>
 	        		</button>
-	        		<h3 class="modal-title" id="myModalLabel">
+	        		<h3 class="modal-title" id="apiModalLabel">
 	        			API Selection
 	        		</h3>
 	      		</div>
@@ -174,6 +176,32 @@
 	        			The Metadata API is slower but returns the full set of queryable metadata for your Org. Use the Metadata API if there are components not contained in the Tooling API that you would like to compare. This should be used if you want a true <strong>full</strong> comparison between two Orgs.
 	        			<br/><br/>
 	        			Note: The Metadata API is limited to 5,000 files retrieved in a single call.
+	        		</p>
+	      		</div>
+	      		<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			    </div>
+	    	</div>
+	  	</div>
+	</div>
+
+	<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">
+		<div class="modal-dialog small_dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">
+	        			<span aria-hidden="true">&times;</span>
+	        			<span class="sr-only">Close</span>
+	        		</button>
+	        		<h3 class="modal-title" id="emailModalLabel">
+	        			Email Me
+	        		</h3>
+	      		</div>
+	      		<div class="modal-body">
+	        		<p>
+	        			For large Orgs, sometimes the process can take some time. If you'd rather do something else instead of staring an an orange loading circle then we can email you a link when the job is done so you can view your results.
+	        			<br/><br/>
+	        			Note: Because we don't want to store your metadata, the link will only be valid for an hour after the job is done. Once you've viewed your results, we clear all stored information.
 	        		</p>
 	      		</div>
 	      		<div class="modal-footer">

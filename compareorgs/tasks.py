@@ -302,7 +302,7 @@ def add_html_row(row_value, left_list, right_list, component_map):
 		else:
 
 			html_row += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
-			html_row += '<td id="' + row_value + '">'
+			html_row += '<td id="' + row_value + '" class="left_only">'
 			html_row += row_value.split('.')[1]
 			html_row += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
 			html_row += '</td>'
@@ -325,7 +325,7 @@ def add_html_row(row_value, left_list, right_list, component_map):
 
 			html_row += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
 			html_row += '<td></td>'
-			html_row += '<td id="' + row_value + '">'
+			html_row += '<td id="' + row_value + '" class="right_only">'
 			html_row += row_value.split('.')[1]
 			html_row += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
 			html_row += '</td>'
@@ -347,7 +347,7 @@ def add_html_row(row_value, left_list, right_list, component_map):
 		else:
 
 			html_row += '<tr class="component success component_' + row_value.split('.')[0] + '">'
-			html_row += '<td id="' + row_value + '">'
+			html_row += '<td id="' + row_value + '" class="both_same">'
 			html_row += row_value.split('.')[1]
 			html_row += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
 			html_row += '</td>'

@@ -119,12 +119,16 @@ a.object_link:hover {
     padding-left: 200px;
 }
 
-#id_api_choice {
-    width: 150px;
+#id_api_choice, #id_email_choice {
+    width: 180px;
     float:left;
 }
 
-#info_icon {
+#id_email {
+    width: 230px;
+}
+
+.info_icon {
     float: left;
     margin-left: 10px;
     margin-top: 5px;
@@ -183,9 +187,12 @@ a.object_link:hover {
     width: 50%;
 }
 
-#viewCodeModal {
-    width: 1024px;
-    height: 800px;
+.modal-dialog {
+    width: 97%;
+}
+
+.small_dialog {
+    width: 50% !important;
 }
 
 

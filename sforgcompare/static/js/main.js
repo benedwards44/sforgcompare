@@ -33,6 +33,20 @@ $(document).ready(function ()
 		popupwindow(loginUrl);
 	});
 
+	$('#id_email_choice').change(function() 
+	{
+		if ( $(this).val() == 'yes' )
+		{
+			$('#id_email').show();
+		}
+		else
+		{
+			$('#id_email').hide();
+		}
+	});
+
+	$('[data-toggle="popover"]').popover();
+
 });
 
 function popupwindow(url) 
