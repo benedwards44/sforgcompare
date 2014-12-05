@@ -187,6 +187,35 @@ def download_metadata_tooling(job, org):
 
 	org.save()
 
+	# Check if both jobs are now finished
+	all_orgs = Job.objects.filter(pk = job.id)
+	
+	if len(all_orgs) == 2:
+
+		all_metadata_downloaded = False
+
+		for org in all_orgs:
+
+			if org.status == 'Finished':
+
+				all_metadata_downloaded = True
+
+			else:
+
+				all_metadata_downloaded = False
+
+				if org.status == 'Error':
+					job.status = 'Error'
+					job.error = org.error
+					job.save()
+
+		if all_metadata_downloaded:
+
+			job.status = 'Comparing'
+			job.save()
+
+			compare_orgs_task(job)
+
 
 # Compare two Org's metadata and return results
 @app.task
@@ -199,75 +228,52 @@ def compare_orgs_task(job):
 		org_left = job.sorted_orgs()[0]
 		org_right = job.sorted_orgs()[1]
 
-		html_output = '<table class="table" id="compare_results_table">'
+		html_output = '<table class="table table-hover" id="compare_results_table">'
 		html_output += '<thead>'
 		html_output += '<tr>'
-		html_output += '<th>' + org_left.org_name + '</th>'
-		html_output += '<th>' + org_right.org_name + '</th>'
+		html_output += '<th><h2>' + org_left.username  + ' (' + org_left.org_name + ')</h2></th>'
+		html_output += '<th><h2>' + org_right.username + ' (' + org_right.org_name + ')</h2></th>'
 		html_output += '</th>'
 		html_output += '</thead>'
 		html_output += '<tbody>'
-		
-		for component_type_left in org_left.sorted_component_types():
 
-			count_left_rows = 0
-			count_right_rows = 0
+		# Map of name to component
+		component_map = {}
 
-			for component_type_right in org_right.sorted_component_types():
+		# Create a list of the left component type names
+		left_components = []
+		for component_type in org_left.sorted_component_types():
+			left_components.append(component_type.name)
 
-				# Match on component types
-				if component_type_left.name == component_type_right.name:
+			# Append components
+			for component in component_type.sorted_components():
+				left_components.append(component_type.name + '.' + component.name)
+				component_map['left' + component_type.name + '.' + component.name] = component
 
-					html_output += add_html_row('type', component_type_left.name, component_type_right.name)
+		# Create a list of the right component type names
+		right_components = []
+		for component_type in org_right.sorted_component_types():
+			right_components.append(component_type.name)
+			
+			for component in component_type.sorted_components():
+				right_components.append(component_type.name + '.' + component.name)
+				component_map['right' + component_type.name + '.' + component.name] = component
 
+		# Start the unique list
+		all_components_unique = list(left_components)
 
-					"""
-					for component_left in component_type_left.sorted_components():
+		# Add all right components that aren't in the list
+		for component_type in right_components:
+			if component_type not in all_components_unique:
+				all_components_unique.append(component_type)
 
-						for component_right in component_type_right.sorted_components():
+		# Sort alphabetically
+		all_components_unique.sort()
 
-							if component_left.name == component_right.name:
+		# Start to build the HTML for the table
+		for row_value in all_components_unique:
 
-								html_output += '<tr class="component">'
-								html_output += '<td>' + component.name + '</td>'
-								html_output += '<td>&nbsp;</td>'
-								html_output += '</tr>'
-
-							else if component_left.name < component_right.name:
-
-
-
-							else:
-					"""
-
-
-
-					# Break we we're ready for next component one record
-					break
-
-
-				# Component name one is alphabetically before component name two
-				elif component_type_left.name < component_type_right.name:
-
-					html_output += add_html_row('type', component_type_left.name, '  ')
-
-					# Append all files for component_type one
-					for component in component_type_left.sorted_components():
-
-						html_output += add_html_row('component', component.name, '  ')
-
-					# Break to go to next component one record
-					break
-
-				# Component name two is alphabetically before component name one
-				else:
-
-					html_output += add_html_row('type', '  ', component_type_right.name)
-
-					# Append all files for component_type two
-					for component in component_type_right.sorted_components():
-
-						html_output += add_html_row('component', component.name, '  ')
+			html_output += add_html_row(row_value, left_components, right_components, component_map)
 
 		html_output += '</tbody>'
 		html_output += '</table>'
@@ -281,6 +287,78 @@ def compare_orgs_task(job):
 
 	job.save()
 
-# Method to add HTML row
-def add_html_row(class_name, cell_one, cell_two):
-	return '<tr class="' + class_name + '"><td>' +   cell_one + '</td><td>' + cell_two + '</td></tr>'
+def add_html_row(row_value, left_list, right_list, component_map):
+
+	html_row = ''
+
+	if row_value in left_list and row_value not in right_list:
+
+		if '.' not in row_value:
+
+			html_row += '<tr class="type type_' + row_value + '">'
+			html_row += '<td>'
+			html_row += row_value
+			html_row += '</td>'
+			html_row += '<td></td>'
+			html_row += '</tr>'
+
+		else:
+
+			html_row += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
+			html_row += '<td id="' + row_value + '">'
+			html_row += row_value.split('.')[1]
+			html_row += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
+			html_row += '</td>'
+			html_row += '<td></td>'
+			html_row += '</tr>'
+
+
+	elif row_value not in left_list and row_value in right_list:
+
+		if '.' not in row_value:
+
+			html_row += '<tr class="type type_' + row_value + '">'
+			html_row += '<td></td>'
+			html_row += '<td>'
+			html_row += row_value
+			html_row += '</td>'
+			html_row += '</tr>'
+
+		else:
+
+			html_row += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
+			html_row += '<td></td>'
+			html_row += '<td id="' + row_value + '">'
+			html_row += row_value.split('.')[1]
+			html_row += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
+			html_row += '</td>'
+			html_row += '</tr>'
+
+	elif row_value in left_list and row_value in right_list:
+
+		if '.' not in row_value:
+
+			html_row += '<tr class="type type_' + row_value + '">'
+			html_row += '<td>'
+			html_row += row_value
+			html_row += '</td>'
+			html_row += '<td>'
+			html_row += row_value
+			html_row += '</td>'
+			html_row += '</tr>'
+
+		else:
+
+			html_row += '<tr class="component success component_' + row_value.split('.')[0] + '">'
+			html_row += '<td id="' + row_value + '">'
+			html_row += row_value.split('.')[1]
+			html_row += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
+			html_row += '</td>'
+			html_row += '<td id="' + row_value + '">'
+			html_row += row_value.split('.')[1]
+			html_row += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
+			html_row += '</td>'
+			html_row += '</tr>'
+
+	return html_row
+

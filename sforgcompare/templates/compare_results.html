@@ -15,10 +15,12 @@ $(document).ready(function ()
 	$('tr.component td').click(function() 
 	{
 		var componentName = $(this).attr('id').split('.');
-
 		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
-		$('#codeModalBody').text($(this).find('textarea').val());
-
+		var metadata = $(this).find('textarea').val()
+												.replace(/</g, '&lt;')
+												.replace(/>/g,'&gt;')
+												.replace(/\n/g, '<br/>');
+		$('#codeModalBody').html(metadata);
 		$('#viewCodeModal').modal();
 	});
 });

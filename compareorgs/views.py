@@ -131,40 +131,6 @@ def oauth_response(request):
 def job_status(request, job_id):
 
 	job = get_object_or_404(Job, pk = job_id)
-
-	try:
-
-		# Check that both Orgs have finished downloading metadata
-		all_metadata_downloaded = False
-
-		for org in job.sorted_orgs():
-
-			if org.status == 'Finished':
-
-				all_metadata_downloaded = True
-
-			else:
-
-				all_metadata_downloaded = False
-
-				if org.status == 'Error':
-					job.status = 'Error'
-					job.error = org.error
-					job.save()
-
-		# If the metadata is downloaded and the job is ready
-		if all_metadata_downloaded and job.status == 'Downloading Metadata':
-
-			job.status = 'Comparing'
-			job.save()
-
-			compare_orgs_now(job)
-
-	except Exception as error:
-		job.status = 'Error'
-		job.error = error
-		job.save()
-
 	return HttpResponse(job.status + ':::' + job.error)
 
 def compare_orgs_now(job):
