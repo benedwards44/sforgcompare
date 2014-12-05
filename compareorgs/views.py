@@ -201,7 +201,7 @@ def compare_orgs_now(job):
 
 	job.save()
 
-	def add_html_row(row_value, left_list, right_list, component_map):
+def add_html_row(row_value, left_list, right_list, component_map):
 
 		html_row = ''
 
