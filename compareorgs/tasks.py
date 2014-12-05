@@ -211,10 +211,8 @@ def download_metadata_tooling(job, org):
 
 		if all_metadata_downloaded:
 
-			job.status = 'Comparing'
-			job.save()
-
-			compare_orgs_task(job)
+			from compareorgs.views import compare_orgs_now
+			compare_orgs_now(job)
 
 
 # Compare two Org's metadata and return results
@@ -222,6 +220,9 @@ def download_metadata_tooling(job, org):
 def compare_orgs_task(job):
 
 	job = get_object_or_404(Job, pk = job_id)
+
+	job.status = 'Comparing'
+	job.save()
 
 	try:
 

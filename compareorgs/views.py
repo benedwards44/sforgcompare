@@ -129,13 +129,15 @@ def oauth_response(request):
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):
-
 	job = get_object_or_404(Job, pk = job_id)
 	return HttpResponse(job.status + ':::' + job.error)
 
 def compare_orgs_now(job):
 
 	try:
+
+		job.status = 'Comparing'
+		job.save()
 
 		org_left = job.sorted_orgs()[0]
 		org_right = job.sorted_orgs()[1]
