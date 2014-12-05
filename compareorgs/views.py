@@ -239,7 +239,7 @@ def add_html_row(row_value, left_list, right_list, component_map):
 
 	if row_value in left_list and row_value not in right_list:
 
-		if '.' in row_value:
+		if '.' not in row_value:
 
 			html_row += '<tr class="type type_' + row_value + '">'
 			html_row += '<td>'
@@ -253,7 +253,7 @@ def add_html_row(row_value, left_list, right_list, component_map):
 			html_row += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
 			html_row += '<td id="' + row_value + '">'
 			html_row += row_value.split('.')[1]
-			#html_row += '<span style="display:none;">' +  component_map['left' + row_value].content + '</span>'
+			html_row += '<span style="display:none;">' +  component_map['left' + row_value].content + '</span>'
 			html_row += '</td>'
 			html_row += '<td></td>'
 			html_row += '</tr>'
@@ -261,7 +261,7 @@ def add_html_row(row_value, left_list, right_list, component_map):
 
 	elif row_value not in left_list and row_value in right_list:
 
-		if '.' in row_value:
+		if '.' not in row_value:
 
 			html_row += '<tr class="type type_' + row_value + '">'
 			html_row += '<td></td>'
@@ -276,13 +276,13 @@ def add_html_row(row_value, left_list, right_list, component_map):
 			html_row += '<td></td>'
 			html_row += '<td id="' + row_value + '">'
 			html_row += row_value.split('.')[1]
-			#html_row += '<span style="display:none;">' +  component_map['right' + row_value].content + '</span>'
+			html_row += '<span style="display:none;">' +  component_map['right' + row_value].content + '</span>'
 			html_row += '</td>'
 			html_row += '</tr>'
 
 	elif row_value in left_list and row_value in right_list:
 
-		if '.' in row_value:
+		if '.' not in row_value:
 
 			html_row += '<tr class="type type_' + row_value + '">'
 			html_row += '<td>'
@@ -298,11 +298,11 @@ def add_html_row(row_value, left_list, right_list, component_map):
 			html_row += '<tr class="component success component_' + row_value.split('.')[0] + '">'
 			html_row += '<td id="' + row_value + '">'
 			html_row += row_value.split('.')[1]
-			#html_row += '<span style="display:none;">' +  component_map['left' + row_value].content + '</span>'
+			html_row += '<span style="display:none;">' +  component_map['left' + row_value].content + '</span>'
 			html_row += '</td>'
 			html_row += '<td id="' + row_value + '">'
 			html_row += row_value.split('.')[1]
-			#html_row += '<span style="display:none;">' +  component_map['right' + row_value].content + '</span>'
+			html_row += '<span style="display:none;">' +  component_map['right' + row_value].content + '</span>'
 			html_row += '</td>'
 			html_row += '</tr>'
 
