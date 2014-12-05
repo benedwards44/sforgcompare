@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
 
+{% block scripts %}
+$(document).ready(function () 
+{
+	$('tr.component').hide();
+
+	$('tr.type td').click(function() 
+	{
+
+	});
+});
+
+{% endblock %}
+
 {% block content %}
 
 	{% autoescape off %}
