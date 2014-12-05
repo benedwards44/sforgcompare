@@ -179,3 +179,7 @@ a.object_link:hover {
 #compare_results_table tr.component td {
     padding-left: 50px;
 }
+
+#compare_results_table td.diff {
+    
+}

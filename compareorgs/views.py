@@ -220,10 +220,10 @@ def compare_orgs_now(job):
 				html_output += '<tr class="component">'
 
 			if row_value in left_components and row_value not in right_components:
-				html_output += '<td>' + get_row_value(row_value) + '</td><td></td>'
+				html_output += '<td class="bg-success">+ ' + get_row_value(row_value) + '</td><td></td>'
 
 			if row_value not in left_components and row_value in left_components:
-				html_output += '<td></td><td>' + get_row_value(row_value) + '</td>'
+				html_output += '<td></td><td class="bg-success">+ ' + get_row_value(row_value) + '</td>'
 
 			if row_value in left_components and row_value in right_components:
 				html_output += '<td>' + get_row_value(row_value) + '</td><td>' + get_row_value(row_value) + '</td>'
