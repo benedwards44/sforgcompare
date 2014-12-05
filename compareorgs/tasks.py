@@ -188,7 +188,7 @@ def download_metadata_tooling(job, org):
 	org.save()
 
 	# Check if both jobs are now finished
-	all_orgs = Job.objects.filter(pk = job.id)
+	all_orgs = Org.objects.filter(job = job)
 	
 	if len(all_orgs) == 2:
 
