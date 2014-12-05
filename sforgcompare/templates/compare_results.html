@@ -14,7 +14,7 @@ $(document).ready(function ()
 
 	$('tr.component td').click(function() 
 	{
-		var componentName = $(this).attr('id').split('.');
+		var componentName = $(this).attr('id').split('.');	
 		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
 		var metadata = $(this).find('textarea').val()
 												.replace(/</g, '&lt;')
@@ -59,8 +59,8 @@ $(document).ready(function ()
 	        			
 	        		</h3>
 	      		</div>
-	      		<div class="modal-body" id="codeModalBody">
-	        		
+	      		<div class="modal-body">
+	        		<pre id="codeModalBody"></pre>
 	      		</div>
 	      		<div class="modal-footer">
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
