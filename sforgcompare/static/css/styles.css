@@ -183,6 +183,10 @@ a.object_link:hover {
     width: 50%;
 }
 
-#compare_results_table td.diff {
-
+#viewCodeModal {
+    width: 1024px;
+    height: 800px;
 }
+
+
+
