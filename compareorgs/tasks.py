@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from celery import Celery
 from django.conf import settings
 from difflib import HtmlDiff
+from django.core.mail import send_mail
 import os
 import json	
 import requests
@@ -278,11 +279,23 @@ def compare_orgs_task(job):
 		job.compare_result_html = html_output
 		job.status = 'Finished'
 
+		email_body = 'Your Org compare job is complete:\n'
+		email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + job.id
+		email += '\n\nYour result will be deleted in an hour, or when you view the result.'
+
 	except Exception as error:
 		job.status = 'Error'
 		job.error = error
 
+		email_body = 'There was an error processing your job:\n'
+		email_body += error
+		email_body += '\n\nPlease try again.'
+
 	job.save()
+
+	if job.email_result:
+		send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email])
+
 
 def add_html_row(row_value, left_list, right_list, component_map):
 
@@ -346,16 +359,32 @@ def add_html_row(row_value, left_list, right_list, component_map):
 
 		else:
 
-			html_row += '<tr class="component success component_' + row_value.split('.')[0] + '">'
-			html_row += '<td id="' + row_value + '" class="both_same">'
-			html_row += row_value.split('.')[1]
-			html_row += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
-			html_row += '</td>'
-			html_row += '<td id="' + row_value + '">'
-			html_row += row_value.split('.')[1]
-			html_row += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
-			html_row += '</td>'
-			html_row += '</tr>'
+			# If identical 
+			if component_map['left' + row_value].content == component_map['right' + row_value].content:
+
+				html_row += '<tr class="component success component_' + row_value.split('.')[0] + '">'
+				html_row += '<td id="' + row_value + '" class="both_same">'
+				html_row += row_value.split('.')[1]
+				html_row += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
+				html_row += '</td>'
+				html_row += '<td id="' + row_value + '">'
+				html_row += row_value.split('.')[1]
+				html_row += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
+				html_row += '</td>'
+				html_row += '</tr>'
+
+			# Files differ - time to compare
+			else:
+
+				html_row += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
+				html_row += '<td id="' + row_value + '" class="diff">'
+				html_row += row_value.split('.')[1]
+				html_row += '</td>'
+				html_row += '<td id="' + row_value + '" class="diff">'
+				html_row += row_value.split('.')[1]
+				html_row += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
+				html_row += '</td>'
+				html_row += '</tr>'
 
 	return html_row
 

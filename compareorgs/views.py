@@ -25,6 +25,11 @@ def index(request):
 			job = Job()
 			job.created_date = datetime.datetime.now()
 			job.status = 'Not Started'
+			job.email = job_form.cleaned_data['email']
+			if job_form.cleaned_data['email_choice'] == 'yes':
+				job.email_result = True
+			else:
+				job.email_result = False
 			job.save()
 
 			org_one = Org.objects.get(pk = job_form.cleaned_data['org_one'])
@@ -47,6 +52,7 @@ def oauth_response(request):
 	error_exists = False
 	error_message = ''
 	username = ''
+	email = ''
 	org_name = ''
 	org = Org()
 
@@ -85,7 +91,7 @@ def oauth_response(request):
 			org_id = org_id[-18:]
 
 			# get username of the authenticated user
-			r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/User/' + user_id + '?fields=Username', headers={'Authorization': 'OAuth ' + access_token})
+			r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/User/' + user_id + '?fields=Username,Email', headers={'Authorization': 'OAuth ' + access_token})
 			
 			if 'errorCode' in r.text:
 
@@ -95,6 +101,7 @@ def oauth_response(request):
 			else:
 
 				username = r.json()['Username']
+				email = r.json()['Email']
 
 				# get the org name of the authenticated user
 				r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/Organization/' + org_id + '?fields=Name', headers={'Authorization': 'OAuth ' + access_token})
@@ -125,7 +132,7 @@ def oauth_response(request):
 
 					org.save()
 			
-	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org}))
+	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org, 'email': email}))
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):

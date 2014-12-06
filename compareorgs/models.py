@@ -3,6 +3,8 @@ from django.db import models
 class Job(models.Model):
 	created_date = models.DateTimeField(null=True,blank=True)
 	compare_result_html = models.TextField(null=True,blank=True)
+	email_result = models.BooleanField()
+	email = models.TextField(null=True,blank=True)
 	status = models.CharField(max_length=255, blank=True)
 	error = models.TextField(blank=True)
 

@@ -8,19 +8,10 @@
 
 {% block content %}
 
-	<h1>Salesforce Org Compare</h1>
-	<p>
-		Your Org compare results are represented below.
-	</p>
-
-	<hr />
-
 	<select class="form-control" style="width:300px;" id="display_option">
 		<option value="all">Show All Components</option>
 		<option value="diff" selected="selected">Show Only Differences</option>
 	</select>
-
-	<br/>
 
 	{% autoescape off %}
 		{{ job.compare_result_html }}

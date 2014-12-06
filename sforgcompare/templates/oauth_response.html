@@ -45,7 +45,7 @@
                 <button onclick="window.close();">Close</button>
 
       			<script>
-      				window.opener.updateOrgDetails('{{ org_choice }}','{{ username }}', '{{ org_name }}', '{{ org.id }}');
+      				window.opener.updateOrgDetails('{{ org_choice }}','{{ username }}', '{{ org_name }}', '{{ org.id }}', '{{ email }}');
                     setTimeout(function() 
                     {
                         window.close();

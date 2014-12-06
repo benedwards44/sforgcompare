@@ -58,7 +58,7 @@ function popupwindow(url)
   	return window.open(url, 'SalesforceLogin', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
 } 
 
-function updateOrgDetails(org, username, org_name, org_id)
+function updateOrgDetails(org, username, org_name, org_id, email)
 {
 	if (org == 'org1')
 	{
@@ -76,6 +76,8 @@ function updateOrgDetails(org, username, org_name, org_id)
 		$('#orgTwoOrg').text(org_name);
 		$('#id_org_two').val(org_id);
 	}
+
+	$('#id_email').val(email);
 
 	// Both elements are visible, show the GO button
 	if ( $('#orgOneDisplay').is(":visible") && $('#orgTwoDisplay').is(":visible") )
