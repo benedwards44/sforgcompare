@@ -19,7 +19,7 @@ ADMINS = (
     ('Ben Edwards', 'ben@benedwards.co.nz'),
 )
 
-POSTMARK_API_KEY     = '52be91f8-7039-46b9-8a01-6c4a83a8efe8'
+POSTMARK_API_KEY     = os.environ.get('POSTMARK_API_KEY')
 POSTMARK_SENDER      = 'ben@tquila.com'
 POSTMARK_TEST_MODE   = False
 POSTMARK_TRACK_OPENS = False
