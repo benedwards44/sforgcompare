@@ -379,5 +379,3 @@ def compare_orgs_task(job):
 
 
 
-	
-
