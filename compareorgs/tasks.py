@@ -381,11 +381,12 @@ def compare_orgs_task(job):
 
 	if job.email_result:
 		#send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
-		message = PMMail(subject = email_subject,
-                 sender = "ben@tquila.com",
-                 to = job.email,
-                 text_body = email_body,
-                 tag = "orgcompareemail")
+		message = PMMail(api_key = os.environ.get('POSTMARK_API_KEY'),
+				subject = email_subject,
+                sender = "ben@tquila.com",
+                to = job.email,
+                text_body = email_body,
+                tag = "orgcompareemail")
 		message.send()
 
 
