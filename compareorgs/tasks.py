@@ -146,7 +146,7 @@ def download_metadata_tooling(job, org):
 					record = requests.get(metadata_url, headers = headers)
 
 					# Only take non package components
-					if record.json()['NamespacePrefix'] == None
+					if record.json()['NamespacePrefix'] == None:
 
 						# create the component record and save
 						component_record = Component()
