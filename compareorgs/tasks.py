@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 import os
 import json	
 import requests
+import datetime
 
 # Celery config
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
@@ -291,6 +292,7 @@ def compare_orgs_task(job):
 		email_body += error
 		email_body += '\n\nPlease try again.'
 
+	job.finished_date = datetime.datetime.now()
 	job.save()
 
 	if job.email_result:
