@@ -19,13 +19,6 @@ ADMINS = (
     ('Ben Edwards', 'ben@benedwards.co.nz'),
 )
 
-# Email settings
-EMAIL_HOST_USER = os.environ['SENDGRID_USERNAME']
-EMAIL_HOST= 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = os.environ['SENDGRID_PASSWORD']
-
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['*']
