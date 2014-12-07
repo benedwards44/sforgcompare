@@ -3,6 +3,7 @@ from celery import Celery
 from django.conf import settings
 from difflib import HtmlDiff
 from django.core.mail import send_mail
+from postmark import PMMail
 import os
 import json	
 import requests
@@ -362,6 +363,8 @@ def compare_orgs_task(job):
 		email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.id)
 		email_body += '\n\nYour result will be deleted in an hour, or when you view the result.'
 
+		email_subject = 'Your Salesforce Org Compare results are ready.'
+
 	except Exception as error:
 
 		job.status = 'Error'
@@ -371,11 +374,20 @@ def compare_orgs_task(job):
 		email_body += error
 		email_body += '\n\nPlease try again.'
 
+		email_subject = 'Error running Salesforce Org Compare job.'
+
 	job.finished_date = datetime.datetime.now()
 	job.save()
 
 	if job.email_result:
-		send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
+		#send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
+		message = PMMail(api_key = os.environ.get('POSTMARK_API_KEY'),
+                 subject = email_subject,
+                 sender = "ben@tquila.com",
+                 to = job.email,
+                 text_body = email_body,
+                 tag = "orgcompareemail")
+		message.send()
 
 
 
