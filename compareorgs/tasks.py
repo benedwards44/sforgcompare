@@ -271,12 +271,96 @@ def compare_orgs_task(job):
 		# Sort alphabetically
 		all_components_unique.sort()
 
-		print 'STILL_OK'
-
 		# Start to build the HTML for the table
 		for row_value in all_components_unique:
 
-			html_output += add_html_row(row_value, left_components, right_components, component_map)
+			print 'HELLO LOOP'
+
+			if row_value in left_components and row_value not in right_components:
+
+				if '.' not in row_value:
+
+					html_output += '<tr class="type type_' + row_value + '">'
+					html_output += '<td>'
+					html_output += row_value
+					html_output += '</td>'
+					html_output += '<td></td>'
+					html_output += '</tr>'
+
+				else:
+
+					html_output += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
+					html_output += '<td id="' + row_value + '" class="left_only">'
+					html_output += row_value.split('.')[1]
+					html_output += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
+					html_output += '</td>'
+					html_output += '<td></td>'
+					html_output += '</tr>'
+
+
+			elif row_value not in left_components and row_value in right_components:
+
+				if '.' not in row_value:
+
+					html_output += '<tr class="type type_' + row_value + '">'
+					html_output += '<td></td>'
+					html_output += '<td>'
+					html_output += row_value
+					html_output += '</td>'
+					html_output += '</tr>'
+
+				else:
+
+					html_output += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
+					html_output += '<td></td>'
+					html_output += '<td id="' + row_value + '" class="right_only">'
+					html_output += row_value.split('.')[1]
+					html_output += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
+					html_output += '</td>'
+					html_output += '</tr>'
+
+			elif row_value in left_components and row_value in right_components:
+
+				if '.' not in row_value:
+
+					html_output += '<tr class="type type_' + row_value + '">'
+					html_output += '<td>'
+					html_output += row_value
+					html_output += '</td>'
+					html_output += '<td>'
+					html_output += row_value
+					html_output += '</td>'
+					html_output += '</tr>'
+
+				else:
+
+					# If identical 
+					if component_map['left' + row_value].content == component_map['right' + row_value].content:
+
+						html_output += '<tr class="component success component_' + row_value.split('.')[0] + '">'
+						html_output += '<td id="' + row_value + '" class="both_same">'
+						html_output += row_value.split('.')[1]
+						html_output += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
+						html_output += '</td>'
+						html_output += '<td id="' + row_value + '">'
+						html_output += row_value.split('.')[1]
+						html_output += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
+						html_output += '</td>'
+						html_output += '</tr>'
+
+					# Files differ - time to compare
+					else:
+
+						html_output += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
+						html_output += '<td id="' + row_value + '" class="diff">'
+						html_output += row_value.split('.')[1]
+						html_output += '</td>'
+						html_output += '<td id="' + row_value + '" class="diff">'
+						html_output += row_value.split('.')[1]
+						html_output += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
+						html_output += '</td>'
+						html_output += '</tr>'
+
 
 		html_output += '</tbody>'
 		html_output += '</table>'
@@ -306,94 +390,6 @@ def compare_orgs_task(job):
 		send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email])
 
 
-def add_html_row(row_value, left_list, right_list, component_map):
 
-	html_row = ''
-
-	if row_value in left_list and row_value not in right_list:
-
-		if '.' not in row_value:
-
-			html_row += '<tr class="type type_' + row_value + '">'
-			html_row += '<td>'
-			html_row += row_value
-			html_row += '</td>'
-			html_row += '<td></td>'
-			html_row += '</tr>'
-
-		else:
-
-			html_row += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
-			html_row += '<td id="' + row_value + '" class="left_only">'
-			html_row += row_value.split('.')[1]
-			html_row += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
-			html_row += '</td>'
-			html_row += '<td></td>'
-			html_row += '</tr>'
-
-
-	elif row_value not in left_list and row_value in right_list:
-
-		if '.' not in row_value:
-
-			html_row += '<tr class="type type_' + row_value + '">'
-			html_row += '<td></td>'
-			html_row += '<td>'
-			html_row += row_value
-			html_row += '</td>'
-			html_row += '</tr>'
-
-		else:
-
-			html_row += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
-			html_row += '<td></td>'
-			html_row += '<td id="' + row_value + '" class="right_only">'
-			html_row += row_value.split('.')[1]
-			html_row += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
-			html_row += '</td>'
-			html_row += '</tr>'
-
-	elif row_value in left_list and row_value in right_list:
-
-		if '.' not in row_value:
-
-			html_row += '<tr class="type type_' + row_value + '">'
-			html_row += '<td>'
-			html_row += row_value
-			html_row += '</td>'
-			html_row += '<td>'
-			html_row += row_value
-			html_row += '</td>'
-			html_row += '</tr>'
-
-		else:
-
-			# If identical 
-			if component_map['left' + row_value].content == component_map['right' + row_value].content:
-
-				html_row += '<tr class="component success component_' + row_value.split('.')[0] + '">'
-				html_row += '<td id="' + row_value + '" class="both_same">'
-				html_row += row_value.split('.')[1]
-				html_row += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
-				html_row += '</td>'
-				html_row += '<td id="' + row_value + '">'
-				html_row += row_value.split('.')[1]
-				html_row += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
-				html_row += '</td>'
-				html_row += '</tr>'
-
-			# Files differ - time to compare
-			else:
-
-				html_row += '<tr class="component danger component_' + row_value.split('.')[0] + '">'
-				html_row += '<td id="' + row_value + '" class="diff">'
-				html_row += row_value.split('.')[1]
-				html_row += '</td>'
-				html_row += '<td id="' + row_value + '" class="diff">'
-				html_row += row_value.split('.')[1]
-				html_row += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
-				html_row += '</td>'
-				html_row += '</tr>'
-
-	return html_row
+	
 
