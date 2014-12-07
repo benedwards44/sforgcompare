@@ -166,6 +166,12 @@ def compare_orgs(request, job_id):
 
 		return HttpResponseRedirect('/compare_result/' + str(job.id))
 
+	# TEMP
+	elif job.status == 'Comparing'
+
+		from compareorgs.tasks import compare_orgs_task
+		compare_orgs_task(job)
+
 	return render_to_response('loading.html', RequestContext(request, {'job': job}))	
 
 # Page to display compare results
