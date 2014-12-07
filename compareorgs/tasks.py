@@ -357,23 +357,15 @@ def compare_orgs_task(job):
 						html_output += '</td>'
 						html_output += '</tr>'
 
-		print 'LOOP END'
-
 		html_output += '</tbody>'
 		html_output += '</table>'
 
 		job.compare_result_html = html_output
 		job.status = 'Finished'
 
-		print 'OUTPUT: ' + html_output
-		print 'OUTPUT: ' + job.compare_result_html
-
 		email_body = 'Your Org compare job is complete:\n'
 		email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.id)
 		email_body += '\n\nYour result will be deleted in an hour, or when you view the result.'
-
-		print 'EMAILL END'
-
 
 	except Exception as error:
 
