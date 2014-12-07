@@ -203,7 +203,7 @@ def download_metadata_tooling(job, org):
 				compare_orgs_task(job)
 
 			except Exception as error:
-				
+
 				job.status = 'Error'
 				job.error = error
 				job.save()
@@ -340,17 +340,17 @@ def compare_orgs_task(job):
 					# Files differ - time to compare
 					else:
 
-						diff_tool = HtmlDiff()
-						diff_html = diff_tool.make_table(component_map['left' + row_value].content, component_map['right' + row_value].content)
+						#diff_tool = HtmlDiff()
+						#diff_html = diff_tool.make_table(component_map['left' + row_value].content, component_map['right' + row_value].content)
 
 						html_output += '<tr class="component warning component_' + row_value.split('.')[0] + '">'
 						html_output += '<td id="' + row_value + '" class="diff">'
 						html_output += row_value.split('.')[1]
-						html_output += '<textarea style="display:none;">' +  diff_html + '</textarea>'
+						#html_output += '<textarea style="display:none;">' +  diff_html + '</textarea>'
 						html_output += '</td>'
 						html_output += '<td id="' + row_value + '" class="diff">'
 						html_output += row_value.split('.')[1]
-						html_output += '<textarea style="display:none;">' +  diff_html + '</textarea>'
+						#html_output += '<textarea style="display:none;">' +  diff_html + '</textarea>'
 						html_output += '</td>'
 						html_output += '</tr>'
 
