@@ -123,21 +123,6 @@ def download_metadata_tooling(job, org):
 			'ApexTrigger',
 		]
 
-		"""
-		No longer doing logic for wider components. Too clunky and not supported
-
-		desribe_result = requests.get(tooling_url + 'sobjects/', headers = headers)
-
-		# Success
-		if desribe_result.status_code == requests.codes.ok:
-
-			for component_type in requests.get(tooling_url + 'sobjects/', headers = headers).json()['sobjects']:
-				
-				# Only add retrieveable components and components not in the exclude list
-				if component_type['retrieveable'] == True and component_type['name'] not in metadata_exclude:	
-					metadata_types.append(component_type['name'])
-		"""
-
 		for component_type in metadata_types:
 
 			data_query = 'select+id+from+' + component_type
@@ -213,7 +198,15 @@ def download_metadata_tooling(job, org):
 
 		if all_metadata_downloaded:
 
-			compare_orgs_task(job)
+			try:
+
+				compare_orgs_task(job)
+
+			except Exception as error:
+				
+				job.status = 'Error'
+				job.error = error
+				job.save()
 
 
 # Compare two Org's metadata and return results
