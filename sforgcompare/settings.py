@@ -19,6 +19,8 @@ ADMINS = (
     ('Ben Edwards', 'ben@benedwards.co.nz'),
 )
 
+DEFAULT_FROM_EMAIL = 'Salesforce Org Compare <ben@tquila.com>'
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['*']
