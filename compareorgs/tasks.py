@@ -219,7 +219,7 @@ def download_metadata_tooling(job, org):
 # Compare two Org's metadata and return results
 def compare_orgs_task(job):
 
-	job.status = 'Comparing'
+	job.status = 'Comparing1'
 	job.save()
 
 	try:
@@ -285,6 +285,7 @@ def compare_orgs_task(job):
 		email += '\n\nYour result will be deleted in an hour, or when you view the result.'
 
 	except Exception as error:
+
 		job.status = 'Error'
 		job.error = error
 

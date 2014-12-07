@@ -5,7 +5,7 @@ class Job(models.Model):
 	finished_date = models.DateTimeField(null=True,blank=True)
 	compare_result_html = models.TextField(null=True,blank=True)
 	email_result = models.BooleanField()
-	email = models.TextField(null=True,blank=True)
+	email = models.CharField(max_length=255,blank=True)
 	status = models.CharField(max_length=255, blank=True)
 	error = models.TextField(blank=True)
 
