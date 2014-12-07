@@ -167,7 +167,7 @@ def compare_orgs(request, job_id):
 		return HttpResponseRedirect('/compare_result/' + str(job.id))
 
 	# TEMP
-	elif job.status == 'Comparing'
+	elif job.status == 'Comparing':
 
 		from compareorgs.tasks import compare_orgs_task
 		compare_orgs_task(job)
