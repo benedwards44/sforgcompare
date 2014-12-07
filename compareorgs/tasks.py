@@ -384,7 +384,7 @@ def compare_orgs_task(job):
 	job.save()
 
 	if job.email_result:
-		send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email])
+		send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
 
 
 
