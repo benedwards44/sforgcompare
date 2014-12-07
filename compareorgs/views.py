@@ -144,21 +144,27 @@ def compare_orgs(request, job_id):
 
 	job = get_object_or_404(Job, pk = job_id)
 
-	job.status = 'Downloading Metadata'
-	job.save()
+	if job.status == 'Not Started':
 
-	api_choice = request.GET.get('api')
+		job.status = 'Downloading Metadata'
+		job.save()
 
-	# Do logic for job
-	for org in job.org_set.all():
+		api_choice = request.GET.get('api')
 
-		if api_choice == 'metadata':
+		# Do logic for job
+		for org in job.org_set.all():
 
-			download_metadata_metadata.delay(job, org)
+			if api_choice == 'metadata':
 
-		else:
+				download_metadata_metadata.delay(job, org)
 
-			download_metadata_tooling.delay(job, org)
+			else:
+
+				download_metadata_tooling.delay(job, org)
+
+	elif job.status == 'Finished':
+
+		return HttpResponseRedirect('/compare_result/' + str(job.id))
 
 	return render_to_response('loading.html', RequestContext(request, {'job': job}))	
 

@@ -219,10 +219,12 @@ def download_metadata_tooling(job, org):
 # Compare two Org's metadata and return results
 def compare_orgs_task(job):
 
-	job.status = 'Comparing1'
+	job.status = 'Comparing'
 	job.save()
 
 	try:
+
+		print 'START'
 
 		org_left = job.sorted_orgs()[0]
 		org_right = job.sorted_orgs()[1]
@@ -269,6 +271,8 @@ def compare_orgs_task(job):
 		# Sort alphabetically
 		all_components_unique.sort()
 
+		print 'STILL_OK'
+
 		# Start to build the HTML for the table
 		for row_value in all_components_unique:
 
@@ -282,7 +286,9 @@ def compare_orgs_task(job):
 
 		email_body = 'Your Org compare job is complete:\n'
 		email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + job.id
-		email += '\n\nYour result will be deleted in an hour, or when you view the result.'
+		email_body += '\n\nYour result will be deleted in an hour, or when you view the result.'
+
+		print 'HELLO_END'
 
 	except Exception as error:
 
