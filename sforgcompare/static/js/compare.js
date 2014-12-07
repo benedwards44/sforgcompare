@@ -29,7 +29,7 @@ $(document).ready(function ()
 										.replace(/>/g,'&gt;')
 										.replace(/\n/g, '<br/>');
 		var $content;
-		if ( $(this).hasClass('both') )
+		if ( $(this).hasClass('both_same') )
 		{
 			$content = $('<div style="float:left;width:49%;"><pre class="highlight" >' + metadata + '</pre></div><div style="float:left;width:49%;margin-left:2%;"><pre class="highlight">' + metadata + '</pre></div><div class="clear:both;></div>');
 		}
