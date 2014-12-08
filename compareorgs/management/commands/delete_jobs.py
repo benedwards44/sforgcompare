@@ -1,6 +1,6 @@
 from django.core.management.base import NoArgsCommand, CommandError, BaseCommand
 from compareorgs.models import Job
-import datetime import
+import datetime
 
 class Command(NoArgsCommand):
 
