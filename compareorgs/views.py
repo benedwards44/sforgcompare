@@ -172,5 +172,9 @@ def compare_orgs(request, job_id):
 def compare_results(request, job_id):
 
 	job = get_object_or_404(Job, pk = job_id)
+
+	if job.status != 'Finished':
+		return HttpResponseRedirect('/compare_orgs/' + str(job.id))
+	
 	job_html = job.compare_result_html
 	return render_to_response('compare_results.html', RequestContext(request, {'job_html': job_html}))
