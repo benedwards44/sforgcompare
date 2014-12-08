@@ -5,6 +5,8 @@ $(document).ready(function ()
 	$('tr.component').hide();
 	$('tr.success').hide();
 
+	checkAnyChildVisible();
+
 	// Toggle file show and hide
 	$('tr.type td').click(function() 
 	{
@@ -48,6 +50,35 @@ $(document).ready(function ()
 	$('#display_option').change(function()
 	{
 		$('tr.component').hide();
+		$('tr.type').show();
+
+		if ( $(this).val() == 'diff')
+		{
+			checkAnyChildVisible();
+		}
+
 	});
 
 });
+
+function checkAnyChildVisible()
+{
+	$.each($('tr.type'), function(typeKey, typeValue)
+	{
+		var childVisible = false;
+		$.each($(this).find('tr.component'), function(componentKey, componentValue)
+		{
+			if (componentValue.is(':visible'))
+			{
+				childVisible = true;
+				return;
+			}
+		});
+
+		if (!childVisible)
+		{
+			$(this).hide();
+		}
+
+	});
+}
