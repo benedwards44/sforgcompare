@@ -182,24 +182,22 @@ def download_metadata_tooling(job, org):
 	
 	if len(all_orgs) == 2:
 
-		all_metadata_downloaded = False
+		if all_orgs[0].status == 'Error' or all_orgs[1].status == 'Error':
 
-		for org in all_orgs:
+			if all_orgs[0].status == 'Error':
 
-			if org.status == 'Finished':
+				job.status = 'Error'
+				job.error = all_orgs[0].status
+				job.save()
 
-				all_metadata_downloaded = True
+			if all_orgs[1].status == 'Error':
 
-			else:
+				job.status = 'Error'
+				job.error = all_orgs[1].status
+				job.save()
 
-				all_metadata_downloaded = False
 
-				if org.status == 'Error':
-					job.status = 'Error'
-					job.error = org.error
-					job.save()
-
-		if all_metadata_downloaded:
+		elif all_orgs[0].status == 'Finished' && all_orgs[1].status == 'Finished':
 
 			compare_orgs_task(job)
 
