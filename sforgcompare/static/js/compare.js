@@ -24,10 +24,10 @@ $(document).ready(function ()
 		var componentName = $(this).attr('id').split('.');	
 		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
 
-		var metadata = $(this).find('textarea').val()
-										.replace(/</g, '&lt;')
-										.replace(/>/g,'&gt;')
-										.replace(/\n/g, '<br/>');
+		var metadata = $(this).parent().find('textarea').val()
+											.replace(/</g, '&lt;')
+											.replace(/>/g,'&gt;')
+											.replace(/\n/g, '<br/>');
 		var $content;
 		if ( $(this).hasClass('both_same') )
 		{

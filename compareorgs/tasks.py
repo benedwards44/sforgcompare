@@ -328,7 +328,6 @@ def compare_orgs_task(job):
 						html_output += '</td>'
 						html_output += '<td id="' + row_value + '" class="both_same">'
 						html_output += row_value.split('.')[1]
-						html_output += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
 						html_output += '</td>'
 						html_output += '</tr>'
 
@@ -347,7 +346,6 @@ def compare_orgs_task(job):
 						html_output += '</td>'
 						html_output += '<td id="' + row_value + '" class="diff">'
 						html_output += row_value.split('.')[1]
-						html_output += '<textarea style="display:none;">' +  diff_html + '</textarea>'
 						html_output += '</td>'
 						html_output += '</tr>'
 
