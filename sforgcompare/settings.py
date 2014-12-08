@@ -63,7 +63,7 @@ DATABASES = {
 }
 
 # Celery settings
-BROKER_POOL_LIMIT = 0
+BROKER_POOL_LIMIT = 1
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
