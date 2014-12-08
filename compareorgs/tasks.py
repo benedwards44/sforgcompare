@@ -197,7 +197,7 @@ def download_metadata_tooling(job, org):
 				job.save()
 
 
-		elif all_orgs[0].status == 'Finished' && all_orgs[1].status == 'Finished':
+		elif all_orgs[0].status == 'Finished' and all_orgs[1].status == 'Finished':
 
 			compare_orgs_task(job)
 
