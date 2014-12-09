@@ -61,20 +61,26 @@ $(document).ready(function ()
 
 });
 
+// Check if the parent component type (eg ApexClass), has any children. If not, ApexClass won't display at all
 function checkAnyChildVisible()
 {
+	// Loop through type rows
 	$.each($('tr.type'), function(typeKey, typeValue)
 	{
 		var childVisible = false;
-		$.each($(this).find('tr.component'), function(componentKey, componentValue)
+
+		// Loop through component rows
+		$.each($('tr[class*="' + $(this).attr('class').split('_')[1] + '"]'), function(componentKey, componentValue)
 		{
-			if (componentValue.is(':visible'))
+			// It a row is visible, this is enough to know to show the parent
+			if ($(this).is(':visible'))
 			{
 				childVisible = true;
 				return;
 			}
 		});
 
+		// If no children are visible, hide the parent
 		if (!childVisible)
 		{
 			$(this).hide();
