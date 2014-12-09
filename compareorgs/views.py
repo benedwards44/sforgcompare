@@ -156,7 +156,19 @@ def compare_orgs(request, job_id):
 
 			if api_choice == 'metadata':
 
-				download_metadata_metadata.delay(job, org)
+				try:
+
+					download_metadata_metadata.delay(job, org)
+
+				except Exception as error:
+
+					org.status = 'Error'
+					org.error = error
+					org.save()
+
+					job.status = 'Error'
+					job.error = error
+					job.save()
 
 			else:
 
@@ -169,6 +181,10 @@ def compare_orgs(request, job_id):
 					org.status = 'Error'
 					org.error = error
 					org.save()
+
+					job.status = 'Error'
+					job.error = error
+					job.save()
 
 	elif job.status == 'Finished':
 
