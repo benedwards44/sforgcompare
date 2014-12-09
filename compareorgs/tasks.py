@@ -199,15 +199,7 @@ def download_metadata_tooling(job, org):
 
 		elif all_orgs[0].status == 'Finished' and all_orgs[1].status == 'Finished':
 
-			try:
-
-				compare_orgs_task(job)
-
-			except Exception as error:
-				
-				job.status = 'Error'
-				job.error = error
-				job.save()
+			compare_orgs_task(job)
 
 
 # Compare two Org's metadata and return results

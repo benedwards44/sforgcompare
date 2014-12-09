@@ -160,7 +160,15 @@ def compare_orgs(request, job_id):
 
 			else:
 
-				download_metadata_tooling.delay(job, org)
+				try:
+
+					download_metadata_tooling.delay(job, org)
+
+				except Exception as error:
+
+					org.status = 'Error'
+					org.error = error
+					org.save()
 
 	elif job.status == 'Finished':
 
