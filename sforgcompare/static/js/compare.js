@@ -26,23 +26,43 @@ $(document).ready(function ()
 		var componentName = $(this).attr('id').split('.');	
 		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
 
-		var metadata = $(this).parent().find('textarea').val()
+
+		var metadata;
+		if (componentName[0] == 'ApexClass' || componentName[0] == 'ApexTrigger')
+		{
+			metadata = $(this).parent().find('textarea').val();
+		}
+		// VisualForce markup requires HTML escaping
+		else
+		{
+			metadata = $(this).parent().find('textarea').val()
 											.replace(/</g, '&lt;')
 											.replace(/>/g,'&gt;')
 											.replace(/\n/g, '<br/>');
-		var $content;
-		if ( $(this).hasClass('both_same') )
-		{
-			$content = $('<div style="float:left;width:49%;"><pre class="highlight" >' + metadata + '</pre></div><div style="float:left;width:49%;margin-left:2%;"><pre class="highlight">' + metadata + '</pre></div><div class="clear:both;></div>');
-		}
-		else
-		{
-			$content = $('<pre class="highlight">' + metadata + '</pre>');
 		}
 
-		$content.syntaxHighlight();
-		$('#codeModalBody').html($content);
-        $.SyntaxHighlighter.init();
+		// Display the Python diff results
+		if ( $(this).hasClass('diff') )
+		{
+			$('#codeModalBody').html(metadata);
+		}
+		// Show the code in a nice modal with syntax highlighting
+		else
+		{
+			var $content;
+			if ( $(this).hasClass('both_same') )
+			{
+				$content = $('<div style="float:left;width:49%;"><pre class="highlight" >' + metadata + '</pre></div><div style="float:left;width:49%;margin-left:2%;"><pre class="highlight">' + metadata + '</pre></div><div class="clear:both;></div>');
+			}
+			else
+			{
+				$content = $('<pre class="highlight">' + metadata + '</pre>');
+			}
+			$content.syntaxHighlight();
+			$('#codeModalBody').html($content);
+	        $.SyntaxHighlighter.init();
+		}
+		
 		$('#viewCodeModal').modal();
 	});
 
