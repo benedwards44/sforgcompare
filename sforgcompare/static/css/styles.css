@@ -207,6 +207,17 @@ table.diff_header td.diff_header {
     padding-left:5px;
 }
 
+/* top scrollbar */
+#top_scrollbar, #codeModalBody {
+    width: 95%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+#top_scrollbar, #scrollbar {
+    height: 20px;
+}
+
 /* Python diff css */
 table.diff {font-family:Courier; border:medium;}
 .diff_header {background-color:#e0e0e0}

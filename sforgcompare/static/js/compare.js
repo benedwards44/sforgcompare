@@ -2,7 +2,6 @@ $.SyntaxHighlighter.init();
 
 $(document).ready(function () 
 {
-	$('td.diff_next').hide();
 	$('tr.component').hide();
 	$('tr.success').hide();
 
@@ -63,7 +62,7 @@ $(document).ready(function ()
 			$('#codeModalBody').html($content);
 	        $.SyntaxHighlighter.init();
 		}
-		
+		$('td.diff_next').hide();
 		$('#viewCodeModal').modal();
 	});
 
@@ -79,6 +78,17 @@ $(document).ready(function ()
 		}
 
 	});
+
+	/* Add top scroll bar for code comparison */
+	$("#top_scrollbar").scroll(function()
+    {
+        $("#codeModalBody").scrollLeft($("#top_scrollbar").scrollLeft());
+    });
+
+    $("#codeModalBody").scroll(function()
+    {
+        $("#top_scrollbar").scrollLeft($("#codeModalBody").scrollLeft());
+    });
 
 });
 
