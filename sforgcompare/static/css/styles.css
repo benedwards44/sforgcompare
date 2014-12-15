@@ -199,14 +199,6 @@ a.object_link:hover {
     width: 50% !important;
 }
 
-table.diff {
-    width: 90%;
-}
-
-table.diff_header td.diff_header {
-    padding-left:5px;
-}
-
 /* top scrollbar */
 #top_scrollbar, #codeModalBody {
     width: 99%;
