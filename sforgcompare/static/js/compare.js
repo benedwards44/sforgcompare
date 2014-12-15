@@ -59,9 +59,8 @@ $(document).ready(function ()
 	        $.SyntaxHighlighter.init();
 		}
 		$('td.diff_next').hide();
-		$('#scrollbar').width($('table.diff').width());
+		$('#scrollbar').width(3000);
 		$('#viewCodeModal').modal();
-		console.log($('#viewCodeModal table.diff').width());
 	});
 
 	// Change display options
