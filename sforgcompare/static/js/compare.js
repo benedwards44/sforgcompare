@@ -61,7 +61,7 @@ $(document).ready(function ()
 		$('td.diff_next').hide();
 		$('#scrollbar').width($('table.diff').width());
 		$('#viewCodeModal').modal();
-		console.log($('#codeModalBody table#difflib_chg_to0__top').width());
+		console.log($('#viewCodeModal table.diff').width());
 	});
 
 	// Change display options
