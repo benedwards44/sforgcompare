@@ -63,10 +63,9 @@ $(document).ready(function ()
 	        $.SyntaxHighlighter.init();
 		}
 		$('td.diff_next').hide();
-		console.log($('table.diff').width());
 		$('#scrollbar').width($('table.diff').width());
 		$('#viewCodeModal').modal();
-		console.log($('table.diff').width());
+		console.log($('#difflib_chg_to0__top').width());
 	});
 
 	// Change display options
