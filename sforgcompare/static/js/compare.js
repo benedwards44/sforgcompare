@@ -26,20 +26,8 @@ $(document).ready(function ()
 		var componentName = $(this).attr('id').split('.');	
 		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
 
-
-		var metadata;
-		if (componentName[0] == 'ApexClass' || componentName[0] == 'ApexTrigger')
-		{
-			metadata = $(this).parent().find('textarea').val();
-		}
-		// VisualForce markup requires HTML escaping
-		else
-		{
-			metadata = $(this).parent().find('textarea').val()
-											.replace(/</g, '&lt;')
-											.replace(/>/g,'&gt;')
-											.replace(/\n/g, '<br/>');
-		}
+		// The file metadata
+		var metadata = $(this).parent().find('textarea').val();
 
 		// Display the Python diff results
 		if ( $(this).hasClass('diff') )
@@ -49,6 +37,14 @@ $(document).ready(function ()
 		// Show the code in a nice modal with syntax highlighting
 		else
 		{
+			// Need to escape text for normal XML
+			if (componentName[0] != 'ApexClass' || componentName[0] != 'ApexTrigger')
+			{
+				metadata = metadata.replace(/</g, '&lt;')
+									.replace(/>/g,'&gt;')
+									.replace(/\n/g, '<br/>');
+			}
+
 			var $content;
 			if ( $(this).hasClass('both_same') )
 			{
