@@ -175,6 +175,10 @@ a.object_link:hover {
     width:500px !important;
 }
 
+#codeModalBody {
+    overflow: auto;
+}
+
 #compare_results_table tr.type td {
     font-weight: bold;
     cursor: pointer;

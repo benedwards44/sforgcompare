@@ -2,6 +2,7 @@ $.SyntaxHighlighter.init();
 
 $(document).ready(function () 
 {
+	$('td.diff_next').hide();
 	$('tr.component').hide();
 	$('tr.success').hide();
 
