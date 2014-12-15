@@ -209,7 +209,7 @@ table.diff_header td.diff_header {
 
 /* top scrollbar */
 #top_scrollbar, #codeModalBody {
-    width: 97%;
+    width: 99%;
     overflow-x: scroll;
     overflow-y: hidden;
 }
