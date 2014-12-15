@@ -63,6 +63,7 @@ $(document).ready(function ()
 	        $.SyntaxHighlighter.init();
 		}
 		$('td.diff_next').hide();
+		$('##scrollbar').width($('table.diff').width());
 		$('#viewCodeModal').modal();
 	});
 

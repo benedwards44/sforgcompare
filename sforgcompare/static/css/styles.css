@@ -218,10 +218,6 @@ table.diff_header td.diff_header {
     height: 20px;
 }
 
-#scrollbar {
-    width: 97%;
-}
-
 /* Python diff css */
 table.diff {font-family:Courier; border:medium;}
 .diff_header {background-color:#e0e0e0}
