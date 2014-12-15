@@ -64,9 +64,9 @@ $(document).ready(function ()
 		}
 		$('td.diff_next').hide();
 		console.log($('table.diff').width());
-		console.log($('#codeModalBody table').width());
 		$('#scrollbar').width($('table.diff').width());
 		$('#viewCodeModal').modal();
+		console.log($('table.diff').width());
 	});
 
 	// Change display options
