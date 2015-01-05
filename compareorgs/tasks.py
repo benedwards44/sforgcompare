@@ -460,6 +460,10 @@ def compare_orgs_task(job):
 		job.compare_result_html = html_output
 		job.status = 'Finished'
 
+		# Delete components
+		ComponentType.objects.filter(org = org_left.id).delete()
+		ComponentType.objects.filter(org = org_right.id).delete()
+
 		email_body = 'Your Org compare job is complete:\n'
 		email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.id)
 		email_body += '\n\nYour result will be deleted in an hour, or when you view the result.'
