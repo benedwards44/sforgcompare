@@ -130,8 +130,12 @@ def download_metadata_metadata(job, org):
 		# Add retrieve package to the retrieve request
 		retrieve_request.unpackaged = package_to_retrieve
 
+		print 'BEFORE JOB'
+
 		# Start the async retrieve job
 		retrieve_job = metadata_client.service.retrieve(retrieve_request)
+
+		print 'AFTER JOB'
 
 		print 'HELLO4 ' + retrieve_job
 
