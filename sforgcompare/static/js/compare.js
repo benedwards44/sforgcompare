@@ -93,12 +93,12 @@ $(document).ready(function ()
 function checkAnyChildVisible()
 {
 	// Loop through type rows
-	$.each($('tr.type'), function(typeKey, typeValue)
+	$.each($('tr.type'), function()
 	{
 		var childVisible = false;
 
 		// Loop through component rows
-		$.each($('tr[class*="' + $(this).attr('class').split('_')[1] + '"]'), function(componentKey, componentValue)
+		$.each($('tr[class*="' + $(this).attr('class').split('_')[1] + '"]'), function()
 		{
 			// It a row is visible, this is enough to know to show the parent
 			if ($(this).is(':visible'))

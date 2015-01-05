@@ -72,7 +72,7 @@ def download_metadata_metadata(job, org):
 			if len(component_list) == 3 or (len(all_metadata[0]) - loop_counter) <= 3:
 
 				# loop through the components returned from the component query
-				for component in metadata_client.service.listMetadata(component_list,api_version):
+				for component in metadata_client.service.listMetadata(component_list, settings.SALESFORCE_API_VERSION):
 
 					# Query database for parent component_type
 					component_type_query = ComponentType.objects.filter(name = component.type, org = org.id)
