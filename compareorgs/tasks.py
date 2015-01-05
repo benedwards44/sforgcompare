@@ -96,6 +96,8 @@ def download_metadata_metadata(job, org):
 			if not Component.objects.filter(component_type = component_type.id):
 				component_type.delete()
 
+		print 'HELLO1'
+
 		# Create retrieve request
 		retrieve_request = metadata_client.factory.create('RetrieveRequest')
 		retrieve_request.apiVersion = settings.SALESFORCE_API_VERSION
@@ -129,6 +131,8 @@ def download_metadata_metadata(job, org):
 
 		# Set the retrieve result - should be unfinished initially
 		retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
+
+		print 'HELLO ' + retrieve_result
 
 		# Continue to query retrieve result until it's done
 		while not retrieve_result.done:
