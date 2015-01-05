@@ -156,32 +156,35 @@ def download_metadata_metadata(job, org):
 			metadata = ZipFile('metadata.zip', 'r')
 			for filename in metadata.namelist():
 
-				try filename.split('/'):
+				try:
+
+					folder_name = filename.split('/')[0]
+					component_name = filename.split('/')[1]
 
 					# Check if component type exists
-					if ComponentType.objects.filter(org = org.id, name = filename.split('/')[0]):
+					if ComponentType.objects.filter(org = org.id, name = folder_name):
 
-						component_type_record = ComponentType.objects.filter(org = org.id, name = filename.split('/')[0])[0]
+						component_type_record = ComponentType.objects.filter(org = org.id, name = folder_name)[0]
 
 					else:
 
 						# create the component type record and save
 						component_type_record = ComponentType()
 						component_type_record.org = org
-						component_type_record.name = component_type.xmlName
+						component_type_record.name = folder_name
 						component_type_record.save()
 
 					# create the component record and save
 					component_record = Component()
 					component_record.component_type = component_type_record
-					component_record.name = filename.split('/')[1]
+					component_record.name = component_name
 					component_record.content = metadata.read(filename)
 					component_record.save()
 
 				# not in folder (could be package.xml). Skip record
 				except:
 					continue
-					
+
 			org.status = 'Finished'
 
 	except Exception as error:
