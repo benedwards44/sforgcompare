@@ -60,32 +60,38 @@ def download_metadata_metadata(job, org):
 			component_type_record.name = component_type.xmlName
 			component_type_record.save()
 
-			# set up the component type to query for components
-			component = metadata_client.factory.create("ListMetadataQuery")
-			component.type = component_type.xmlName
-
 			# Component is a folder component - eg Dashboard, Document, EmailTemplate, Report
-			if component.inFolder:
+			if not component.inFolder:
+
+				# set up the component type to query for components
+				component = metadata_client.factory.create("ListMetadataQuery")
+				component.type = component_type.xmlName
+
+				# Add metadata to list
+				component_list.append(component)
+			
+			else:
 
 				# Append "Folder" keyword onto end of component type
+				component = metadata_client.factory.create("ListMetadataQuery")
 				component.type = component_type.xmlName + 'Folder'
 
-				# Query for contents of folder
-				folders = metadata_client.service.listMetadata([component], settings.SALESFORCE_API_VERSION)
-
 				# Loop through folders
-				for folder in folders:
+				for folder in metadata_client.service.listMetadata([component], settings.SALESFORCE_API_VERSION):
 
 					# Create component for folder to query
 					folder_component = metadata_client.factory.create("ListMetadataQuery")
-					folder_component.type = 'Report'
+					folder_component.type = folder.type
 					folder_component.folder = folder.fullName
 
-					# Add to overall list
-					component_list.append(folder_component)
+					# Loop through folder components
+					for component in metadata_client.service.listMetadata(folder_component, settings.SALESFORCE_API_VERSION):
 
-			# Add metadata to list
-			component_list.append(component)
+						# create the component record and save
+						component_record = Component()
+						component_record.component_type = component_type.xmlName
+						component_record.name = component.fullName
+						component_record.save()
 
 			# Run the metadata query only if the list has reached 3 (the max allowed to query)
 			# at one time, or if there is less than 3 components left to query 
