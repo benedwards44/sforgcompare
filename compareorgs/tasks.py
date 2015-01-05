@@ -445,7 +445,7 @@ def compare_orgs_task(job):
 	job.finished_date = datetime.datetime.now()
 	job.save()
 
-	if job.email_result and job.status = 'Finished':
+	if job.email_result and job.status == 'Finished':
 		#send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
 		message = PMMail(api_key = os.environ.get('POSTMARK_API_KEY'),
 				subject = email_subject,
