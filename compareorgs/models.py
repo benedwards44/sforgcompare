@@ -4,6 +4,7 @@ class Job(models.Model):
 	created_date = models.DateTimeField(null=True,blank=True)
 	finished_date = models.DateTimeField(null=True,blank=True)
 	compare_result_html = models.TextField(null=True,blank=True)
+	api_choice = models.CharField(max_length=255,blank=True)
 	email_result = models.BooleanField()
 	email = models.CharField(max_length=255,blank=True)
 	status = models.CharField(max_length=255, blank=True)

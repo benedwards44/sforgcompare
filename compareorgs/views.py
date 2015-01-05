@@ -146,10 +146,11 @@ def compare_orgs(request, job_id):
 
 	if job.status == 'Not Started':
 
-		job.status = 'Downloading Metadata'
-		job.save()
-
 		api_choice = request.GET.get('api')
+
+		job.status = 'Downloading Metadata'
+		job.api_choice = api_choice
+		job.save()
 
 		# Do logic for job
 		for org in job.org_set.all():
