@@ -74,7 +74,12 @@ def download_metadata_metadata(job, org):
 
 				# Append "Folder" keyword onto end of component type
 				component = metadata_client.factory.create("ListMetadataQuery")
-				component.type = component_type.xmlName + 'Folder'
+
+				# EmailTemplate = EmailFolder (for some reason)
+				if component_type.xmlName == 'EmailTemplate':
+					component.type = 'EmailFolder'
+				else:
+					component.type = component_type.xmlName + 'Folder'
 
 				# All folders for specified metadata type
 				all_folders = metadata_client.service.listMetadata([component], settings.SALESFORCE_API_VERSION)
@@ -86,7 +91,7 @@ def download_metadata_metadata(job, org):
 
 					# Create component for folder to query
 					folder_component = metadata_client.factory.create("ListMetadataQuery")
-					folder_component.type = folder.type
+					folder_component.type = component_type.xmlName
 					folder_component.folder = folder.fullName
 
 					folder_list.append(folder_component)
@@ -94,12 +99,12 @@ def download_metadata_metadata(job, org):
 					if len(folder_list) >= 3 or (len(all_folders) - folder_loop_counter) <= 3:
 
 						# Loop through folder components
-						for component in metadata_client.service.listMetadata(folder_list, settings.SALESFORCE_API_VERSION):
+						for folder_component in metadata_client.service.listMetadata(folder_list, settings.SALESFORCE_API_VERSION):
 
 							# create the component record and save
 							component_record = Component()
 							component_record.component_type = component_type_record
-							component_record.name = component.fullName
+							component_record.name = folder_component.fullName
 							component_record.save()
 
 						folder_list = []
