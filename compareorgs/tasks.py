@@ -189,7 +189,7 @@ def download_metadata_metadata(job, org):
 
 	except Exception as error:
 		org.status = 'Error'
-		org.error = error
+		org.error = 'Line: ' + sys.exc_info().tb_lineno + '\n\n' + error
 
 	org.save()
 
@@ -268,7 +268,7 @@ def download_metadata_tooling(job, org):
 
 	except Exception as error:
 		org.status = 'Error'
-		org.error = error
+		org.error = 'Line: ' + sys.exc_info().tb_lineno + '\n\n' + error
 
 	org.save()
 
@@ -440,16 +440,12 @@ def compare_orgs_task(job):
 		job.status = 'Error'
 		job.error = error
 
-		email_body = 'There was an error processing your job:\n'
-		email_body += error
-		email_body += '\n\nPlease try again.'
-
-		email_subject = 'Error running Salesforce Org Compare job.'
+		send_error_email(job, error)
 
 	job.finished_date = datetime.datetime.now()
 	job.save()
 
-	if job.email_result:
+	if job.email_result and job.status = 'Finished':
 		#send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
 		message = PMMail(api_key = os.environ.get('POSTMARK_API_KEY'),
 				subject = email_subject,
@@ -475,13 +471,36 @@ def check_overall_status(job):
 				job.error = all_orgs[0].error
 				job.save()
 
+				send_error_email(job, job.error)
+
 			if all_orgs[1].status == 'Error':
 
 				job.status = 'Error'
 				job.error = all_orgs[1].error
 				job.save()
 
+				send_error_email(job, job.error)
 
 		elif all_orgs[0].status == 'Finished' and all_orgs[1].status == 'Finished':
 
 			compare_orgs_task(job)
+
+def send_error_email(job, error):
+
+	if job.email_result:
+
+		email_body = 'There was an error processing your job:\n'
+		email_body += error
+		email_body += '\n\nPlease try again.'
+
+		email_subject = 'Error running Salesforce Org Compare job.'
+
+		#send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
+		message = PMMail(api_key = os.environ.get('POSTMARK_API_KEY'),
+				subject = email_subject,
+	            sender = "ben@tquila.com",
+	            to = job.email,
+	            text_body = email_body,
+	            tag = "orgcompareemail")
+		message.send()
+
