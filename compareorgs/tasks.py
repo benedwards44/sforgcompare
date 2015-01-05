@@ -129,10 +129,12 @@ def download_metadata_metadata(job, org):
 		# Start the async retrieve job
 		retrieve_job = metadata_client.service.retrieve(retrieve_request)
 
+		print 'HELLO2 ' + retrieve_job
+
 		# Set the retrieve result - should be unfinished initially
 		retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
 
-		print 'HELLO ' + retrieve_result
+		print 'HELLO3 ' + retrieve_result
 
 		# Continue to query retrieve result until it's done
 		while not retrieve_result.done:
