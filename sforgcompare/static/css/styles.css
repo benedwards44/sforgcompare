@@ -215,9 +215,10 @@ table.diff_header td.diff_header {
 }
 
 /* Python diff css */
-table.diff {font-family:Courier; border:medium;}
+table.diff {font-family:Courier; border:medium; table-layout: fixed; width: 100%}
 .diff_header {background-color:#e0e0e0}
-td.diff_header {text-align:right}
+table.diff td {width:47%;word-wrap: break-word;}
+table.diff td.diff_header {text-align:right;width:40px}
 .diff_next {display:none;}
 .diff_add {background-color:#aaffaa}
 .diff_chg {background-color:#ffff77}

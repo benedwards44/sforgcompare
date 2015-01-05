@@ -27,16 +27,17 @@ $(document).ready(function ()
 		var componentName = $(this).attr('id').split('.');	
 		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
 
-
 		var metadata;
-		if (componentName[0] == 'ApexClass' || componentName[0] == 'ApexTrigger')
+		if (componentName[0] == 'ApexClass' || componentName[0] == 'ApexTrigger' || $(this).hasClass('diff'))
 		{
-			metadata = $(this).parent().find('textarea').val();
+			metadata = $(this).parent().find('textarea').val().replace(/nowrap="nowrap"/g,'');
 		}
+
 		// VisualForce markup requires HTML escaping
 		else
 		{
 			metadata = $(this).parent().find('textarea').val()
+											.replace(/nowrap="nowrap"/g,'')
 											.replace(/</g, '&lt;')
 											.replace(/>/g,'&gt;')
 											.replace(/\n/g, '<br/>');
