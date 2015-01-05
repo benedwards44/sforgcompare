@@ -76,22 +76,35 @@ def download_metadata_metadata(job, org):
 				component = metadata_client.factory.create("ListMetadataQuery")
 				component.type = component_type.xmlName + 'Folder'
 
+				# All folders for specified metadata type
+				all_folders = metadata_client.service.listMetadata([component], settings.SALESFORCE_API_VERSION)
+				folder_list = []
+				folder_loop_counter = 0
+
 				# Loop through folders
-				for folder in metadata_client.service.listMetadata([component], settings.SALESFORCE_API_VERSION):
+				for folder in all_folders:
 
 					# Create component for folder to query
 					folder_component = metadata_client.factory.create("ListMetadataQuery")
 					folder_component.type = folder.type
 					folder_component.folder = folder.fullName
 
-					# Loop through folder components
-					for component in metadata_client.service.listMetadata(folder_component, settings.SALESFORCE_API_VERSION):
+					folder_list.append(folder_component)
 
-						# create the component record and save
-						component_record = Component()
-						component_record.component_type = component_type.xmlName
-						component_record.name = component.fullName
-						component_record.save()
+					if len(folder_list) >= 3 or (len(all_folders) - folder_loop_counter) <= 3:
+
+						# Loop through folder components
+						for component in metadata_client.service.listMetadata(folder_list, settings.SALESFORCE_API_VERSION):
+
+							# create the component record and save
+							component_record = Component()
+							component_record.component_type = component_type.xmlName
+							component_record.name = component.fullName
+							component_record.save()
+
+						folder_list = []
+
+					folder_loop_counter = folder_loop_counter + 1
 
 			# Run the metadata query only if the list has reached 3 (the max allowed to query)
 			# at one time, or if there is less than 3 components left to query 
