@@ -61,7 +61,7 @@ def download_metadata_metadata(job, org):
 			component_type_record.save()
 
 			# Component is a folder component - eg Dashboard, Document, EmailTemplate, Report
-			if not component.inFolder:
+			if not component_type.inFolder:
 
 				# set up the component type to query for components
 				component = metadata_client.factory.create("ListMetadataQuery")
