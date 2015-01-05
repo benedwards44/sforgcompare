@@ -105,6 +105,8 @@ def download_metadata_metadata(job, org):
 		retrieve_request.packageNames = None
 		retrieve_request.specificFiles = None
 
+		print 'HELLO2'
+
 		component_retrieve_list = []
 
 		# Now query through all components and download actual metadata
@@ -117,6 +119,8 @@ def download_metadata_metadata(job, org):
 				component_to_retrieve.members = component.name
 				component_to_retrieve.name = component_type.name
 				component_retrieve_list.append(component_to_retrieve)
+
+		print 'HELLO3 ' + component_retrieve_list
 				
 		# The overall package to retrieve
 		package_to_retrieve = metadata_client.factory.create('Package')
@@ -129,12 +133,12 @@ def download_metadata_metadata(job, org):
 		# Start the async retrieve job
 		retrieve_job = metadata_client.service.retrieve(retrieve_request)
 
-		print 'HELLO2 ' + retrieve_job
+		print 'HELLO4 ' + retrieve_job
 
 		# Set the retrieve result - should be unfinished initially
 		retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
 
-		print 'HELLO3 ' + retrieve_result
+		print 'HELLO5 ' + retrieve_result
 
 		# Continue to query retrieve result until it's done
 		while not retrieve_result.done:
