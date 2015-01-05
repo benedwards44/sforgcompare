@@ -64,6 +64,23 @@ def download_metadata_metadata(job, org):
 			component = metadata_client.factory.create("ListMetadataQuery")
 			component.type = component_type.xmlName
 
+			# Component is a folder component - eg Dashboard, Document, EmailTemplate, Report
+			if component.inFolder:
+
+				# Query for contents of folder
+				folders = metadata_client.service.listMetadata([component], settings.SALESFORCE_API_VERSION)
+
+				# Loop through folders
+				for folder in folders:
+
+					# Create component for folder to query
+					folder_component = metadata_client.factory.create("ListMetadataQuery")
+					folder_component.type = 'Report'
+					folder_component.folder = folder.fullName
+
+					# Add to overall list
+					component_list.append(folder_component)
+
 			# Add metadata to list
 			component_list.append(component)
 
