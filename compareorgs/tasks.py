@@ -105,11 +105,17 @@ def download_metadata_metadata(job, org):
 
 		component_retrieve_list = []
 
+		print 'HELLO3 ' + component_retrieve_list
+
 		# Now query through all components and download actual metadata
 		for component_type in ComponentType.objects.filter(org = org):
 
+			print 'HELLO5 ' + component_type
+
 			# Loop through child components of the component type
 			for component in component_type.component_set.all():
+
+				print 'HELLO6 ' + component
 
 				component_to_retrieve = metadata_client.factory.create('PackageTypeMembers')
 				component_to_retrieve.members = component.name
