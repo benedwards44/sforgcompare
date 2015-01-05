@@ -4,6 +4,7 @@ $(document).ready(function ()
 {
 	$('tr.component').hide();
 	$('tr.success').hide();
+	$('#no_differences_message').hide();
 
 	checkAnyChildVisible();
 
@@ -26,8 +27,20 @@ $(document).ready(function ()
 		var componentName = $(this).attr('id').split('.');	
 		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
 
-		// The file metadata
-		var metadata = $(this).parent().find('textarea').val();
+
+		var metadata;
+		if (componentName[0] == 'ApexClass' || componentName[0] == 'ApexTrigger')
+		{
+			metadata = $(this).parent().find('textarea').val();
+		}
+		// VisualForce markup requires HTML escaping
+		else
+		{
+			metadata = $(this).parent().find('textarea').val()
+											.replace(/</g, '&lt;')
+											.replace(/>/g,'&gt;')
+											.replace(/\n/g, '<br/>');
+		}
 
 		// Display the Python diff results
 		if ( $(this).hasClass('diff') )
@@ -37,14 +50,6 @@ $(document).ready(function ()
 		// Show the code in a nice modal with syntax highlighting
 		else
 		{
-			// Need to escape text for normal XML
-			if (componentName[0] != 'ApexClass' || componentName[0] != 'ApexTrigger')
-			{
-				metadata = metadata.replace(/</g, '&lt;')
-									.replace(/>/g,'&gt;')
-									.replace(/\n/g, '<br/>');
-			}
-
 			var $content;
 			if ( $(this).hasClass('both_same') )
 			{
@@ -58,8 +63,7 @@ $(document).ready(function ()
 			$('#codeModalBody').html($content);
 	        $.SyntaxHighlighter.init();
 		}
-		$('td.diff_next').hide();
-		$('#scrollbar').width(3000);
+		
 		$('#viewCodeModal').modal();
 	});
 
@@ -73,19 +77,12 @@ $(document).ready(function ()
 		{
 			checkAnyChildVisible();
 		}
+		else
+		{
+			$('#no_differences_message').hide();
+		}
 
 	});
-
-	/* Add top scroll bar for code comparison */
-	$("#top_scrollbar").scroll(function()
-    {
-        $("#codeModalBody").scrollLeft($("#top_scrollbar").scrollLeft());
-    });
-
-    $("#codeModalBody").scroll(function()
-    {
-        $("#top_scrollbar").scrollLeft($("#codeModalBody").scrollLeft());
-    });
 
 });
 
@@ -98,13 +95,13 @@ function checkAnyChildVisible()
 		var childVisible = false;
 
 		// Loop through component rows
-		$.each($('tr[class*="' + $(this).attr('class').split('_')[1] + '"]'), function()
+		$.each($('tr[class*="component_' + $(this).attr('class').split('_')[1] + '"]'), function()
 		{
 			// It a row is visible, this is enough to know to show the parent
 			if ($(this).is(':visible'))
 			{
 				childVisible = true;
-				return;
+				return false;
 			}
 		});
 
@@ -115,4 +112,22 @@ function checkAnyChildVisible()
 		}
 
 	});
+
+	// Check that anything at all is visible
+	$.each($('tr.type'), function()
+	{
+		var rowVisible = false;
+		if ($(this).is(':visible'))
+		{
+			rowVisible = true;
+			return false;
+		}
+
+		// If no rows are visible, display message
+		if (!rowVisible)
+		{
+			$('#no_differences_message').show();
+		}
+	});
+
 }
