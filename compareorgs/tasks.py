@@ -127,8 +127,10 @@ def download_metadata_metadata(job, org):
 		# Start the async retrieve job
 		retrieve_job = metadata_client.service.retrieve(retrieve_request)
 
+		# Set the retrieve result - should be unfinished initially
 		retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
 
+		# Continue to query retrieve result until it's done
 		while not retrieve_result.done:
 
 			# check job status
@@ -154,16 +156,20 @@ def download_metadata_metadata(job, org):
 
 			# Open zip file
 			metadata = ZipFile('metadata.zip', 'r')
+
+			# Loop through files in the zip file
 			for filename in metadata.namelist():
 
 				try:
 
+					# Set folder and component name
 					folder_name = filename.split('/')[0]
 					component_name = filename.split('/')[1]
 
 					# Check if component type exists
 					if ComponentType.objects.filter(org = org.id, name = folder_name):
 
+						# If exists, use this as parent component type
 						component_type_record = ComponentType.objects.filter(org = org.id, name = folder_name)[0]
 
 					else:
@@ -181,7 +187,7 @@ def download_metadata_metadata(job, org):
 					component_record.content = metadata.read(filename)
 					component_record.save()
 
-				# not in folder (could be package.xml). Skip record
+				# not in a folder (could be package.xml). Skip record
 				except:
 					continue
 
