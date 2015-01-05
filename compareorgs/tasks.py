@@ -472,13 +472,13 @@ def check_overall_status(job):
 			if all_orgs[0].status == 'Error':
 
 				job.status = 'Error'
-				job.error = all_orgs[0].status
+				job.error = all_orgs[0].error
 				job.save()
 
 			if all_orgs[1].status == 'Error':
 
 				job.status = 'Error'
-				job.error = all_orgs[1].status
+				job.error = all_orgs[1].error
 				job.save()
 
 
