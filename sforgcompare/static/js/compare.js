@@ -5,6 +5,7 @@ $(document).ready(function ()
 	$('tr.component').hide();
 	$('tr.success').hide();
 	$('#no_differences_message').hide();
+	$('.diff_next').hide();
 
 	checkAnyChildVisible();
 
