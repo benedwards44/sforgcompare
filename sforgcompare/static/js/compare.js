@@ -50,7 +50,10 @@ $(document).ready(function ()
 		// Show the code in a nice modal with syntax highlighting
 		else
 		{
+			/* 
+			Commented out side-by-side display of same files - no needed
 			var $content;
+			
 			if ( $(this).hasClass('both_same') )
 			{
 				$content = $('<div style="float:left;width:49%;"><pre class="highlight" >' + metadata + '</pre></div><div style="float:left;width:49%;margin-left:2%;"><pre class="highlight">' + metadata + '</pre></div><div class="clear:both;></div>');
@@ -59,6 +62,8 @@ $(document).ready(function ()
 			{
 				$content = $('<pre class="highlight">' + metadata + '</pre>');
 			}
+			*/
+			var $content = $('<pre class="highlight">' + metadata + '</pre>');
 			$content.syntaxHighlight();
 			$('#codeModalBody').html($content);
 	        $.SyntaxHighlighter.init();

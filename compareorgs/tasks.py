@@ -191,6 +191,9 @@ def download_metadata_metadata(job, org):
 				except:
 					continue
 
+			# Delete zip file, no need to store
+			zip_file.delete()
+
 			org.status = 'Finished'
 
 	except Exception as error:
