@@ -65,7 +65,6 @@ def download_metadata_metadata(job, org):
 			component.type = component_type.xmlName
 
 			# Component is a folder component - eg Dashboard, Document, EmailTemplate, Report
-			"""
 			if component.inFolder:
 
 				# Append "Folder" keyword onto end of component type
@@ -84,7 +83,6 @@ def download_metadata_metadata(job, org):
 
 					# Add to overall list
 					component_list.append(folder_component)
-			"""
 
 			# Add metadata to list
 			component_list.append(component)
