@@ -98,7 +98,7 @@ def download_metadata_metadata(job, org):
 
 							# create the component record and save
 							component_record = Component()
-							component_record.component_type = component_type.xmlName
+							component_record.component_type = component_type_record
 							component_record.name = component.fullName
 							component_record.save()
 
