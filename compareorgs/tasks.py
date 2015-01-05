@@ -237,7 +237,7 @@ def download_metadata_metadata(job, org):
 
 	except Exception as error:
 		org.status = 'Error'
-		org.error = 'Line: ' + sys.exc_info().tb_lineno + '\n\n' + error
+		org.error = error
 
 	org.save()
 
@@ -316,7 +316,7 @@ def download_metadata_tooling(job, org):
 
 	except Exception as error:
 		org.status = 'Error'
-		org.error = 'Line: ' + sys.exc_info().tb_lineno + '\n\n' + error
+		org.error = error
 
 	org.save()
 
