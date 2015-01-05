@@ -67,6 +67,9 @@ def download_metadata_metadata(job, org):
 			# Component is a folder component - eg Dashboard, Document, EmailTemplate, Report
 			if component.inFolder:
 
+				# Append "Folder" keyword onto end of component type
+				component.type = component_type.xmlName + 'Folder'
+
 				# Query for contents of folder
 				folders = metadata_client.service.listMetadata([component], settings.SALESFORCE_API_VERSION)
 
@@ -86,7 +89,7 @@ def download_metadata_metadata(job, org):
 
 			# Run the metadata query only if the list has reached 3 (the max allowed to query)
 			# at one time, or if there is less than 3 components left to query 
-			if len(component_list) == 3 or (len(all_metadata[0]) - loop_counter) <= 3:
+			if len(component_list) >= 3 or (len(all_metadata[0]) - loop_counter) <= 3:
 
 				# loop through the components returned from the component query
 				for component in metadata_client.service.listMetadata(component_list, settings.SALESFORCE_API_VERSION):
