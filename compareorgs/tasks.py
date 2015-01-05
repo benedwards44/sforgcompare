@@ -227,7 +227,12 @@ def download_metadata_metadata(job, org):
 					# create the component record and save
 					component_record = Component()
 					component_record.component_type = component_type_record
-					component_record.name = component_name
+
+					# If more / exist, append
+					if len(filename.split('/')) > 2:
+						component_record.name = component_name + ilename.split('/')[2]
+					else:
+						component_record.name = component_name
 					component_record.content = metadata.read(filename)
 					component_record.save()
 
