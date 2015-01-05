@@ -13,3 +13,4 @@ whitenoise==1.0.3
 celery==3.1.0
 django-sslify==0.2.4
 python-postmark==0.4.4
+suds==0.4

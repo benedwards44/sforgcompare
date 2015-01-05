@@ -4,10 +4,14 @@ from django.conf import settings
 from difflib import HtmlDiff
 from django.core.mail import send_mail
 from postmark import PMMail
+from suds.client import Client
+from base64 import b64decode
+from zipfile import ZipFile
 import os
 import json	
 import requests
 import datetime
+import time
 
 # Celery config
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
@@ -16,7 +20,7 @@ app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'
 # Import models
 from compareorgs.models import Job, Org, ComponentType, Component
 
-# Downloading metadata using the Tooling API
+# Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
 @app.task
 def download_metadata_metadata(job, org):
@@ -80,7 +84,6 @@ def download_metadata_metadata(job, org):
 						component_record = Component()
 						component_record.component_type = component_type_query[0]
 						component_record.name = component.fullName
-						#component_record.content = #xxx
 						component_record.save()
 		
 				# clear list once done. This list will re-build to 3 components and re-query the service
@@ -93,13 +96,102 @@ def download_metadata_metadata(job, org):
 			if not Component.objects.filter(component_type = component_type.id):
 				component_type.delete()
 
-		org.status = 'Finished'
+		# Create retrieve request
+		retrieve_request = metadata_client.factory.create('RetrieveRequest')
+		retrieve_request.apiVersion = settings.SALESFORCE_API_VERSION
+		retrieve_request.singlePackage = True
+		retrieve_request.packageNames = None
+		retrieve_request.specificFiles = None
+
+		component_retrieve_list = []
+
+		# Now query through all components and download actual metadata
+		for component_type in ComponentType.objects.filter(org = org):
+
+			# Loop through child components of the component type
+			for component in component_type.sorted_components:
+
+				component_to_retrieve = metadata_client.factory.create('PackageTypeMembers')
+				component_to_retrieve.members = component.name
+				component_to_retrieve.name = component_type.name
+				component_retrieve_list.append(component_to_retrieve)
+				
+		# The overall package to retrieve
+		package_to_retrieve = metadata_client.factory.create('Package')
+		package_to_retrieve.apiAccessLevel = None
+		package_to_retrieve.types = component_retrieve_list
+
+		# Add retrieve package to the retrieve request
+		retrieve_request.unpackaged = package_to_retrieve
+
+		# Start the async retrieve job
+		retrieve_job = metadata_client.service.retrieve(retrieve_request)
+
+		retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
+
+		while not retrieve_result.done:
+
+			# check job status
+			retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
+
+			# Check job is done
+			time.sleep(5)
+
+		if not retrieve_result.success:
+
+			org.status = 'Error'
+			org.error = retrieve_result.messages[0]
+
+		else:
+
+			# Save the zip file result to server
+			zip_file = open('metadata.zip', 'w+')
+			zip_file.write(b64decode(retrieve_result.zipFile))
+			zip_file.close()
+
+			# Delete all existing components for package - they need to be renamed
+			ComponentType.objects.filter(org = org.id).delete()
+
+			# Open zip file
+			metadata = ZipFile('metadata.zip', 'r')
+			for filename in metadata.namelist():
+
+				try filename.split('/'):
+
+					# Check if component type exists
+					if ComponentType.objects.filter(org = org.id, name = filename.split('/')[0]):
+
+						component_type_record = ComponentType.objects.filter(org = org.id, name = filename.split('/')[0])[0]
+
+					else:
+
+						# create the component type record and save
+						component_type_record = ComponentType()
+						component_type_record.org = org
+						component_type_record.name = component_type.xmlName
+						component_type_record.save()
+
+					# create the component record and save
+					component_record = Component()
+					component_record.component_type = component_type_record
+					component_record.name = filename.split('/')[1]
+					component_record.content = metadata.read(filename)
+					component_record.save()
+
+				# not in folder (could be package.xml). Skip record
+				except:
+					continue
+					
+			org.status = 'Finished'
 
 	except Exception as error:
 		org.status = 'Error'
 		org.error = error
 
 	org.save()
+
+	# Check if both jobs are now finished
+	check_overall_status(job)
 
 # Downloading metadata using the Tooling API
 # http://www.salesforce.com/us/developer/docs/api_tooling/index.htm
@@ -178,28 +270,7 @@ def download_metadata_tooling(job, org):
 	org.save()
 
 	# Check if both jobs are now finished
-	all_orgs = Org.objects.filter(job = job)
-	
-	if len(all_orgs) == 2:
-
-		if all_orgs[0].status == 'Error' or all_orgs[1].status == 'Error':
-
-			if all_orgs[0].status == 'Error':
-
-				job.status = 'Error'
-				job.error = all_orgs[0].status
-				job.save()
-
-			if all_orgs[1].status == 'Error':
-
-				job.status = 'Error'
-				job.error = all_orgs[1].status
-				job.save()
-
-
-		elif all_orgs[0].status == 'Finished' and all_orgs[1].status == 'Finished':
-
-			compare_orgs_task(job)
+	check_overall_status(job)
 
 
 # Compare two Org's metadata and return results
@@ -386,4 +457,28 @@ def compare_orgs_task(job):
 		message.send()
 
 
+def check_overall_status(job):
 
+	# Check if both jobs are now finished
+	all_orgs = Org.objects.filter(job = job)
+	
+	if len(all_orgs) == 2:
+
+		if all_orgs[0].status == 'Error' or all_orgs[1].status == 'Error':
+
+			if all_orgs[0].status == 'Error':
+
+				job.status = 'Error'
+				job.error = all_orgs[0].status
+				job.save()
+
+			if all_orgs[1].status == 'Error':
+
+				job.status = 'Error'
+				job.error = all_orgs[1].status
+				job.save()
+
+
+		elif all_orgs[0].status == 'Finished' and all_orgs[1].status == 'Finished':
+
+			compare_orgs_task(job)
