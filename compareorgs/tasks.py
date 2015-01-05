@@ -96,8 +96,6 @@ def download_metadata_metadata(job, org):
 			if not Component.objects.filter(component_type = component_type.id):
 				component_type.delete()
 
-		print 'HELLO1'
-
 		# Create retrieve request
 		retrieve_request = metadata_client.factory.create('RetrieveRequest')
 		retrieve_request.apiVersion = settings.SALESFORCE_API_VERSION
@@ -105,15 +103,13 @@ def download_metadata_metadata(job, org):
 		retrieve_request.packageNames = None
 		retrieve_request.specificFiles = None
 
-		print 'HELLO2'
-
 		component_retrieve_list = []
 
 		# Now query through all components and download actual metadata
 		for component_type in ComponentType.objects.filter(org = org):
 
 			# Loop through child components of the component type
-			for component in component_type.sorted_components:
+			for component in component_type.component_set.all():
 
 				component_to_retrieve = metadata_client.factory.create('PackageTypeMembers')
 				component_to_retrieve.members = component.name
