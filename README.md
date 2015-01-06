@@ -10,8 +10,8 @@ The tool uses the following technologies:
 - Celery
 - Redis
 - Salesforce Tooling API
-- Salesforce REST APi
-- 
+- Salesforce Metadata APi
+
 ## Setup
 
 1. Create Heroku application
