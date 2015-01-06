@@ -365,8 +365,8 @@ def compare_orgs_task(job):
 
 			# Append components
 			for component in component_type.sorted_components():
-				left_components.append(component_type.name + '_-_' + component.name)
-				component_map['left' + component_type.name + '_-_' + component.name] = component
+				left_components.append(component_type.name + '***' + component.name)
+				component_map['left' + component_type.name + '***' + component.name] = component
 
 		# Create a list of the right component type names
 		right_components = []
@@ -375,8 +375,8 @@ def compare_orgs_task(job):
 			right_components.append(component_type.name)
 			
 			for component in component_type.sorted_components():
-				right_components.append(component_type.name + '_-_' + component.name)
-				component_map['right' + component_type.name + '_-_' + component.name] = component
+				right_components.append(component_type.name + '***' + component.name)
+				component_map['right' + component_type.name + '***' + component.name] = component
 
 		# Start the unique list
 		all_components_unique = list(left_components)
@@ -396,7 +396,7 @@ def compare_orgs_task(job):
 
 			if row_value in left_components and row_value not in right_components:
 
-				if '_-_' not in row_value:
+				if '***' not in row_value:
 
 					html_output += '<tr class="type type_' + row_value + '">'
 					html_output += '<td>'
@@ -407,9 +407,9 @@ def compare_orgs_task(job):
 
 				else:
 
-					html_output += '<tr class="component danger component_' + row_value.split('_-_')[0] + '">'
+					html_output += '<tr class="component danger component_' + row_value.split('***')[0] + '">'
 					html_output += '<td id="' + row_value + '" class="left_only">'
-					html_output += row_value.split('_-_')[1]
+					html_output += row_value.split('***')[1]
 					html_output += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
 					html_output += '</td>'
 					html_output += '<td></td>'
@@ -418,7 +418,7 @@ def compare_orgs_task(job):
 
 			elif row_value not in left_components and row_value in right_components:
 
-				if '_-_' not in row_value:
+				if '***' not in row_value:
 
 					html_output += '<tr class="type type_' + row_value + '">'
 					html_output += '<td></td>'
@@ -429,17 +429,17 @@ def compare_orgs_task(job):
 
 				else:
 
-					html_output += '<tr class="component danger component_' + row_value.split('_-_')[0] + '">'
+					html_output += '<tr class="component danger component_' + row_value.split('***')[0] + '">'
 					html_output += '<td></td>'
 					html_output += '<td id="' + row_value + '" class="right_only">'
-					html_output += row_value.split('_-_')[1]
+					html_output += row_value.split('***')[1]
 					html_output += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
 					html_output += '</td>'
 					html_output += '</tr>'
 
 			elif row_value in left_components and row_value in right_components:
 
-				if '_-_' not in row_value:
+				if '***' not in row_value:
 
 					html_output += '<tr class="type type_' + row_value + '">'
 					html_output += '<td>'
@@ -455,13 +455,13 @@ def compare_orgs_task(job):
 					# If identical 
 					if component_map['left' + row_value].content == component_map['right' + row_value].content:
 
-						html_output += '<tr class="component success component_' + row_value.split('_-_')[0] + '">'
+						html_output += '<tr class="component success component_' + row_value.split('***')[0] + '">'
 						html_output += '<td id="' + row_value + '" class="both_same">'
-						html_output += row_value.split('_-_')[1]
+						html_output += row_value.split('***')[1]
 						html_output += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
 						html_output += '</td>'
 						html_output += '<td id="' + row_value + '" class="both_same">'
-						html_output += row_value.split('_-_')[1]
+						html_output += row_value.split('***')[1]
 						html_output += '</td>'
 						html_output += '</tr>'
 
@@ -473,13 +473,13 @@ def compare_orgs_task(job):
 						diff_tool = HtmlDiff()
 						diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'), context=True)
 
-						html_output += '<tr class="component warning component_' + row_value.split('_-_')[0] + '">'
+						html_output += '<tr class="component warning component_' + row_value.split('***')[0] + '">'
 						html_output += '<td id="' + row_value + '" class="diff">'
-						html_output += row_value.split('_-_')[1]
+						html_output += row_value.split('***')[1]
 						html_output += '<textarea style="display:none;">' +  diff_html + '</textarea>'
 						html_output += '</td>'
 						html_output += '<td id="' + row_value + '" class="diff">'
-						html_output += row_value.split('_-_')[1]
+						html_output += row_value.split('***')[1]
 						html_output += '</td>'
 						html_output += '</tr>'
 

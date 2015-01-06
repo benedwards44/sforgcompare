@@ -24,7 +24,7 @@ $(document).ready(function ()
 	// Open code view modal
 	$('tr.component td').click(function() 
 	{
-		var componentName = $(this).attr('id').split('.');	
+		var componentName = $(this).attr('id').split('***');	
 		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
 
 		var metadata;
