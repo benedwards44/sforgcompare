@@ -1,4 +1,4 @@
-sforgcompare
+Salesforce Org Compare
 ============
 
 Salesforce + Heroku application which compares metadata between two environments and presents the differences. The application is currently running at https://sforgcompare.herokuapp.com.
