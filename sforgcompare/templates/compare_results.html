@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block scripts %}
+<script src="//code.jquery.com/jquery-migrate-1.1.0.js"></script>
+<script type="text/javascript" src="/static/jquery-syntaxhighlighter/jquery.syntaxhighlighter.min.js"></script>
+<script type="text/javascript" src="/static/js/compare.js"></script>
+{% endblock %}
+
+{% block content %}
+
+	<select class="form-control" style="width:300px;" id="display_option">
+		<option value="all">Show All Components</option>
+		<option value="diff" selected="selected">Show Only Differences</option>
+	</select>
+
+	{% autoescape off %}
+		{{ job_html }}
+	{% endautoescape %}
+
+	<div class="alert alert-info" role="alert" id="no_differences_message">
+		<p>
+			There are no differences between the Orgs selected.
+		</p>
+	</div>
+
+	<div class="modal fade" id="viewCodeModal" tabindex="-1" role="dialog" aria-labelledby="codeModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">
+	        			<span aria-hidden="true">&times;</span>
+	        			<span class="sr-only">Close</span>
+	        		</button>
+	        		<h3 class="modal-title" id="codeModalLabel"></h3>
+	      		</div>
+	      		<div class="modal-body">
+	      			<div id="top_scrollbar">
+	                    <div id="scrollbar"></div>
+	                </div>
+	      			<div id="codeModalBody"></div>
+	      		</div>
+	      		<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			    </div>
+	    	</div>
+	  	</div>
+	</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Salesforce.com Org Compare Tool</title>
+		<meta name="keywords" content="salesforce, salesforce.com, force.com, compare, merge, sforgcompare" />
+  		<meta name="description" content="Compare the all metadata between Salesforce Orgs. Useful for seeing missing changes, customisation and building change sets or deployment packages." />
+  		<meta name="author" content="Ben Edwards (ben@benedwards.co.nz)" />
+  		<meta charset="UTF-8" />
+
+  		{% block css %}{% endblock %}
+  		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
+		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/vnd.microsoft.icon" />
+		
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script type="text/javascript" src="/static/js/main.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		{% block scripts %}{% endblock %}
+	</head>	
+
+	<body>
+
+		<div id="wrapper">
+
+			<a href="http://www.tquila.com" class="logo" target="_blank">
+				<img src="/static/images/tquila-logo@1x.png" style="" border="0" />
+			</a>
+
+			<div class="contact">
+				<a href="https://packagebuilder.herokuapp.com" target="_blank">Package Builder</a>
+				&nbsp;|&nbsp;
+				<a href="https://schemalister.herokuapp.com" target="_blank">Schema Lister</a>
+				&nbsp;|&nbsp;
+				<a href="https://twitter.com/benedwards44" target="_blank">@benedwards44</a>
+			</div>
+
+			<div class="clear"></div>
+
+			<div id="container">
+				{% block content %}{% endblock %}
+			</div>
+
+		</div>
+
+	</body>
+
+</html>
