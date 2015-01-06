@@ -11,3 +11,10 @@ The tool uses the following technologies:
 - Redis
 - Salesforce Tooling API
 - Salesforce REST APi
+- 
+## Setup
+
+1. Create Heroku application
+2. Install Heroku addons - Database, PostMark (outbound email tool), RedisToGo, Heroku Scheduler
+2. Deploy code
+3. Set up variables in settings.py - Salesforce OAuth config and email settings
