@@ -486,7 +486,7 @@ def compare_orgs_task(job):
 						html_output += '<tr class="component warning component_' + row_value.split('***')[0] + '">'
 						html_output += '<td id="' + row_value + '" class="diff">'
 						html_output += row_value.split('***')[1]
-						html_output += '<textarea style="display:none;">' +  diff_html + '</textarea>'
+						html_output += '<div style="display:none;" class="diff_content">' +  diff_html + '</textarea>'
 						html_output += '</td>'
 						html_output += '<td id="' + row_value + '" class="diff">'
 						html_output += row_value.split('***')[1]

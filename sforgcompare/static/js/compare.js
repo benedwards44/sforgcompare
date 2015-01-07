@@ -37,7 +37,6 @@ $(document).ready(function ()
 		else
 		{
 			metadata = $(this).parent().find('textarea').val()
-											.replace(/nowrap="nowrap"/g,'')
 											.replace(/</g, '&lt;')
 											.replace(/>/g,'&gt;')
 											.replace(/\n/g, '<br/>');
