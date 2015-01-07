@@ -478,8 +478,6 @@ def compare_orgs_task(job):
 					# Files differ - time to compare
 					else:
 
-						print 'Start Diff'
-
 						diff_tool = HtmlDiff()
 						diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
 
@@ -492,8 +490,6 @@ def compare_orgs_task(job):
 						html_output += row_value.split('***')[1]
 						html_output += '</td>'
 						html_output += '</tr>'
-
-						print 'End Diff'
 
 		html_output += '</tbody>'
 		html_output += '</table>'
