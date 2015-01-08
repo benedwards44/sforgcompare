@@ -22,9 +22,18 @@ $(document).ready(function ()
 	// Open code view modal
 	$('tr.component td').click(function() 
 	{
+		if ( $(this).hasClass('diff') )
+		{
+			$('#viewCodeModal').html(getDiffHtml($(this).attr('id')));
+		}
+		else
+		{
+			var $content = $('<pre class="highlight">' + getContent($(this).attr('id')) + '</pre>');
+			$content.syntaxHighlight();
+			$('#codeModalBody').html($content);
+	        $.SyntaxHighlighter.init();
+		}
 		
-		
-
 		// Load modal
 		$('#viewCodeModal').modal();
 	});
