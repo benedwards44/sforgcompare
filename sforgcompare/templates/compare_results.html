@@ -57,71 +57,71 @@
 			</thead>
 
 			<tbody>
-				{% for component in component_list_unique %}
+				{% for c in component_list_unique %}
 
-					{% if component.component_type_left and not component.component_type_right %}
+					{% if c.component_type_left and not c.component_type_right %}
 
-						{% if not component.component_left %}
+						{% if not c.component_left %}
 
-							<tr class="type type_{{ component.component_type_left.name }}">
-								<td>{{ component.component_type_left.name }}</td>
+							<tr class="type type_{{ c.component_type_left.name }}">
+								<td>{{ c.component_type_left.name }}</td>
 								<td></td>
 							</tr>	
 
 						{% else %}
 
-							<tr class="component danger component_{{ component.component_type_left.name }}">
-								<td id="{{ component.component_left.id }}" class="left_only">{{ component.component_left.name }}</td>
-								<td id="{{ component.component_left.id }}"></td>
+							<tr class="component danger component_{{ c.component_type_left.name }}">
+								<td id="{{ c.component_left.id }}" class="left_only">{{ c.component_left.name }}</td>
+								<td id="{{ c.component_left.id }}"></td>
 							</tr>
 
 						{% endif %}
 
 					{% endif %}
 
-					{% if not component.component_type_left and component.component_type_right %}
+					{% if not c.component_type_left and c.component_type_right %}
 
-						{% if not component.component_left %}
+						{% if not c.component_left %}
 
-							<tr class="type type_{{ component.component_type_right.name }}">
+							<tr class="type type_{{ c.component_type_right.name }}">
 								<td></td>
-								<td>{{ component.component_type_right.name }}</td>
+								<td>{{ c.component_type_right.name }}</td>
 							</tr>	
 
 						{% else %}
 
-							<tr class="component danger component_{{ component.component_type_right.name }}">
-								<td id="{{ component.component_right.id }}" class="right_only">{{ component.component_right.name }}</td>
-								<td id="{{ component.component_right.id }}"></td>
+							<tr class="component danger component_{{ c.component_type_right.name }}">
+								<td id="{{ c.component_right.id }}" class="right_only">{{ c.component_right.name }}</td>
+								<td id="{{ c.component_right.id }}"></td>
 							</tr>
 
 						{% endif %}
 
 					{% endif %}
 
-					{% if not component.component_type_left and component.component_type_right %}
+					{% if not c.component_type_left and c.component_type_right %}
 
-						{% if not component.component_left %}
+						{% if not c.component_left %}
 
-							<tr class="type type_{{ component.component_type_left.name }}">
-								<td>{{ component.component_type_left.name }}</td>
-								<td>{{ component.component_type_right.name }}</td>
+							<tr class="type type_{{ c.component_type_left.name }}">
+								<td>{{ c.component_type_left.name }}</td>
+								<td>{{ c.component_type_right.name }}</td>
 							</tr>	
 
 						{% else %}
 
-							{% if not component.diff %}
+							{% if not c.diff %}
 
-								<tr class="component success component_{{ component.component_type_left.name }}">
-									<td id="{{ component.component_left.id }}" class="both_same">{{ component.component_left.name }}</td>
-									<td id="{{ component.component_right.id }}" class="both_same">{{ component.component_right.name }}</td>
+								<tr class="component success component_{{ c.component_type_left.name }}">
+									<td id="{{ c.component_left.id }}" class="both_same">{{ c.component_left.name }}</td>
+									<td id="{{ c.component_right.id }}" class="both_same">{{ c.component_right.name }}</td>
 								</tr>
 
 							{% else %}
 
-								<tr class="component warning component_{{ component.component_type_left.name }}">
-									<td id="{{ component.id }}" class="diff">{{ component.component_left.name }}</td>
-									<td id="{{ component.id }}" class="diff">{{ component.component_right.name }}</td>
+								<tr class="component warning component_{{ c.component_type_left.name }}">
+									<td id="{{ c.id }}" class="diff">{{ c.component_left.name }}</td>
+									<td id="{{ c.id }}" class="diff">{{ c.component_right.name }}</td>
 								</tr>
 
 							{% endif %}
