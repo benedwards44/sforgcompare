@@ -23,19 +23,40 @@ $(document).ready(function ()
 	// Open code view modal
 	$('tr.component td').click(function() 
 	{
-
-		console.log(getContent('9'));
-
 		if ( $(this).hasClass('diff') )
 		{
-			$('#viewCodeModal').html(getDiffHtml($(this).attr('id')));
+			$.ajax(
+			{
+			    url: '/get_diffhtml/' + $(this).attr('id'),
+			    type: 'get',
+			    success: function(resp) 
+			    {
+			        $('#viewCodeModal').html(resp);
+			    },
+			    failure: function(resp) 
+			    { 
+			        $('#codeModalBody').html('<p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>';
+			    }
+			});
 		}
 		else
 		{
-			var $content = $('<pre class="highlight">' + getContent($(this).attr('id')) + '</pre>');
-			$content.syntaxHighlight();
-			$('#codeModalBody').html($content);
-	        $.SyntaxHighlighter.init();
+			$.ajax(
+			{
+			    url: '/get_metadata/' + $(this).attr('id'),
+			    type: 'get',
+			    success: function(resp) 
+			    {
+			        var $content = $('<pre class="highlight">' + resp + '</pre>');
+					$content.syntaxHighlight();
+					$('#codeModalBody').html($content);
+			        $.SyntaxHighlighter.init();
+			    },
+			    failure: function(resp) 
+			    { 
+			        $('#codeModalBody').html('<p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>';
+			    }
+			});
 		}
 		
 		// Load modal
@@ -105,38 +126,4 @@ function checkAnyChildVisible()
 		}
 	});
 
-}
-
-function getContent(componentId)
-{
-	$.ajax(
-	{
-	    url: '/get_metadata/' + componentId,
-	    type: 'get',
-	    success: function(resp) 
-	    {
-	        return resp;
-	    },
-	    failure: function(resp) 
-	    { 
-	        return false;
-	    }
-	});
-}
-
-function getDiffHtml(componentId)
-{
-	$.ajax(
-	{
-	    url: '/get_diffhtml/' + componentId,
-	    type: 'get',
-	    success: function(resp) 
-	    {
-	        return resp;
-	    },
-	    failure: function(resp) 
-	    { 
-	        return false;
-	    }
-	});
 }
