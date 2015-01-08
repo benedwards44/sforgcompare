@@ -354,21 +354,16 @@ def compare_orgs_task(job):
 
 	try:
 
+		print 'HELLO1'
+
 		org_left = job.sorted_orgs()[0]
 		org_right = job.sorted_orgs()[1]
-
-		html_output = '<table class="table table-hover" id="compare_results_table">'
-		html_output += '<thead>'
-		html_output += '<tr>'
-		html_output += '<th><h2>' + org_left.username + '</h2></th>'
-		html_output += '<th><h2>' + org_right.username + '</h2></th>'
-		html_output += '</th>'
-		html_output += '</thead>'
-		html_output += '<tbody>'
 
 		# Map of name to component
 		component_type_map = {}
 		component_map = {}
+
+		print 'HELLO2'
 
 		# Create a list of the left component type names
 		left_components = []
@@ -393,6 +388,8 @@ def compare_orgs_task(job):
 				right_components.append(component_type.name + '***' + component.name)
 				component_map['right' + component_type.name + '***' + component.name] = component
 
+		print 'HELLO3'
+
 		# Start the unique list
 		all_components_unique = list(left_components)
 
@@ -402,6 +399,8 @@ def compare_orgs_task(job):
 			if component_type not in all_components_unique:
 
 				all_components_unique.append(component_type)
+
+		print 'HELLO4'
 
 		# Sort alphabetically
 		all_components_unique.sort()
@@ -459,6 +458,9 @@ def compare_orgs_task(job):
 						component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
 
 			component_result.save()
+
+
+		print 'HELLO5'
 
 		job.status = 'Finished'
 
