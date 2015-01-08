@@ -84,6 +84,9 @@ $(document).ready(function ()
 
 	});
 
+	$('.loading-components').hide();
+	$('#compare_results').show();
+
 });
 
 // Check if the parent component type (eg ApexClass), has any children. If not, ApexClass won't display at all

@@ -8,31 +8,52 @@
 
 {% block content %}
 
-	<select class="form-control" id="display_option">
-        <option value="all">Show All Components</option>
-        <option value="diff" selected="selected">Show Only Differences</option>
-    </select>
+	<div class="loading-components" style="display:block;">
 
-    <div id="legend">
-        <div class="alert alert-success legend" role="alert" id="legend_match">
-            Match
-        </div>
-        <div class="alert alert-warning legend" role="alert" id="legend_diff">
-            Diff in file
-        </div>
-        <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
-            New file
-        </div>
-    </div>
+		<div style="float:left;">
+			<img src="/static/images/loading.gif" alt="Loading" title="Loading" />
+		</div>
 
-	{% autoescape off %}
-		{{ job_html }}
-	{% endautoescape %}
+		<div style="float:left;margin-left:20px;">
+			<h1 style="font-size:1.5em;margin-top:20px;">
+				Loading Org compare results
+			</h1>
+			<p>
+				Almost there...
+			</p>
+		</div>
 
-	<div class="alert alert-info" role="alert" id="no_differences_message">
-		<p>
-			There are no differences between the Orgs selected.
-		</p>
+	</div>
+
+	<div id="compare_results">
+
+		<select class="form-control" id="display_option">
+	        <option value="all">Show All Components</option>
+	        <option value="diff" selected="selected">Show Only Differences</option>
+	    </select>
+
+	    <div id="legend">
+	        <div class="alert alert-success legend" role="alert" id="legend_match">
+	            Match
+	        </div>
+	        <div class="alert alert-warning legend" role="alert" id="legend_diff">
+	            Diff in file
+	        </div>
+	        <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
+	            New file
+	        </div>
+	    </div>
+
+		{% autoescape off %}
+			{{ job_html }}
+		{% endautoescape %}
+
+		<div class="alert alert-info" role="alert" id="no_differences_message">
+			<p>
+				There are no differences between the Orgs selected.
+			</p>
+		</div>
+
 	</div>
 
 	<div class="modal fade" id="viewCodeModal" tabindex="-1" role="dialog" aria-labelledby="codeModalLabel" aria-hidden="true">
