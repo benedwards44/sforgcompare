@@ -26,6 +26,7 @@ def index(request):
 			job.created_date = datetime.datetime.now()
 			job.status = 'Not Started'
 			job.email = job_form.cleaned_data['email']
+			job.password = job_form.cleaned_data['password']
 			if job_form.cleaned_data['email_choice'] == 'yes':
 				job.email_result = True
 			else:
