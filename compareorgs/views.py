@@ -199,7 +199,7 @@ def compare_results(request, job_id):
 	job = get_object_or_404(Job, pk = job_id)
 	org_left = job.sorted_orgs()[0]
 	org_right = job.sorted_orgs()[1]
-	component_list_unique = ComponentListUnique.objects.filter(job = job.id).order_by('component_type__name', 'component__name')
+	component_list_unique = job.sorted_component_list()
 
 	if job.status != 'Finished':
 		return HttpResponseRedirect('/compare_orgs/' + str(job.id) + '/?api=' + job.api_choice)
