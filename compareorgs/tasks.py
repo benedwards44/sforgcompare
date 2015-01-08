@@ -350,114 +350,112 @@ def compare_orgs_task(job):
 	job.status = 'Comparing'
 	job.save()
 
-	#try:
+	try:
 
-	org_left = job.sorted_orgs()[0]
-	org_right = job.sorted_orgs()[1]
+		org_left = job.sorted_orgs()[0]
+		org_right = job.sorted_orgs()[1]
 
-	# Map of name to component
-	component_type_map = {}
-	component_map = {}
+		# Map of name to component
+		component_type_map = {}
+		component_map = {}
 
-	# Create a list of the left component type names
-	left_components = []
-	for component_type in org_left.sorted_component_types():
+		# Create a list of the left component type names
+		left_components = []
+		for component_type in org_left.sorted_component_types():
 
-		left_components.append(component_type.name)
-		component_type_map['left' + component_type.name] = component_type
+			left_components.append(component_type.name)
+			component_type_map['left' + component_type.name] = component_type
 
-		# Append components
-		for component in component_type.sorted_components():
-			left_components.append(component_type.name + '***' + component.name)
-			component_map['left' + component_type.name + '***' + component.name] = component
+			# Append components
+			for component in component_type.sorted_components():
+				left_components.append(component_type.name + '***' + component.name)
+				component_map['left' + component_type.name + '***' + component.name] = component
 
-	# Create a list of the right component type names
-	right_components = []
-	for component_type in org_right.sorted_component_types():
+		# Create a list of the right component type names
+		right_components = []
+		for component_type in org_right.sorted_component_types():
 
-		right_components.append(component_type.name)
-		component_type_map['right' + component_type.name] = component_type
-		
-		for component in component_type.sorted_components():
-			right_components.append(component_type.name + '***' + component.name)
-			component_map['right' + component_type.name + '***' + component.name] = component
-
-	# Start the unique list
-	all_components_unique = list(left_components)
-
-	# Add all right components that aren't in the list
-	for component_type in right_components:
-
-		if component_type not in all_components_unique:
-
-			all_components_unique.append(component_type)
-
-	# Sort alphabetically
-	all_components_unique.sort()
-
-	# Start to build the HTML for the table
-	for row_value in all_components_unique:
-
-		component_result = ComponentListUnique()
-		component_result.job = job
-		component_result.diff = False
-
-		if row_value in left_components and row_value not in right_components:
-
-			if '***' not in row_value:
-
-				component_result.component_type_left = component_type_map['left' + row_value]
-
-			else:
-
-				component_result.component_type_left = component_map['left' + row_value].component_type
-				component_result.component_left = component_map['left' + row_value]
-				
-
-		elif row_value not in left_components and row_value in right_components:
+			right_components.append(component_type.name)
+			component_type_map['right' + component_type.name] = component_type
 			
-			if '***' not in row_value:
+			for component in component_type.sorted_components():
+				right_components.append(component_type.name + '***' + component.name)
+				component_map['right' + component_type.name + '***' + component.name] = component
 
-				component_result.component_type_right = component_type_map['right' + row_value]
+		# Start the unique list
+		all_components_unique = list(left_components)
 
-			else:
+		# Add all right components that aren't in the list
+		for component_type in right_components:
 
-				component_result.component_type_right = component_map['right' + row_value].component_type
-				component_result.component_right = component_map['right' + row_value]
+			if component_type not in all_components_unique:
 
-		elif row_value in left_components and row_value in right_components:
+				all_components_unique.append(component_type)
 
-			if '***' not in row_value:
+		# Sort alphabetically
+		all_components_unique.sort()
 
-				component_result.component_type_left = component_type_map['left' + row_value]
-				component_result.component_type_right = component_type_map['right' + row_value]
+		# Start to build the HTML for the table
+		for row_value in all_components_unique:
 
-			else:
+			component_result = ComponentListUnique()
+			component_result.job = job
+			component_result.diff = False
 
-				component_result.component_type_left = component_map['left' + row_value].component_type
-				component_result.component_left = component_map['left' + row_value]
-				component_result.component_type_right = component_map['right' + row_value].component_type
-				component_result.component_right = component_map['right' + row_value]
+			if row_value in left_components and row_value not in right_components:
 
-				# If diff exists
-				if component_map['left' + row_value].content != component_map['right' + row_value].content:
+				if '***' not in row_value:
 
-					component_result.diff = True
+					component_result.component_type_left = component_type_map['left' + row_value]
 
-					diff_tool = HtmlDiff()
-					component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
+				else:
+
+					component_result.component_type_left = component_map['left' + row_value].component_type
+					component_result.component_left = component_map['left' + row_value]
 					
-		component_result.save()
 
+			elif row_value not in left_components and row_value in right_components:
+				
+				if '***' not in row_value:
 
-	"""
-		job.status = 'Finished'
+					component_result.component_type_right = component_type_map['right' + row_value]
 
-		email_body = 'Your Org compare job is complete:\n'
-		email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.id)
-		email_body += '\n\nYour result will be deleted in an hour, or when you view the result.'
+				else:
 
-		email_subject = 'Your Salesforce Org Compare results are ready.'
+					component_result.component_type_right = component_map['right' + row_value].component_type
+					component_result.component_right = component_map['right' + row_value]
+
+			elif row_value in left_components and row_value in right_components:
+
+				if '***' not in row_value:
+
+					component_result.component_type_left = component_type_map['left' + row_value]
+					component_result.component_type_right = component_type_map['right' + row_value]
+
+				else:
+
+					component_result.component_type_left = component_map['left' + row_value].component_type
+					component_result.component_left = component_map['left' + row_value]
+					component_result.component_type_right = component_map['right' + row_value].component_type
+					component_result.component_right = component_map['right' + row_value]
+
+					# If diff exists
+					if component_map['left' + row_value].content != component_map['right' + row_value].content:
+
+						component_result.diff = True
+
+						diff_tool = HtmlDiff()
+						component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
+						
+			component_result.save()
+
+			job.status = 'Finished'
+
+			email_body = 'Your Org compare job is complete:\n'
+			email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.id)
+			email_body += '\n\nYour result will be deleted in an hour, or when you view the result.'
+
+			email_subject = 'Your Salesforce Org Compare results are ready.'
 
 	except Exception as error:
 
@@ -465,7 +463,6 @@ def compare_orgs_task(job):
 		job.error = error
 
 		send_error_email(job, error)
-	"""
 
 
 	job.finished_date = datetime.datetime.now()
