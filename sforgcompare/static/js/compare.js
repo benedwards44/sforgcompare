@@ -23,6 +23,7 @@ $(document).ready(function ()
 	// Open code view modal
 	$('tr.component td').click(function() 
 	{
+		// If diff file - query for diff HTML that Python generated
 		if ( $(this).hasClass('diff') )
 		{
 			$.ajax(
@@ -35,10 +36,11 @@ $(document).ready(function ()
 			    },
 			    failure: function(resp) 
 			    { 
-			        $('#codeModalBody').html('<p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>';
+			        $('#codeModalBody').html('<div class="alert alert-danger" role="alert"><p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>>/div>');
 			    }
 			});
 		}
+		// Otherwise obtain metadata for display
 		else
 		{
 			$.ajax(
@@ -54,7 +56,7 @@ $(document).ready(function ()
 			    },
 			    failure: function(resp) 
 			    { 
-			        $('#codeModalBody').html('<p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>';
+			        $('#codeModalBody').html('<div class="alert alert-danger" role="alert"><p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>>/div>');
 			    }
 			});
 		}
