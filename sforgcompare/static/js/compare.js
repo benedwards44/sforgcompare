@@ -6,8 +6,6 @@ $(document).ready(function ()
 	$('tr.success').hide();
 	$('#no_differences_message').hide();
 
-	checkAnyChildVisible();
-
 	// Toggle file show and hide
 	$('tr.type td').click(function() 
 	{
@@ -86,6 +84,7 @@ $(document).ready(function ()
 
 	$('.loading-components').hide();
 	$('#compare_results').show();
+	checkAnyChildVisible();
 
 });
 
