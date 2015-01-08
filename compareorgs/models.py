@@ -34,6 +34,9 @@ class ComponentType(models.Model):
 	org = models.ForeignKey(Org)
 	name = models.CharField(max_length=255)
 
+	def __str__(self):
+        return '%s' % (self.name)
+
 	def sorted_components(self):
 		return self.component_set.order_by('name')
 
@@ -44,6 +47,9 @@ class Component(models.Model):
 	component_type = models.ForeignKey(ComponentType)
 	name = models.CharField(max_length=255)
 	content = models.TextField(blank=True, null=True)
+
+	def __str__(self):
+        return '%s' % (self.name)
 
 class ComponentListUnique(models.Model):
 	job = models.ForeignKey(Job)
