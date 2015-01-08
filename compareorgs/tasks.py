@@ -18,7 +18,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
 app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'))
 
 # Import models
-from compareorgs.models import Job, Org, ComponentType, Component
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
 
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
