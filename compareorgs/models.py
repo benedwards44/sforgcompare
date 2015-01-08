@@ -13,7 +13,7 @@ class Job(models.Model):
 		return self.org_set.order_by('org_number')
 
 	def sorted_component_list(self):
-		return self.componentlistunique_set.order_by('component_type.name, component.name')
+		return self.componentlistunique_set.order_by('component_type__name, component__name')
 
 class Org(models.Model):
 	job = models.ForeignKey(Job, blank=True, null=True)
