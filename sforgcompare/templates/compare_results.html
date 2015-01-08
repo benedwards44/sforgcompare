@@ -59,6 +59,9 @@
 			<tbody>
 				{% for c in component_list_unique %}
 
+					<p>{{ c }}</p>
+					<p>{{ c.component_left }}</p>
+
 					{% if c.component_type_left and not c.component_type_right %}
 
 						{% if not c.component_left %}
