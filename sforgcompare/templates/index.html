@@ -132,6 +132,12 @@
 
 				<div style="clear:both;margin: 5px 0;"></div>
 
+				<input type="password" class="form-control" id="id_password" name="password" placeholder="Password">
+
+				<img src="/static/images/i-icon.png" class="info_icon" data-toggle="modal" data-target="#passwordModal" />
+
+				<div style="clear:both;margin: 5px 0;"></div>
+
 				<input type="email" id="id_email" name="email" class="form-control" />
 
 				<input type="submit" id="submitCompare" value="Compare Orgs" />
@@ -202,6 +208,30 @@
 	        			For large Orgs, sometimes the process can take some time. If you'd rather do something else instead of staring at an orange loading circle then we can email you a link when the job is done so you can view your results.
 	        			<br/><br/>
 	        			Note: Because we don't want to store your metadata, the link will only be valid for an hour after the job is done. Once you've viewed your results, we clear all stored information.
+	        		</p>
+	      		</div>
+	      		<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			    </div>
+	    	</div>
+	  	</div>
+	</div>
+
+	<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+		<div class="modal-dialog small_dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">
+	        			<span aria-hidden="true">&times;</span>
+	        			<span class="sr-only">Close</span>
+	        		</button>
+	        		<h3 class="modal-title" id="passwordModalLabel">
+	        			Password
+	        		</h3>
+	      		</div>
+	      		<div class="modal-body">
+	        		<p>
+	        			Enter a password in order to protect your metadata from the public when the job has finished.
 	        		</p>
 	      		</div>
 	      		<div class="modal-footer">
