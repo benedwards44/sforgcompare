@@ -23,6 +23,9 @@ $(document).ready(function ()
 	// Open code view modal
 	$('tr.component td').click(function() 
 	{
+		var componentName = $(this).attr('id').split('***');	
+		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
+
 		// If diff file - query for diff HTML that Python generated
 		if ( $(this).hasClass('diff') )
 		{
@@ -49,10 +52,23 @@ $(document).ready(function ()
 			    type: 'get',
 			    success: function(resp) 
 			    {
-			        var $content = $('<pre class="highlight">' + resp + '</pre>');
+			    	var metadata;
+			    	if (componentName[0] == 'ApexClass' || componentName[0] == 'ApexTrigger' || componentName[0] == 'classes' || componentName[0] == 'triggers')
+			    	{
+			    		metadata = resp;
+			    	}
+			    	else
+			    	{
+			    		metadata = resp.replace(/</g, '&lt;')
+										.replace(/>/g,'&gt;')
+										.replace(/\n/g, '<br/>');
+			    	}
+
+			    	var $content = $('<pre class="highlight">' + metadata + '</pre>');
 					$content.syntaxHighlight();
 					$('#codeModalBody').html($content);
 			        $.SyntaxHighlighter.init();
+			    
 			    },
 			    failure: function(resp) 
 			    { 
