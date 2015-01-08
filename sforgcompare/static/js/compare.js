@@ -23,43 +23,7 @@ $(document).ready(function ()
 	$('tr.component td').click(function() 
 	{
 		
-		var componentName = $(this).attr('id').split('***');	
-		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
-
-		var metadata;
-
-		// If same file but diff
-		if ( $(this).hasClass('diff') )
-		{
-			// Take contents of div and put into modal
-			$('#codeModalBody').html($(this).parent().find('div.diff_content').html());
-
-			// Remove nowrap attribute. This is handled better with CSS.
-			$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
-		}
-
-		// Other new file or same. Do normal string replace and syntax highlighting
-		else
-		{
-			if (componentName[0] == 'ApexClass' || componentName[0] == 'ApexTrigger' || componentName[0] == 'classes' || componentName[0] == 'triggers')
-			{
-				metadata = $(this).parent().find('textarea').val();
-			}
-			else
-			{
-				// Remove HTML markup
-				metadata = $(this).parent().find('textarea').val()
-											.replace(/</g, '&lt;')
-											.replace(/>/g,'&gt;')
-											.replace(/\n/g, '<br/>');
-			}
-
-			var $content = $('<pre class="highlight">' + metadata + '</pre>');
-			$content.syntaxHighlight();
-			$('#codeModalBody').html($content);
-	        $.SyntaxHighlighter.init();
-
-		}
+		
 
 		// Load modal
 		$('#viewCodeModal').modal();
