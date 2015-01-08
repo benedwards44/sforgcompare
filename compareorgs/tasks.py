@@ -401,13 +401,14 @@ def compare_orgs_task(job):
 		component_result = ComponentListUnique()
 		component_result.job = job
 
-		if row_value in left_components:
+		if row_value in left_components and row_value not in right_components:
 
-			if row_value in left_components and row_value not in right_components:
+			if '***' not in row_value:
 
 				component_result.component_type_left = component_type_map['left' + row_value]
 
 			else:
+
 				component_result.component_type_left = component_map['left' + row_value].component_type
 				component_result.component_left = component_map['left' + row_value]
 				
@@ -419,6 +420,7 @@ def compare_orgs_task(job):
 				component_result.component_type_right = component_type_map['right' + row_value]
 
 			else:
+				
 				component_result.component_type_right = component_map['right' + row_value].component_type
 				component_result.component_right = component_map['right' + row_value]
 
