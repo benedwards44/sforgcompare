@@ -23,6 +23,9 @@ $(document).ready(function ()
 	// Open code view modal
 	$('tr.component td').click(function() 
 	{
+		// Set loading gif while metadata loads
+		$('#codeModalBody').html('<img src="/static/images/loading.gif" alt="Loading" title="Loading" />');
+
 		var componentName = $(this).attr('id').split('***');	
 		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
 
@@ -68,7 +71,6 @@ $(document).ready(function ()
 					$content.syntaxHighlight();
 					$('#codeModalBody').html($content);
 			        $.SyntaxHighlighter.init();
-			    
 			    },
 			    failure: function(resp) 
 			    { 
