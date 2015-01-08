@@ -53,9 +53,9 @@ class Component(models.Model):
 
 class ComponentListUnique(models.Model):
 	job = models.ForeignKey(Job)
-	component_type_left = models.ForeignKey(ComponentType, related_name='component_unique_left')
+	component_type_left = models.ForeignKey(ComponentType, related_name='component_unique_left', blank=True, null=True)
 	component_left = models.ForeignKey(Component, related_name='component_left', blank=True, null=True)
-	component_type_right = models.ForeignKey(ComponentType, related_name='component_unique_right')
+	component_type_right = models.ForeignKey(ComponentType, related_name='component_unique_right', blank=True, null=True)
 	component_right = models.ForeignKey(Component, related_name='component_right', blank=True, null=True)
 	diff = models.BooleanField()
 	diff_html = models.TextField(blank=True, null=True)
