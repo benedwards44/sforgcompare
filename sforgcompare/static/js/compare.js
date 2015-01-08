@@ -100,10 +100,34 @@ function checkAnyChildVisible()
 
 function getContent(componentId)
 {
-
+	$.ajax(
+	{
+	    url: '/get_metadata/' + componentId,
+	    type: 'get',
+	    success: function(resp) 
+	    {
+	        return resp;
+	    },
+	    failure: function(resp) 
+	    { 
+	        return false;
+	    }
+	});
 }
 
 function getDiffHtml(componentId)
 {
-	
+	$.ajax(
+	{
+	    url: '/get_diffhtml/' + componentId,
+	    type: 'get',
+	    success: function(resp) 
+	    {
+	        return resp;
+	    },
+	    failure: function(resp) 
+	    { 
+	        return false;
+	    }
+	});
 }

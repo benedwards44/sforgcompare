@@ -412,25 +412,50 @@ def compare_orgs_task(job):
 			component_result.job = job
 
 			if row_value in left_components:
-				component_result.component_type_left = component_type_map['left' + row_value.split('***')[0]]
-				component_result.component_left = component_map['left' + row_value]
+
+				if '***' not in row_value:
+					
+					component_result.component_type_left = component_type_map['left' + row_value]
+
+				else:
+					component_result.component_type_left = component_map['left' + row_value].component_type
+					component_result.component_left = component_map['left' + row_value]
+					
 
 			if row_value in right_components:
-				component_result.component_type_right = component_type_map['right' + row_value.split('***')[0]]
-				component_result.component_right = component_map['right' + row_value]
+				
+				if '***' not in row_value:
+
+					component_result.component_type_right = component_type_map['right' + row_value]
+
+				else:
+					component_result.component_type_right = component_map['right' + row_value].component_type
+					component_result.component_right = component_map['right' + row_value]
 
 			if row_value in left_components and row_value in right_components:
 
-				# If both files the same
-				if component_map['left' + row_value].content == component_map['right' + row_value].content:
-					component_result.diff = False
+				if '***' not in row_value:
 
-				# diff exists in files
+					component_result.component_type_left = component_type_map['left' + row_value]
+					component_result.component_type_right = component_type_map['right' + row_value]
+
 				else:
-					component_result.diff = True
 
-					diff_tool = HtmlDiff()
-					component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
+					component_result.component_type_left = component_map['left' + row_value].component_type
+					component_result.component_left = component_map['left' + row_value]
+					component_result.component_type_right = component_map['right' + row_value].component_type
+					component_result.component_right = component_map['right' + row_value]
+
+					# If both files the same
+					if component_map['left' + row_value].content == component_map['right' + row_value].content:
+						component_result.diff = False
+
+					# diff exists in files
+					else:
+						component_result.diff = True
+
+						diff_tool = HtmlDiff()
+						component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
 
 			component_result.save()
 
