@@ -403,6 +403,11 @@ def compare_orgs_task(job):
 		component_result = ComponentListUnique()
 		component_result.job = job
 
+		"""
+
+		component_result = ComponentListUnique()
+		component_result.job = job
+
 		if row_value in left_components:
 
 			if '***' not in row_value:
@@ -448,6 +453,8 @@ def compare_orgs_task(job):
 
 					diff_tool = HtmlDiff()
 					component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
+
+		"""
 
 		component_result.save()
 
