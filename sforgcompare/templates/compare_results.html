@@ -59,13 +59,6 @@
 			<tbody>
 				{% for c in component_list_unique %}
 
-					
-					<p>{{ c.component_type_left.name }}</p>
-					<p>{{ c.component_left.name }}</p>
-					<p>{{ c.component_type_right.name }}</p>
-					<p>{{ c.component_right.name }}</p>
-					
-
 					{% if c.component_type_left and not c.component_type_right %}
 
 						{% if not c.component_left %}
@@ -106,7 +99,7 @@
 
 					{% endif %}
 
-					{% if not c.component_type_left and c.component_type_right %}
+					{% if c.component_type_left and c.component_type_right %}
 
 						{% if not c.component_left %}
 
