@@ -26,8 +26,11 @@ $(document).ready(function ()
 		// Set loading gif while metadata loads
 		$('#codeModalBody').html('<img src="/static/images/loading.gif" alt="Loading" title="Loading" />');
 
-		var componentName = $(this).attr('id').split('***');	
-		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
+		// Set label of the modal
+		$('#codeModalLabel').text($(this).attr('name'));
+
+		// Component type of the cell clicked
+		var componentType = $(this).parent().attr('class').split('_')[0];
 
 		// If diff file - query for diff HTML that Python generated
 		if ( $(this).hasClass('diff') )
@@ -56,7 +59,7 @@ $(document).ready(function ()
 			    success: function(resp) 
 			    {
 			    	var metadata;
-			    	if (componentName[0] == 'ApexClass' || componentName[0] == 'ApexTrigger' || componentName[0] == 'classes' || componentName[0] == 'triggers')
+			    	if (componentType == 'ApexClass' || componentType == 'ApexTrigger' || componentType == 'classes' || componentType == 'triggers')
 			    	{
 			    		metadata = resp;
 			    	}
