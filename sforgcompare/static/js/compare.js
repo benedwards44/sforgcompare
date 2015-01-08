@@ -43,6 +43,9 @@ $(document).ready(function ()
 			    success: function(resp) 
 			    {
 			        $('#viewCodeModal').html(resp);
+			        
+			        // Remove nowrap attribute. This is handled better with CSS.
+					$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
 			    },
 			    failure: function(resp) 
 			    { 
