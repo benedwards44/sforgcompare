@@ -27,7 +27,7 @@ $(document).ready(function ()
 		$('#codeModalBody').html('<img src="/static/images/loading.gif" alt="Loading" title="Loading" width="30" height="30" />');
 
 		// Component type of the cell clicked
-		var componentType = $(this).parent().attr('class').split('_')[0];
+		var componentType = $(this).parent().attr('class').split('_')[1];
 		var componentName = $(this).text();
 
 		// Set label of the modal
@@ -43,7 +43,7 @@ $(document).ready(function ()
 			    success: function(resp) 
 			    {
 			        $('#viewCodeModal').html(resp);
-			        
+
 			        // Remove nowrap attribute. This is handled better with CSS.
 					$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
 			    },
