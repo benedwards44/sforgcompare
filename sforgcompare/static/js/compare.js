@@ -27,8 +27,8 @@ $(document).ready(function ()
 		$('#codeModalBody').html('<img src="/static/images/loading.gif" alt="Loading" title="Loading" width="30" height="30" />');
 
 		// Component type of the cell clicked
-		var componentType = $(this).parent().attr('class').split('_')[1];
-		var componentName = $(this).text();
+		var componentType = $(this).parent().attr('class').split('_')[1].trim();
+		var componentName = $(this).text().trim();
 
 		// Set label of the modal
 		$('#codeModalLabel').text(componentType + '/' + componentName);
