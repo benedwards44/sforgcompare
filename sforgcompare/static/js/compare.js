@@ -24,13 +24,14 @@ $(document).ready(function ()
 	$('tr.component td').click(function() 
 	{
 		// Set loading gif while metadata loads
-		$('#codeModalBody').html('<img src="/static/images/loading.gif" alt="Loading" title="Loading" />');
-
-		// Set label of the modal
-		$('#codeModalLabel').text($(this).attr('name'));
+		$('#codeModalBody').html('<img src="/static/images/loading.gif" alt="Loading" title="Loading" width="30" height="30" />');
 
 		// Component type of the cell clicked
 		var componentType = $(this).parent().attr('class').split('_')[0];
+		var componentName = $(this).text();
+
+		// Set label of the modal
+		$('#codeModalLabel').text(componentType + '/' + componentName);
 
 		// If diff file - query for diff HTML that Python generated
 		if ( $(this).hasClass('diff') )

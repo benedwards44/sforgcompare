@@ -52,7 +52,7 @@
 					{% else %}
 
 						<tr class="component danger component_{{ c.component_type_left.name }}">
-							<td id="{{ c.component_left.id }}" class="left_only" name="{{ c.component_type_left.name }} - {{ c.component_left.name }}">
+							<td id="{{ c.component_left.id }}" class="left_only">
 								{{ c.component_left.name }}
 							</td>
 							<td id="{{ c.component_left.id }}"></td>
@@ -75,7 +75,7 @@
 
 						<tr class="component danger component_{{ c.component_type_right.name }}">
 							<td id="{{ c.component_right.id }}"></td>
-							<td id="{{ c.component_right.id }}" class="right_only" name="{{ c.component_type_right.name }} - {{ c.component_right.name }}">
+							<td id="{{ c.component_right.id }}" class="right_only">
 								{{ c.component_right.name }}
 							</td>
 						</tr>
@@ -105,8 +105,8 @@
 						{% else %}
 
 							<tr class="component warning component_{{ c.component_type_left.name }}">
-								<td id="{{ c.id }}" class="diff" name="{{ c.component_type_left.name }} - {{ c.component_left.name }}">{{ c.component_left.name }}</td>
-								<td id="{{ c.id }}" class="diff" name="{{ c.component_type_right.name }} - {{ c.component_right.name }}">{{ c.component_right.name }}</td>
+								<td id="{{ c.id }}" class="diff">{{ c.component_left.name }}</td>
+								<td id="{{ c.id }}" class="diff">{{ c.component_right.name }}</td>
 							</tr>
 
 						{% endif %}
@@ -141,7 +141,6 @@
 	                    <div id="scrollbar"></div>
 	                </div>
 	      			<div id="codeModalBody">
-	      				<img src="/static/images/loading.gif" alt="Loading" title="Loading" />
 	      			</div>
 	      		</div>
 	      		<div class="modal-footer">
