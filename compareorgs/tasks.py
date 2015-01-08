@@ -458,7 +458,8 @@ def compare_orgs_task(job):
 
 			email_body = 'Your Org compare job is complete:\n'
 			email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.id)
-			email_body += '\n\nYour result will be deleted in an hour, or when you view the result.'
+			email_body += '\n\nYour password to access the result is: ' + job.password
+			email_body += '\n\nYour result will be deleted after one day in order to avoid storing any metadata.'
 
 			email_subject = 'Your Salesforce Org Compare results are ready.'
 
