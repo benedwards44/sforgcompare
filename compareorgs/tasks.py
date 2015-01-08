@@ -7,7 +7,6 @@ from postmark import PMMail
 from suds.client import Client
 from base64 import b64decode
 from zipfile import ZipFile
-from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
 import os
 import json	
 import requests
