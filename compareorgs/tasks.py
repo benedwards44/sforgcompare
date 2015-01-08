@@ -270,6 +270,8 @@ def download_metadata_metadata(job, org):
 @app.task
 def download_metadata_tooling(job, org):
 
+	print 'HELLOHELLOHELLO'
+
 	org.status = 'Downloading Metadata'
 	org.save()
 	
@@ -414,7 +416,7 @@ def compare_orgs_task(job):
 			if row_value in left_components:
 
 				if '***' not in row_value:
-					
+
 					component_result.component_type_left = component_type_map['left' + row_value]
 
 				else:
