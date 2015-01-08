@@ -119,7 +119,7 @@ a.object_link:hover {
     padding-left: 200px;
 }
 
-#id_api_choice, #id_email_choice, #id_password {
+#id_api_choice, #id_email_choice {
     width: 180px;
     float:left;
 }
