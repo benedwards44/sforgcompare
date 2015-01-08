@@ -450,7 +450,7 @@ def compare_orgs_task(job):
 			
 
 			component_result.save()
-			
+
 
 		job.status = 'Finished'
 
@@ -516,7 +516,7 @@ def send_error_email(job, error):
 	if job.email_result:
 
 		email_body = 'There was an error processing your job:\n'
-		email_body += error
+		email_body += str(error)
 		email_body += '\n\nPlease try again.'
 
 		email_subject = 'Error running Salesforce Org Compare job.'
