@@ -395,12 +395,17 @@ def compare_orgs_task(job):
 		# Sort alphabetically
 		all_components_unique.sort()
 
+		order_counter = 0
+
 		# Start to build the HTML for the table
 		for row_value in all_components_unique:
+
+			order_counter = order_counter + 1
 
 			component_result = ComponentListUnique()
 			component_result.job = job
 			component_result.diff = False
+			component_result.order = order_counter
 
 			if row_value in left_components and row_value not in right_components:
 

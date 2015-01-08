@@ -15,7 +15,7 @@ class ComponentInline(admin.TabularInline):
 
 class ComponentListUniqueInline(admin.TabularInline):
 	fields = ['component_type_left', 'component_left', 'component_type_right', 'component_right','diff']
-	ordering = ['component_type_left', 'component_left']
+	ordering = ['order']
 	model = ComponentListUnique
 	extra = 0
 
