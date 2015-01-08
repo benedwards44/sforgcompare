@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
-from compareorgs.models import Job, Org, ComponentType, Component
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
 from compareorgs.forms import JobForm
 import json	
 import requests
@@ -197,9 +197,21 @@ def compare_orgs(request, job_id):
 def compare_results(request, job_id):
 
 	job = get_object_or_404(Job, pk = job_id)
+	org_left = job.sorted_orgs()[0]
+	org_right = job.sorted_orgs()[1]
+	component_list_unique = job.sorted_component_list()
 
 	if job.status != 'Finished':
 		return HttpResponseRedirect('/compare_orgs/' + str(job.id))
 	
-	job_html = job.compare_result_html
-	return render_to_response('compare_results.html', RequestContext(request, {'job_html': job_html}))
+	return render_to_response('compare_results.html', RequestContext(request, {'org_left': org_left, 'org_right': org_right, 'component_list_unique': component_list_unique}))
+
+# AJAX endpoint for getting the metadata of a component
+def get_metadata(request, component_id):
+	component = get_object_or_404(Component, pk = component_id)
+	return HttpResponse(component.content)
+
+# AJAX endpoint for getting the diff HTML of a component
+def get_diffhtml(request, component_id):
+	component = get_object_or_404(Component, pk = component_id)
+	return HttpResponse(component.diff_html)

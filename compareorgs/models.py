@@ -3,7 +3,6 @@ from django.db import models
 class Job(models.Model):
 	created_date = models.DateTimeField(null=True,blank=True)
 	finished_date = models.DateTimeField(null=True,blank=True)
-	compare_result_html = models.TextField(null=True,blank=True)
 	api_choice = models.CharField(max_length=255,blank=True)
 	email_result = models.BooleanField()
 	email = models.CharField(max_length=255,blank=True)
@@ -12,6 +11,9 @@ class Job(models.Model):
 
 	def sorted_orgs(self):
 		return self.org_set.order_by('org_number')
+
+	def sorted_component_list(self):
+		return self.componentlistunique_set.order_by('component_type.name, component.name')
 
 class Org(models.Model):
 	job = models.ForeignKey(Job, blank=True, null=True)
@@ -41,3 +43,12 @@ class Component(models.Model):
 	component_type = models.ForeignKey(ComponentType)
 	name = models.CharField(max_length=255)
 	content = models.TextField(blank=True, null=True)
+
+class ComponentListUnique(models.Model):
+	job = models.ForeignKey(Job)
+	component_type_left = models.ForeignKey(ComponentType)
+	component_left = models.ForeignKey(Component)
+	component_type_right = models.ForeignKey(ComponentType)
+	component_right = models.ForeignKey(Component)
+	diff = models.BooleanField()
+	diff_html = models.TextField(blank=True, null=True)

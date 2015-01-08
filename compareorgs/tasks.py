@@ -7,6 +7,7 @@ from postmark import PMMail
 from suds.client import Client
 from base64 import b64decode
 from zipfile import ZipFile
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
 import os
 import json	
 import requests
@@ -365,6 +366,7 @@ def compare_orgs_task(job):
 		html_output += '<tbody>'
 
 		# Map of name to component
+		component_type_map = {}
 		component_map = {}
 
 		# Create a list of the left component type names
@@ -372,6 +374,7 @@ def compare_orgs_task(job):
 		for component_type in org_left.sorted_component_types():
 
 			left_components.append(component_type.name)
+			component_type_map['left' + component_type.name] = component_type
 
 			# Append components
 			for component in component_type.sorted_components():
@@ -383,6 +386,7 @@ def compare_orgs_task(job):
 		for component_type in org_right.sorted_component_types():
 
 			right_components.append(component_type.name)
+			component_type_map['right' + component_type.name] = component_type
 			
 			for component in component_type.sorted_components():
 				right_components.append(component_type.name + '***' + component.name)
@@ -404,102 +408,33 @@ def compare_orgs_task(job):
 		# Start to build the HTML for the table
 		for row_value in all_components_unique:
 
-			if row_value in left_components and row_value not in right_components:
+			component_result = ComponentListUnique()
+			component_result.job = job
 
-				if '***' not in row_value:
+			if row_value in left_components:
+				component_result.component_type_left = component_type_map['left' + row_value.split('***')[0]]
+				component_result.component_left = component_map['left' + row_value]
 
-					html_output += '<tr class="type type_' + row_value + '">'
-					html_output += '<td>'
-					html_output += row_value
-					html_output += '</td>'
-					html_output += '<td></td>'
-					html_output += '</tr>'
+			if row_value in right_components:
+				component_result.component_type_right = component_type_map['right' + row_value.split('***')[0]]
+				component_result.component_right = component_map['right' + row_value]
 
+			if row_value in left_components and row_value in right_components:
+
+				# If both files the same
+				if component_map['left' + row_value].content == component_map['right' + row_value].content:
+					component_result.diff = False
+
+				# diff exists in files
 				else:
+					component_result.diff = True
 
-					html_output += '<tr class="component danger component_' + row_value.split('***')[0] + '">'
-					html_output += '<td id="' + row_value + '" class="left_only">'
-					html_output += row_value.split('***')[1]
-					html_output += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
-					html_output += '</td>'
-					html_output += '<td></td>'
-					html_output += '</tr>'
+					diff_tool = HtmlDiff()
+					component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
 
+			component_result.save()
 
-			elif row_value not in left_components and row_value in right_components:
-
-				if '***' not in row_value:
-
-					html_output += '<tr class="type type_' + row_value + '">'
-					html_output += '<td></td>'
-					html_output += '<td>'
-					html_output += row_value
-					html_output += '</td>'
-					html_output += '</tr>'
-
-				else:
-
-					html_output += '<tr class="component danger component_' + row_value.split('***')[0] + '">'
-					html_output += '<td></td>'
-					html_output += '<td id="' + row_value + '" class="right_only">'
-					html_output += row_value.split('***')[1]
-					html_output += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
-					html_output += '</td>'
-					html_output += '</tr>'
-
-			elif row_value in left_components and row_value in right_components:
-
-				if '***' not in row_value:
-
-					html_output += '<tr class="type type_' + row_value + '">'
-					html_output += '<td>'
-					html_output += row_value
-					html_output += '</td>'
-					html_output += '<td>'
-					html_output += row_value
-					html_output += '</td>'
-					html_output += '</tr>'
-
-				else:
-
-					# If identical 
-					if component_map['left' + row_value].content == component_map['right' + row_value].content:
-
-						html_output += '<tr class="component success component_' + row_value.split('***')[0] + '">'
-						html_output += '<td id="' + row_value + '" class="both_same">'
-						html_output += row_value.split('***')[1]
-						html_output += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
-						html_output += '</td>'
-						html_output += '<td id="' + row_value + '" class="both_same">'
-						html_output += row_value.split('***')[1]
-						html_output += '</td>'
-						html_output += '</tr>'
-
-					# Files differ - time to compare
-					else:
-
-						diff_tool = HtmlDiff()
-						diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
-
-						html_output += '<tr class="component warning component_' + row_value.split('***')[0] + '">'
-						html_output += '<td id="' + row_value + '" class="diff">'
-						html_output += row_value.split('***')[1]
-						html_output += '<div style="display:none;" class="diff_content">' +  diff_html + '</textarea>'
-						html_output += '</td>'
-						html_output += '<td id="' + row_value + '" class="diff">'
-						html_output += row_value.split('***')[1]
-						html_output += '</td>'
-						html_output += '</tr>'
-
-		html_output += '</tbody>'
-		html_output += '</table>'
-
-		job.compare_result_html = html_output
 		job.status = 'Finished'
-
-		# Delete components
-		ComponentType.objects.filter(org = org_left.id).delete()
-		ComponentType.objects.filter(org = org_right.id).delete()
 
 		email_body = 'Your Org compare job is complete:\n'
 		email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.id)

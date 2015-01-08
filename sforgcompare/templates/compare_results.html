@@ -47,9 +47,93 @@
 	    <div style="clear:both;"></div>
 	    <hr style="width:100%;margin:0;" />
 
-		{% autoescape off %}
-			{{ job_html }}
-		{% endautoescape %}
+		<table class="table table-hover" id="compare_results_table">
+
+			<thead>
+				<tr>
+					<th><h2>{{ org_left.username }}</h2></th>
+					<th><h2>{{ org_right.username }}</h2></th>
+				</tr>
+			</thead>
+
+			<tbody>
+				{% for component in component_list_unique %}
+
+					{% if component.component_type_left and not component.component_type_right %}
+
+						{% if not component.component_left %}
+
+							<tr class="type type_{{ component.component_type_left.name }}">
+								<td>{{ component.component_type_left.name }}</td>
+								<td></td>
+							</tr>	
+
+						{% else %}
+
+							<tr class="component danger component_{{ component.component_type_left.name }}">
+								<td id="{{ component.component_left.id }}" class="left_only">{{ component.component_left.name }}</td>
+								<td id="{{ component.component_left.id }}"></td>
+							</tr>
+
+						{% endif %}
+
+					{% endif %}
+
+					{% if not component.component_type_left and component.component_type_right %}
+
+						{% if not component.component_left %}
+
+							<tr class="type type_{{ component.component_type_right.name }}">
+								<td></td>
+								<td>{{ component.component_type_right.name }}</td>
+							</tr>	
+
+						{% else %}
+
+							<tr class="component danger component_{{ component.component_type_right.name }}">
+								<td id="{{ component.component_right.id }}" class="right_only">{{ component.component_right.name }}</td>
+								<td id="{{ component.component_left.id }}"></td>
+							</tr>
+
+						{% endif %}
+
+					{% endif %}
+
+					{% if not component.component_type_left and component.component_type_right %}
+
+						{% if not component.component_left %}
+
+							<tr class="type type_{{ component.component_type_left.name }}">
+								<td>{{ component.component_type_left.name }}</td>
+								<td>{{ component.component_type_right.name }}</td>
+							</tr>	
+
+						{% else %}
+
+							{% if not component.diff %}
+
+								<tr class="component success component_{{ component.component_type_left.name }}">
+									<td id="{{ component.component_left.id }}" class="both_same">{{ component.component_left.name }}</td>
+									<td id="{{ component.component_right.id }}" class="both_same">{{ component.component_right.name }}</td>
+								</tr>
+
+							{% else %}
+
+								<tr class="component warning component_{{ component.component_type_left.name }}">
+									<td id="{{ component.component_left.id }}" class="diff">{{ component.component_left.name }}</td>
+									<td id="{{ component.component_right.id }}" class="diff">{{ component.component_right.name }}</td>
+								</tr>
+
+							{% endif %}
+
+						{% endif %}
+
+					{% endif %}
+
+				{% endfor %}
+			</tbody>
+
+		</table>
 
 		<div class="alert alert-info" role="alert" id="no_differences_message">
 			<p>
