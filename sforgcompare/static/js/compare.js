@@ -97,3 +97,13 @@ function checkAnyChildVisible()
 	});
 
 }
+
+function getContent(componentId)
+{
+
+}
+
+function getDiffHtml(componentId)
+{
+	
+}

@@ -92,7 +92,7 @@
 
 							<tr class="component danger component_{{ component.component_type_right.name }}">
 								<td id="{{ component.component_right.id }}" class="right_only">{{ component.component_right.name }}</td>
-								<td id="{{ component.component_left.id }}"></td>
+								<td id="{{ component.component_right.id }}"></td>
 							</tr>
 
 						{% endif %}
@@ -120,8 +120,8 @@
 							{% else %}
 
 								<tr class="component warning component_{{ component.component_type_left.name }}">
-									<td id="{{ component.component_left.id }}" class="diff">{{ component.component_left.name }}</td>
-									<td id="{{ component.component_right.id }}" class="diff">{{ component.component_right.name }}</td>
+									<td id="{{ component.id }}" class="diff">{{ component.component_left.name }}</td>
+									<td id="{{ component.id }}" class="diff">{{ component.component_right.name }}</td>
 								</tr>
 
 							{% endif %}

@@ -213,5 +213,5 @@ def get_metadata(request, component_id):
 
 # AJAX endpoint for getting the diff HTML of a component
 def get_diffhtml(request, component_id):
-	component = get_object_or_404(Component, pk = component_id)
+	component = get_object_or_404(ComponentListUnique, pk = component_id)
 	return HttpResponse(component.diff_html)
