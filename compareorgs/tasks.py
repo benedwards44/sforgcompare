@@ -269,8 +269,6 @@ def download_metadata_metadata(job, org):
 @app.task
 def download_metadata_tooling(job, org):
 
-	print 'HELLOHELLOHELLO'
-
 	org.status = 'Downloading Metadata'
 	org.save()
 	
@@ -400,18 +398,12 @@ def compare_orgs_task(job):
 		# Start to build the HTML for the table
 		for row_value in all_components_unique:
 
-			print row_value
-			"""
-			component_result = ComponentListUnique()
-			component_result.job = job
-
-
 			component_result = ComponentListUnique()
 			component_result.job = job
 
 			if row_value in left_components:
 
-				if '***' not in row_value:
+				if row_value in left_components and row_value not in right_components:
 
 					component_result.component_type_left = component_type_map['left' + row_value]
 
@@ -420,7 +412,7 @@ def compare_orgs_task(job):
 					component_result.component_left = component_map['left' + row_value]
 					
 
-			if row_value in right_components:
+			elif row_value not in left_components and row_value in right_components:
 				
 				if '***' not in row_value:
 
@@ -430,7 +422,7 @@ def compare_orgs_task(job):
 					component_result.component_type_right = component_map['right' + row_value].component_type
 					component_result.component_right = component_map['right' + row_value]
 
-			if row_value in left_components and row_value in right_components:
+			elif row_value in left_components and row_value in right_components:
 
 				if '***' not in row_value:
 
@@ -458,7 +450,7 @@ def compare_orgs_task(job):
 			
 
 			component_result.save()
-			"""
+			
 
 		job.status = 'Finished'
 
