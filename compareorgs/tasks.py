@@ -358,8 +358,8 @@ def compare_orgs_task(job):
 		html_output = '<table class="table table-hover" id="compare_results_table">'
 		html_output += '<thead>'
 		html_output += '<tr>'
-		html_output += '<th><h2>' + org_left.username  + ' (' + org_left.org_name + ')</h2></th>'
-		html_output += '<th><h2>' + org_right.username + ' (' + org_right.org_name + ')</h2></th>'
+		html_output += '<th><h2>' + org_left.username + '</h2></th>'
+		html_output += '<th><h2>' + org_right.username + '</h2></th>'
 		html_output += '</th>'
 		html_output += '</thead>'
 		html_output += '<tbody>'
@@ -478,22 +478,18 @@ def compare_orgs_task(job):
 					# Files differ - time to compare
 					else:
 
-						print 'Start Diff'
-
 						diff_tool = HtmlDiff()
-						diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'), context=True)
+						diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
 
 						html_output += '<tr class="component warning component_' + row_value.split('***')[0] + '">'
 						html_output += '<td id="' + row_value + '" class="diff">'
 						html_output += row_value.split('***')[1]
-						html_output += '<textarea style="display:none;">' +  diff_html + '</textarea>'
+						html_output += '<div style="display:none;" class="diff_content">' +  diff_html + '</textarea>'
 						html_output += '</td>'
 						html_output += '<td id="' + row_value + '" class="diff">'
 						html_output += row_value.split('***')[1]
 						html_output += '</td>'
 						html_output += '</tr>'
-
-						print 'End Diff'
 
 		html_output += '</tbody>'
 		html_output += '</table>'

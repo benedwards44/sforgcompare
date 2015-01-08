@@ -214,6 +214,25 @@ table.diff_header td.diff_header {
     height: 20px;
 }
 
+#display_option {
+    float:left;
+    width: 300px;
+}
+
+#legend {
+    float:right;
+    width: 500px;
+}
+
+#legend .legend {
+    width: 20%;
+    margin-left:5px;
+    float: right;
+    text-align: center;
+    height: 35px;
+    padding: 5px;
+}
+
 /* Python diff css */
 table.diff {font-family:Consolas,'Bitstream Vera Sans Mono','Courier New',Courier,monospace; border:medium; table-layout: fixed; width: 100%}
 .diff_header {background-color:#e0e0e0}

@@ -8,10 +8,22 @@
 
 {% block content %}
 
-	<select class="form-control" style="width:300px;" id="display_option">
-		<option value="all">Show All Components</option>
-		<option value="diff" selected="selected">Show Only Differences</option>
-	</select>
+	<select class="form-control" id="display_option">
+        <option value="all">Show All Components</option>
+        <option value="diff" selected="selected">Show Only Differences</option>
+    </select>
+
+    <div id="legend">
+        <div class="alert alert-success legend" role="alert" id="legend_match">
+            Match
+        </div>
+        <div class="alert alert-warning legend" role="alert" id="legend_diff">
+            Diff in file
+        </div>
+        <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
+            New file
+        </div>
+    </div>
 
 	{% autoescape off %}
 		{{ job_html }}

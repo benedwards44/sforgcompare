@@ -31,7 +31,11 @@
 				&nbsp;|&nbsp;
 				<a href="https://schemalister.herokuapp.com" target="_blank">Schema Lister</a>
 				&nbsp;|&nbsp;
+				<a href="https://github.com/benedwards44/sforgcompare" target="_blank">Source Code</a>
+				&nbsp;|&nbsp;
 				<a href="https://twitter.com/benedwards44" target="_blank">@benedwards44</a>
+				&nbsp;|&nbsp;
+				<img src="/static/images/i-icon.png" class="info_icon" data-toggle="modal" data-target="#infoModal" style="float:right;margin:0" />
 			</div>
 
 			<div class="clear"></div>
@@ -40,6 +44,40 @@
 				{% block content %}{% endblock %}
 			</div>
 
+		</div>
+
+		<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+			<div class="modal-dialog small_dialog">
+		    	<div class="modal-content">
+		      		<div class="modal-header">
+		        		<button type="button" class="close" data-dismiss="modal">
+		        			<span aria-hidden="true">&times;</span>
+		        			<span class="sr-only">Close</span>
+		        		</button>
+		        		<h3 class="modal-title" id="apiModalLabel">
+		        			Salesforce Org Compare
+		        		</h3>
+		      		</div>
+		      		<div class="modal-body">
+		        		<p>
+		        			For any errors or issues, please feel free to contact me on twitter <a href="https://twitter.com/benedwards44" target="_blank">@benedwards44</a> or via email <a href="mailto:ben@tquila.com">ben@tquila.com</a>.
+		        		</p>
+		        		<p>
+		        			I am constantly trying to update and improve this application, as well as other apps I'm working on. Feel free to contact me if you'd like to contribute or have any ideas. All my applications are open sourced on GitHub at <a href="http://github.com/benedwards44" target="_blank">http://github.com/benedwards44</a>.
+		        		</p>
+		        		<p>
+		        			If you haven't already, check out my other apps:
+		        			<ul>
+		        				<li><a href="https://packagebuilder.herokuapp.com" target="_blank">Package Builder</a></li>
+		        				<li><a href="https://schemalister.herokuapp.com" target="_blank">Schema Lister</a></li>
+		        			</ul>
+		        		</p>
+		      		</div>
+		      		<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				    </div>
+		    	</div>
+		  	</div>
 		</div>
 
 	</body>
