@@ -6,8 +6,8 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
         
-        one_hour_ago = datetime.datetime.now() - datetime.timedelta(minutes=60)
-        jobs = Job.objects.filter(finished_date__lt = one_hour_ago)
+        one_day_ago = datetime.datetime.now() - datetime.timedelta(hours=24)
+        jobs = Job.objects.filter(created_date__lt = one_day_ago)
         jobs.delete()
 
 

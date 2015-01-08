@@ -5,7 +5,6 @@ $(document).ready(function ()
 	$('tr.component').hide();
 	$('tr.success').hide();
 	$('#no_differences_message').hide();
-
 	checkAnyChildVisible();
 
 	// Toggle file show and hide
@@ -24,45 +23,69 @@ $(document).ready(function ()
 	// Open code view modal
 	$('tr.component td').click(function() 
 	{
-		
-		var componentName = $(this).attr('id').split('***');	
-		$('#codeModalLabel').text(componentName[0] + ' - ' + componentName[1]);
+		// Set loading gif while metadata loads
+		$('#codeModalBody').html('<img src="/static/images/loading.gif" alt="Loading" title="Loading" width="30" height="30" />');
 
-		var metadata;
+		// Component type of the cell clicked
+		var componentType = $(this).parent().attr('class').split('_')[1].trim();
+		var componentName = $(this).text().trim();
 
-		// If same file but diff
+		// Set label of the modal
+		$('#codeModalLabel').text(componentType + '/' + componentName);
+
+		// If diff file - query for diff HTML that Python generated
 		if ( $(this).hasClass('diff') )
 		{
-			// Take contents of div and put into modal
-			$('#codeModalBody').html($(this).parent().find('div.diff_content').html());
+			$.ajax(
+			{
+			    url: '/get_diffhtml/' + $(this).attr('id'),
+			    type: 'get',
+			    success: function(resp) 
+			    {
+			        $('#codeModalBody').html(resp);
 
-			// Remove nowrap attribute. This is handled better with CSS.
-			$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
+			        // Remove nowrap attribute. This is handled better with CSS.
+					$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
+			    },
+			    failure: function(resp) 
+			    { 
+			        $('#codeModalBody').html('<div class="alert alert-danger" role="alert"><p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>>/div>');
+			    }
+			});
 		}
-
-		// Other new file or same. Do normal string replace and syntax highlighting
+		// Otherwise obtain metadata for display
 		else
 		{
-			if (componentName[0] == 'ApexClass' || componentName[0] == 'ApexTrigger' || componentName[0] == 'classes' || componentName[0] == 'triggers')
+			$.ajax(
 			{
-				metadata = $(this).parent().find('textarea').val();
-			}
-			else
-			{
-				// Remove HTML markup
-				metadata = $(this).parent().find('textarea').val()
-											.replace(/</g, '&lt;')
-											.replace(/>/g,'&gt;')
-											.replace(/\n/g, '<br/>');
-			}
+			    url: '/get_metadata/' + $(this).attr('id'),
+			    type: 'get',
+			    success: function(resp) 
+			    {
+			    	var metadata;
+			    	if (componentType == 'ApexClass' || componentType == 'ApexTrigger' || componentType == 'classes' || componentType == 'triggers')
+			    	{
+			    		metadata = resp;
+			    	}
+			    	else
+			    	{
+			    		metadata = resp.replace(/</g, '&lt;')
+										.replace(/>/g,'&gt;')
+										.replace(/\n/g, '<br/>');
+			    	}
 
-			var $content = $('<pre class="highlight">' + metadata + '</pre>');
-			$content.syntaxHighlight();
-			$('#codeModalBody').html($content);
-	        $.SyntaxHighlighter.init();
-
+			    	var $content = $('<pre class="highlight">' + metadata + '</pre>');
+					$content.syntaxHighlight();
+					$('#codeModalBody').html($content);
+			        $.SyntaxHighlighter.init();
+			    },
+			    failure: function(resp) 
+			    { 
+			        $('#codeModalBody').html('<div class="alert alert-danger" role="alert"><p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>>/div>');
+			    }
+			});
 		}
-
+		
 		// Load modal
 		$('#viewCodeModal').modal();
 	});

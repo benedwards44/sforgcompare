@@ -1,5 +1,5 @@
 from django.contrib import admin
-from compareorgs.models import Job, Org, Component, ComponentType
+from compareorgs.models import Job, Org, Component, ComponentType, ComponentListUnique
 
 class OrgInline(admin.TabularInline):
 	fields = ['org_number','org_name', 'username', 'access_token', 'status', 'error']
@@ -11,6 +11,12 @@ class ComponentInline(admin.TabularInline):
 	fields = ['name', 'content']
 	ordering = ['name']
 	model = Component
+	extra = 0
+
+class ComponentListUniqueInline(admin.TabularInline):
+	fields = ['component_type_left', 'component_left', 'component_type_right', 'component_right','diff']
+	ordering = ['order']
+	model = ComponentListUnique
 	extra = 0
 
 class ComponentTypeAdmin(admin.ModelAdmin):

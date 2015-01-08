@@ -2,11 +2,12 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
-from compareorgs.models import Job, Org, ComponentType, Component
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
 from compareorgs.forms import JobForm
 import json	
 import requests
 import datetime
+import uuid
 from time import sleep
 from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling
 
@@ -30,6 +31,8 @@ def index(request):
 				job.email_result = True
 			else:
 				job.email_result = False
+
+			job.random_id = uuid.uuid4()
 			job.save()
 
 			org_one = Org.objects.get(pk = job_form.cleaned_data['org_one'])
@@ -40,7 +43,7 @@ def index(request):
 			org_two.job = job
 			org_two.save()
 
-			return HttpResponseRedirect('/compare_orgs/' + str(job.id) + '/?api=' + job_form.cleaned_data['api_choice'])
+			return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job_form.cleaned_data['api_choice'])
 
 	else:
 		job_form = JobForm()
@@ -136,13 +139,13 @@ def oauth_response(request):
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):
-	job = get_object_or_404(Job, pk = job_id)
+	job = get_object_or_404(Job, random_id = job_id)
 	return HttpResponse(job.status + ':::' + job.error)
 
 # Page for user to wait for job to run
 def compare_orgs(request, job_id):
 
-	job = get_object_or_404(Job, pk = job_id)
+	job = get_object_or_404(Job, random_id = job_id)
 
 	if job.status == 'Not Started':
 
@@ -189,17 +192,29 @@ def compare_orgs(request, job_id):
 
 	elif job.status == 'Finished':
 
-		return HttpResponseRedirect('/compare_result/' + str(job.id))
+		return HttpResponseRedirect('/compare_result/' + str(job.random_id))
 
 	return render_to_response('loading.html', RequestContext(request, {'job': job}))	
 
 # Page to display compare results
 def compare_results(request, job_id):
 
-	job = get_object_or_404(Job, pk = job_id)
+	job = get_object_or_404(Job, random_id = job_id)
+	org_left = job.sorted_orgs()[0]
+	org_right = job.sorted_orgs()[1]
+	component_list_unique = job.sorted_component_list()
 
 	if job.status != 'Finished':
-		return HttpResponseRedirect('/compare_orgs/' + str(job.id))
+		return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
 	
-	job_html = job.compare_result_html
-	return render_to_response('compare_results.html', RequestContext(request, {'job_html': job_html}))
+	return render_to_response('compare_results.html', RequestContext(request, {'org_left': org_left, 'org_right': org_right, 'component_list_unique': component_list_unique}))
+
+# AJAX endpoint for getting the metadata of a component
+def get_metadata(request, component_id):
+	component = get_object_or_404(Component, pk = component_id)
+	return HttpResponse(component.content)
+
+# AJAX endpoint for getting the diff HTML of a component
+def get_diffhtml(request, component_id):
+	component = get_object_or_404(ComponentListUnique, pk = component_id)
+	return HttpResponse(component.diff_html)

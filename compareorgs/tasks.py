@@ -18,7 +18,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
 app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'))
 
 # Import models
-from compareorgs.models import Job, Org, ComponentType, Component
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
 
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
@@ -355,16 +355,8 @@ def compare_orgs_task(job):
 		org_left = job.sorted_orgs()[0]
 		org_right = job.sorted_orgs()[1]
 
-		html_output = '<table class="table table-hover" id="compare_results_table">'
-		html_output += '<thead>'
-		html_output += '<tr>'
-		html_output += '<th><h2>' + org_left.username + '</h2></th>'
-		html_output += '<th><h2>' + org_right.username + '</h2></th>'
-		html_output += '</th>'
-		html_output += '</thead>'
-		html_output += '<tbody>'
-
 		# Map of name to component
+		component_type_map = {}
 		component_map = {}
 
 		# Create a list of the left component type names
@@ -372,6 +364,7 @@ def compare_orgs_task(job):
 		for component_type in org_left.sorted_component_types():
 
 			left_components.append(component_type.name)
+			component_type_map['left' + component_type.name] = component_type
 
 			# Append components
 			for component in component_type.sorted_components():
@@ -383,6 +376,7 @@ def compare_orgs_task(job):
 		for component_type in org_right.sorted_component_types():
 
 			right_components.append(component_type.name)
+			component_type_map['right' + component_type.name] = component_type
 			
 			for component in component_type.sorted_components():
 				right_components.append(component_type.name + '***' + component.name)
@@ -401,111 +395,72 @@ def compare_orgs_task(job):
 		# Sort alphabetically
 		all_components_unique.sort()
 
+		order_counter = 0
+
 		# Start to build the HTML for the table
 		for row_value in all_components_unique:
+
+			order_counter = order_counter + 1
+
+			component_result = ComponentListUnique()
+			component_result.job = job
+			component_result.diff = False
+			component_result.order = order_counter
 
 			if row_value in left_components and row_value not in right_components:
 
 				if '***' not in row_value:
 
-					html_output += '<tr class="type type_' + row_value + '">'
-					html_output += '<td>'
-					html_output += row_value
-					html_output += '</td>'
-					html_output += '<td></td>'
-					html_output += '</tr>'
+					component_result.component_type_left = component_type_map['left' + row_value]
 
 				else:
 
-					html_output += '<tr class="component danger component_' + row_value.split('***')[0] + '">'
-					html_output += '<td id="' + row_value + '" class="left_only">'
-					html_output += row_value.split('***')[1]
-					html_output += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
-					html_output += '</td>'
-					html_output += '<td></td>'
-					html_output += '</tr>'
-
+					component_result.component_type_left = component_map['left' + row_value].component_type
+					component_result.component_left = component_map['left' + row_value]
+					
 
 			elif row_value not in left_components and row_value in right_components:
-
+				
 				if '***' not in row_value:
 
-					html_output += '<tr class="type type_' + row_value + '">'
-					html_output += '<td></td>'
-					html_output += '<td>'
-					html_output += row_value
-					html_output += '</td>'
-					html_output += '</tr>'
+					component_result.component_type_right = component_type_map['right' + row_value]
 
 				else:
 
-					html_output += '<tr class="component danger component_' + row_value.split('***')[0] + '">'
-					html_output += '<td></td>'
-					html_output += '<td id="' + row_value + '" class="right_only">'
-					html_output += row_value.split('***')[1]
-					html_output += '<textarea style="display:none;">' +  component_map['right' + row_value].content + '</textarea>'
-					html_output += '</td>'
-					html_output += '</tr>'
+					component_result.component_type_right = component_map['right' + row_value].component_type
+					component_result.component_right = component_map['right' + row_value]
 
 			elif row_value in left_components and row_value in right_components:
 
 				if '***' not in row_value:
 
-					html_output += '<tr class="type type_' + row_value + '">'
-					html_output += '<td>'
-					html_output += row_value
-					html_output += '</td>'
-					html_output += '<td>'
-					html_output += row_value
-					html_output += '</td>'
-					html_output += '</tr>'
+					component_result.component_type_left = component_type_map['left' + row_value]
+					component_result.component_type_right = component_type_map['right' + row_value]
 
 				else:
 
-					# If identical 
-					if component_map['left' + row_value].content == component_map['right' + row_value].content:
+					component_result.component_type_left = component_map['left' + row_value].component_type
+					component_result.component_left = component_map['left' + row_value]
+					component_result.component_type_right = component_map['right' + row_value].component_type
+					component_result.component_right = component_map['right' + row_value]
 
-						html_output += '<tr class="component success component_' + row_value.split('***')[0] + '">'
-						html_output += '<td id="' + row_value + '" class="both_same">'
-						html_output += row_value.split('***')[1]
-						html_output += '<textarea style="display:none;">' +  component_map['left' + row_value].content + '</textarea>'
-						html_output += '</td>'
-						html_output += '<td id="' + row_value + '" class="both_same">'
-						html_output += row_value.split('***')[1]
-						html_output += '</td>'
-						html_output += '</tr>'
+					# If diff exists
+					if component_map['left' + row_value].content != component_map['right' + row_value].content:
 
-					# Files differ - time to compare
-					else:
+						component_result.diff = True
 
 						diff_tool = HtmlDiff()
-						diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
+						component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
+						
+			component_result.save()
 
-						html_output += '<tr class="component warning component_' + row_value.split('***')[0] + '">'
-						html_output += '<td id="' + row_value + '" class="diff">'
-						html_output += row_value.split('***')[1]
-						html_output += '<div style="display:none;" class="diff_content">' +  diff_html + '</textarea>'
-						html_output += '</td>'
-						html_output += '<td id="' + row_value + '" class="diff">'
-						html_output += row_value.split('***')[1]
-						html_output += '</td>'
-						html_output += '</tr>'
+			job.status = 'Finished'
 
-		html_output += '</tbody>'
-		html_output += '</table>'
+			email_body = 'Your Org compare job is complete:\n'
+			email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.random_id)
+			email_body += '\n\nYour result will be deleted after one day in order to avoid storing any metadata.'
 
-		job.compare_result_html = html_output
-		job.status = 'Finished'
-
-		# Delete components
-		ComponentType.objects.filter(org = org_left.id).delete()
-		ComponentType.objects.filter(org = org_right.id).delete()
-
-		email_body = 'Your Org compare job is complete:\n'
-		email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.id)
-		email_body += '\n\nYour result will be deleted in an hour, or when you view the result.'
-
-		email_subject = 'Your Salesforce Org Compare results are ready.'
+			email_subject = 'Your Salesforce Org Compare results are ready.'
 
 	except Exception as error:
 
@@ -513,6 +468,7 @@ def compare_orgs_task(job):
 		job.error = error
 
 		send_error_email(job, error)
+
 
 	job.finished_date = datetime.datetime.now()
 	job.save()
@@ -562,7 +518,7 @@ def send_error_email(job, error):
 	if job.email_result:
 
 		email_body = 'There was an error processing your job:\n'
-		email_body += error
+		email_body += str(error)
 		email_body += '\n\nPlease try again.'
 
 		email_subject = 'Error running Salesforce Org Compare job.'
