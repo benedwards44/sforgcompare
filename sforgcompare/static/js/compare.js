@@ -22,6 +22,9 @@ $(document).ready(function ()
 	// Open code view modal
 	$('tr.component td').click(function() 
 	{
+
+		console.log(getContent('9'));
+
 		if ( $(this).hasClass('diff') )
 		{
 			$('#viewCodeModal').html(getDiffHtml($(this).attr('id')));
