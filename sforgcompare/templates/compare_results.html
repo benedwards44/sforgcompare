@@ -40,7 +40,6 @@
 		<tbody>
 			{% for c in component_list_unique %}
 
-				
 				{% if c.component_type_left and not c.component_type_right %}
 
 					{% if not c.component_left %}
@@ -61,9 +60,7 @@
 
 					{% endif %}
 
-				{% endif %}
-
-				{% if not c.component_type_left and c.component_type_right %}
+				{% elif not c.component_type_left and c.component_type_right %}
 
 					{% if not c.component_right %}
 
@@ -83,9 +80,7 @@
 
 					{% endif %}
 
-				{% endif %}
-
-				{% if c.component_type_left and c.component_type_right %}
+				{% else %}
 
 					{% if not c.component_left %}
 
