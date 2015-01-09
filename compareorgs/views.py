@@ -209,10 +209,14 @@ def compare_results(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
 
+	html_rows = []
+	for component in job.sorted_component_list():
+		html_rows.append(component.html)
+
 	if job.status != 'Finished':
 		return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
 	
-	return render_to_response('compare_results.html', RequestContext(request, {'org_left_username': job.sorted_orgs()[0].username, 'org_right_username': job.sorted_orgs()[1].username, 'component_list_unique': job.sorted_component_list()}))
+	return render_to_response('compare_results.html', RequestContext(request, {'org_left_username': job.sorted_orgs()[0].username, 'org_right_username': job.sorted_orgs()[1].username, 'html_rows': html_rows}))
 
 # AJAX endpoint for getting the metadata of a component
 def get_metadata(request, component_id):
