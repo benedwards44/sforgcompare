@@ -1,7 +1,7 @@
 from django.db import models
 
 class Job(models.Model):
-	random_id = models.CharField(max_length=255, blank=True)
+	random_id = models.CharField(db_index=True,max_length=255, blank=True)
 	created_date = models.DateTimeField(null=True,blank=True)
 	finished_date = models.DateTimeField(null=True,blank=True)
 	password = models.CharField(max_length=255, blank=True)
@@ -54,10 +54,6 @@ class Component(models.Model):
 
 class ComponentListUnique(models.Model):
 	job = models.ForeignKey(Job)
-	component_type_left = models.ForeignKey(ComponentType, related_name='component_unique_left', blank=True, null=True)
-	component_left = models.ForeignKey(Component, related_name='component_left', blank=True, null=True)
-	component_type_right = models.ForeignKey(ComponentType, related_name='component_unique_right', blank=True, null=True)
-	component_right = models.ForeignKey(Component, related_name='component_right', blank=True, null=True)
-	diff = models.BooleanField()
 	diff_html = models.TextField(blank=True, null=True)
+	row_html = models.TextField(blank=True, null=True)
 	order = models.PositiveSmallIntegerField()
