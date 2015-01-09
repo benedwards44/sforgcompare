@@ -175,6 +175,16 @@ a.object_link:hover {
     width:500px !important;
 }
 
+.loading-display {
+    width: 100%;
+    height: 600px;
+    padding: 50px auto;
+}
+
+#compare_results_table {
+    display:none;
+}
+
 #compare_results_table tr.type td {
     font-weight: bold;
     cursor: pointer;

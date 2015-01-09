@@ -5,7 +5,7 @@ $(document).ready(function ()
 	$('tr.component').hide();
 	$('tr.success').hide();
 	$('#no_differences_message').hide();
-	checkAnyChildVisible();
+	
 
 	// Toggle file show and hide
 	$('tr.type td').click(function() 
@@ -88,6 +88,7 @@ $(document).ready(function ()
 		
 		// Load modal
 		$('#viewCodeModal').modal();
+
 	});
 
 	// Change display options
@@ -106,6 +107,10 @@ $(document).ready(function ()
 		}
 
 	});
+
+	$('.loading-display').hide();
+	$('#compare_results_table').show();
+	checkAnyChildVisible();
 
 });
 

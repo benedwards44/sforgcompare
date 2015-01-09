@@ -8,6 +8,23 @@
 
 {% block content %}
 
+	<div class="loading-display">
+
+		<div style="float:left;">
+			<img src="/static/images/loading.gif" alt="Loading" title="Loading" />
+		</div>
+
+		<div style="float:left;margin-left:20px;">
+			<h1 style="font-size:1.5em;margin-top:20px;">
+				Building results
+			</h1>
+			<p>
+				Shouldn't be long...
+			</p>
+		</div>
+
+	</div>
+
 	<select class="form-control" id="display_option">
         <option value="all">Show All Components</option>
         <option value="diff" selected="selected">Show Only Differences</option>
