@@ -405,6 +405,7 @@ def compare_orgs_task(job):
 			component_result = ComponentListUnique()
 			component_result.job = job
 			component_result.order = order_counter
+			component_result.save() # save now as we need ID
 
 			# Generating HTML here to speed up page load performance on the front end
 			row_html = ''
@@ -466,8 +467,8 @@ def compare_orgs_task(job):
 					else:
 
 						row_html += '<tr class="component success component_' + component_map['left' + row_value].component_type.name + '">'
-						row_html += '<td id="' + str(component_map['left' + row_value].id) + '" class="both_same">' + component_map['left' + row_value].name + '</td>'
-						row_html += '<td id="' + str(component_map['right' + row_value].id) + '" class="both_same">' + component_map['right' + row_value].name + '</td>'
+						row_html += '<td id="' + str(component_result.id) + '" class="both_same">' + component_map['left' + row_value].name + '</td>'
+						row_html += '<td id="' + str(component_result.id) + '" class="both_same">' + component_map['right' + row_value].name + '</td>'
 						row_html += '</tr>'
 
 			component_result.row_html = row_html		
