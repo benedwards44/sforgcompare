@@ -38,7 +38,11 @@
 		</thead>
 
 		<tbody>
-			
+			{% for c in component_list_unique %}
+
+				{{ c.component_type_left }}
+
+			{% endfor %}
 		</tbody>
 
 	</table>
