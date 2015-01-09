@@ -211,7 +211,7 @@ def compare_results(request, job_id):
 
 	html_rows = []
 	for component in job.sorted_component_list():
-		html_rows.append(component.html)
+		html_rows.append(component.row_html)
 
 	if job.status != 'Finished':
 		return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
