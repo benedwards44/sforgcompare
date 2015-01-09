@@ -38,7 +38,9 @@
 		</thead>
 
 		<tbody>
-			
+			{% autoescape on %}
+				{{ html_rows }}
+			{% endautoescape %}
 		</tbody>
 
 	</table>
