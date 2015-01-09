@@ -207,7 +207,7 @@ def compare_orgs(request, job_id):
 # Page to display compare results
 def compare_results(request, job_id):
 
-	job = get_object_or_404(Job, random_id = job_id)
+	job = get_object_or_404(Job, pk = job_id)
 	org_left = job.sorted_orgs()[0]
 	org_right = job.sorted_orgs()[1]
 	component_list_unique = job.sorted_component_list()
