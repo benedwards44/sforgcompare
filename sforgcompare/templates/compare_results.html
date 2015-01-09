@@ -25,47 +25,51 @@
 
 	</div>
 
-	<select class="form-control" id="display_option">
-        <option value="all">Show All Components</option>
-        <option value="diff" selected="selected">Show Only Differences</option>
-    </select>
+	<div id="compare_results">
 
-    <div id="legend">
-        <div class="alert alert-success legend" role="alert" id="legend_match">
-            Match
-        </div>
-        <div class="alert alert-warning legend" role="alert" id="legend_diff">
-            Diff in file
-        </div>
-        <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
-            New file
-        </div>
-    </div>
+		<select class="form-control" id="display_option">
+	        <option value="all">Show All Components</option>
+	        <option value="diff" selected="selected">Show Only Differences</option>
+	    </select>
 
-    <div style="clear:both;"></div>
-    <hr style="width:100%;margin:0;" />
+	    <div id="legend">
+	        <div class="alert alert-success legend" role="alert" id="legend_match">
+	            Match
+	        </div>
+	        <div class="alert alert-warning legend" role="alert" id="legend_diff">
+	            Diff in file
+	        </div>
+	        <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
+	            New file
+	        </div>
+	    </div>
 
-	<table class="table table-hover" id="compare_results_table">
+	    <div style="clear:both;"></div>
+	    <hr style="width:100%;margin:0;" />
 
-		<thead>
-			<tr>
-				<th><h2>{{ org_left_username }}</h2></th>
-				<th><h2>{{ org_right_username }}</h2></th>
-			</tr>
-		</thead>
+		<table class="table table-hover" id="compare_results_table">
 
-		<tbody>
-			{% autoescape off %}
-				{{ html_rows }}
-			{% endautoescape %}
-		</tbody>
+			<thead>
+				<tr>
+					<th><h2>{{ org_left_username }}</h2></th>
+					<th><h2>{{ org_right_username }}</h2></th>
+				</tr>
+			</thead>
 
-	</table>
+			<tbody>
+				{% autoescape off %}
+					{{ html_rows }}
+				{% endautoescape %}
+			</tbody>
 
-	<div class="alert alert-info" role="alert" id="no_differences_message">
-		<p>
-			There are no differences between the Orgs selected.
-		</p>
+		</table>
+
+		<div class="alert alert-info" role="alert" id="no_differences_message">
+			<p>
+				There are no differences between the Orgs selected.
+			</p>
+		</div>
+
 	</div>
 
 	<div class="modal fade" id="viewCodeModal" tabindex="-1" role="dialog" aria-labelledby="codeModalLabel" aria-hidden="true">

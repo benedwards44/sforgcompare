@@ -109,7 +109,7 @@ $(document).ready(function ()
 	});
 
 	$('.loading-display').hide();
-	$('#compare_results_table').show();
+	$('#compare_results').show();
 	checkAnyChildVisible();
 
 });

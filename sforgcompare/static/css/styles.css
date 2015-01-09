@@ -181,8 +181,8 @@ a.object_link:hover {
     padding: 50px auto;
 }
 
-#compare_results_table {
-    display:none;
+#compare_results {
+     display:none;
 }
 
 #compare_results_table tr.type td {
