@@ -60,4 +60,5 @@ class ComponentListUnique(models.Model):
 	component_right = models.ForeignKey(Component, related_name='component_right', blank=True, null=True)
 	diff = models.BooleanField()
 	diff_html = models.TextField(blank=True, null=True)
+	row_html = models.TextField(blank=True, null=True)
 	order = models.PositiveSmallIntegerField()

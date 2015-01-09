@@ -409,14 +409,26 @@ def compare_orgs_task(job):
 
 			if row_value in left_components and row_value not in right_components:
 
+				row_html = ''
+
 				if '***' not in row_value:
 
 					component_result.component_type_left = component_type_map['left' + row_value]
+
+					row_html += '<tr class="type type_' + component_type_map['left' + row_value].name + '">'
+					row_html += '<td>' + component_type_map['left' + row_value].name + '</td>'
+					row_html += '<td></td>'
+					row_html += '</tr>'
 
 				else:
 
 					component_result.component_type_left = component_map['left' + row_value].component_type
 					component_result.component_left = component_map['left' + row_value]
+
+					row_html += '<tr class="component danger component_' + component_type_map['left' + row_value].name + '">'
+					row_html += '<td id="' + component_map['left' + row_value].id + '">' + component_map['left' + row_value].name + '</td>'
+					row_html += '<td id="' + component_map['left' + row_value].id + '"></td>'
+					row_html += '</tr>'
 					
 
 			elif row_value not in left_components and row_value in right_components:
@@ -425,10 +437,20 @@ def compare_orgs_task(job):
 
 					component_result.component_type_right = component_type_map['right' + row_value]
 
+					row_html += '<tr class="type type_' + component_type_map['right' + row_value].name + '">'
+					row_html += '<td></td>'
+					row_html += '<td>' + component_type_map['right' + row_value].name + '</td>'
+					row_html += '</tr>'
+
 				else:
 
 					component_result.component_type_right = component_map['right' + row_value].component_type
 					component_result.component_right = component_map['right' + row_value]
+
+					row_html += '<tr class="component danger component_' + component_type_map['right' + row_value].name + '">'
+					row_html += '<td id="' + component_map['right' + row_value].id + '"></td>'
+					row_html += '<td id="' + component_map['right' + row_value].id + '">' + component_map['right' + row_value].name + '</td>'
+					row_html += '</tr>'
 
 			elif row_value in left_components and row_value in right_components:
 
@@ -436,6 +458,11 @@ def compare_orgs_task(job):
 
 					component_result.component_type_left = component_type_map['left' + row_value]
 					component_result.component_type_right = component_type_map['right' + row_value]
+
+					row_html += '<tr class="type type_' + component_type_map['left' + row_value].name + '">'
+					row_html += '<td>' + component_type_map['left' + row_value].name + '</td>'
+					row_html += '<td>' + component_type_map['right' + row_value].name + '</td>'
+					row_html += '</tr>'
 
 				else:
 
@@ -451,7 +478,20 @@ def compare_orgs_task(job):
 
 						diff_tool = HtmlDiff()
 						component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
-						
+				
+						row_html += '<tr class="type type_' + component_type_map['left' + row_value].name + '">'
+						row_html += '<td id="' + component_map['left' + row_value].id + '" class="both_same">' + component_map['left' + row_value].name + '</td>'
+						row_html += '<td id="' + component_map['right' + row_value].id + '" class="both_same">' + component_map['right' + row_value].name + '</td>'
+						row_html += '</tr>'
+
+					else:
+
+						row_html += '<tr class="component success component_' + component_type_map['right' + row_value].name + '">'
+						row_html += '<td id="' + component_map['left' + row_value].id + '" class="diff">' + component_map['left' + row_value].name + '</td>'
+						row_html += '<td id="' + component_map['right' + row_value].id + '" class="diff">' + component_map['right' + row_value].name + '</td>'
+						row_html += '</tr>'
+
+			component_result.row_html = row_html		
 			component_result.save()
 
 			job.status = 'Finished'
