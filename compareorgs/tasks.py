@@ -407,9 +407,10 @@ def compare_orgs_task(job):
 			component_result.diff = False
 			component_result.order = order_counter
 
-			if row_value in left_components and row_value not in right_components:
+			# Generating HTML here to speed up page load performance on the front end
+			row_html = ''
 
-				row_html = ''
+			if row_value in left_components and row_value not in right_components:
 
 				if '***' not in row_value:
 
