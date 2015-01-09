@@ -13,6 +13,10 @@ from compareorgs.tasks import download_metadata_metadata, download_metadata_tool
 
 
 def index(request):
+	"""
+	Home page for the application. Holds the methods to authenticate and begin the process
+
+	"""
 
 	client_id = settings.SALESFORCE_CONSUMER_KEY
 	redirect_uri = settings.SALESFORCE_REDIRECT_URI
@@ -51,6 +55,10 @@ def index(request):
 	return render_to_response('index.html', RequestContext(request,{'client_id': client_id, 'redirect_uri': redirect_uri, 'job_form': job_form}))
 
 def oauth_response(request):
+	"""
+	Method to call the Salesforce OAuth server and authenticate the user
+	
+	"""
 
 	error_exists = False
 	error_message = ''
