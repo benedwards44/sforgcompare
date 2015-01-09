@@ -8,122 +8,68 @@
 
 {% block content %}
 
-	<select class="form-control" id="display_option">
-        <option value="all">Show All Components</option>
-        <option value="diff" selected="selected">Show Only Differences</option>
-    </select>
+	<div class="loading-display">
 
-    <div id="legend">
-        <div class="alert alert-success legend" role="alert" id="legend_match">
-            Match
-        </div>
-        <div class="alert alert-warning legend" role="alert" id="legend_diff">
-            Diff in file
-        </div>
-        <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
-            New file
-        </div>
-    </div>
+		<div style="float:left;">
+			<img src="/static/images/loading.gif" alt="Loading" title="Loading" />
+		</div>
 
-    <div style="clear:both;"></div>
-    <hr style="width:100%;margin:0;" />
+		<div style="float:left;margin-left:20px;">
+			<h1 style="font-size:1.5em;margin-top:20px;">
+				Building results
+			</h1>
+			<p>
+				Shouldn't be long...
+			</p>
+		</div>
 
-	<table class="table table-hover" id="compare_results_table">
+	</div>
 
-		<thead>
-			<tr>
-				<th><h2>{{ org_left.username }}</h2></th>
-				<th><h2>{{ org_right.username }}</h2></th>
-			</tr>
-		</thead>
+	<div id="compare_results">
 
-		<tbody>
-			{% for c in component_list_unique %}
+		<select class="form-control" id="display_option">
+	        <option value="all">Show All Components</option>
+	        <option value="diff" selected="selected">Show Only Differences</option>
+	    </select>
 
-				{% if c.component_type_left and not c.component_type_right %}
+	    <div id="legend">
+	        <div class="alert alert-success legend" role="alert" id="legend_match">
+	            Match
+	        </div>
+	        <div class="alert alert-warning legend" role="alert" id="legend_diff">
+	            Diff in file
+	        </div>
+	        <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
+	            New file
+	        </div>
+	    </div>
 
-					{% if not c.component_left %}
+	    <div style="clear:both;"></div>
+	    <hr style="width:100%;margin:0;" />
 
-						<tr class="type type_{{ c.component_type_left }}">
-							<td>{{ c.component_type_left.name }}</td>
-							<td></td>
-						</tr>	
+		<table class="table table-hover" id="compare_results_table">
 
-					{% else %}
+			<thead>
+				<tr>
+					<th><h2>{{ org_left_username }}</h2></th>
+					<th><h2>{{ org_right_username }}</h2></th>
+				</tr>
+			</thead>
 
-						<tr class="component danger component_{{ c.component_type_left.name }}">
-							<td id="{{ c.component_left.id }}" class="left_only">
-								{{ c.component_left.name }}
-							</td>
-							<td id="{{ c.component_left.id }}"></td>
-						</tr>
+			<tbody>
+				{% autoescape off %}
+					{{ html_rows }}
+				{% endautoescape %}
+			</tbody>
 
-					{% endif %}
+		</table>
 
-				{% endif %}
+		<div class="alert alert-info" role="alert" id="no_differences_message">
+			<p>
+				There are no differences between the Orgs selected.
+			</p>
+		</div>
 
-				{% if not c.component_type_left and c.component_type_right %}
-
-					{% if not c.component_right %}
-
-						<tr class="type type_{{ c.component_type_right.name }}">
-							<td></td>
-							<td>{{ c.component_type_right.name }}</td>
-						</tr>	
-
-					{% else %}
-
-						<tr class="component danger component_{{ c.component_type_right.name }}">
-							<td id="{{ c.component_right.id }}"></td>
-							<td id="{{ c.component_right.id }}" class="right_only">
-								{{ c.component_right.name }}
-							</td>
-						</tr>
-
-					{% endif %}
-
-				{% endif %}
-
-				{% if c.component_type_left and c.component_type_right %}
-
-					{% if not c.component_left %}
-
-						<tr class="type type_{{ c.component_type_left.name }}">
-							<td>{{ c.component_type_left.name }}</td>
-							<td>{{ c.component_type_right.name }}</td>
-						</tr>	
-
-					{% else %}
-
-						{% if not c.diff %}
-
-							<tr class="component success component_{{ c.component_type_left.name }}">
-								<td id="{{ c.component_left.id }}" class="both_same">{{ c.component_left.name }}</td>
-								<td id="{{ c.component_right.id }}" class="both_same">{{ c.component_right.name }}</td>
-							</tr>
-
-						{% else %}
-
-							<tr class="component warning component_{{ c.component_type_left.name }}">
-								<td id="{{ c.id }}" class="diff">{{ c.component_left.name }}</td>
-								<td id="{{ c.id }}" class="diff">{{ c.component_right.name }}</td>
-							</tr>
-
-						{% endif %}
-
-					{% endif %}
-
-				{% endif %}
-
-			{% endfor %}
-		</tbody>
-
-	</table>
-
-	<div class="alert alert-info" role="alert" id="no_differences_message">
-		<p>
-			There are no differences between the Orgs selected.
-		</p>
 	</div>
 
 	<div class="modal fade" id="viewCodeModal" tabindex="-1" role="dialog" aria-labelledby="codeModalLabel" aria-hidden="true">

@@ -5,7 +5,7 @@ $(document).ready(function ()
 	$('tr.component').hide();
 	$('tr.success').hide();
 	$('#no_differences_message').hide();
-	checkAnyChildVisible();
+	
 
 	// Toggle file show and hide
 	$('tr.type td').click(function() 
@@ -42,8 +42,7 @@ $(document).ready(function ()
 			    type: 'get',
 			    success: function(resp) 
 			    {
-			        $('#codeModalBody').html(resp);
-
+		    		$('#codeModalBody').html(resp);
 			        // Remove nowrap attribute. This is handled better with CSS.
 					$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
 			    },
@@ -88,6 +87,7 @@ $(document).ready(function ()
 		
 		// Load modal
 		$('#viewCodeModal').modal();
+
 	});
 
 	// Change display options
@@ -106,6 +106,10 @@ $(document).ready(function ()
 		}
 
 	});
+
+	$('.loading-display').hide();
+	$('#compare_results').show();
+	checkAnyChildVisible();
 
 });
 
