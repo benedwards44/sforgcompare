@@ -425,7 +425,6 @@ def compare_orgs_task(job):
 					row_html += '<td id="' + str(component_map['left' + row_value].id) + '"></td>'
 					row_html += '</tr>'
 					
-
 			elif row_value not in left_components and row_value in right_components:
 				
 				if '***' not in row_value:
@@ -452,11 +451,6 @@ def compare_orgs_task(job):
 					row_html += '</tr>'
 
 				else:
-
-					component_result.component_type_left = component_map['left' + row_value].component_type
-					component_result.component_left = component_map['left' + row_value]
-					component_result.component_type_right = component_map['right' + row_value].component_type
-					component_result.component_right = component_map['right' + row_value]
 
 					# If diff exists
 					if component_map['left' + row_value].content != component_map['right' + row_value].content:

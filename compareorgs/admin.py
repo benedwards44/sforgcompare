@@ -14,7 +14,7 @@ class ComponentInline(admin.TabularInline):
 	extra = 0
 
 class ComponentListUniqueInline(admin.TabularInline):
-	fields = ['component_type_left', 'component_left', 'component_type_right', 'component_right','diff']
+	fields = ['order','row_html']
 	ordering = ['order']
 	model = ComponentListUnique
 	extra = 0
@@ -27,7 +27,7 @@ class ComponentTypeAdmin(admin.ModelAdmin):
 class JobAdmin(admin.ModelAdmin):
     list_display = ('created_date','finished_date','status','error')
     ordering = ['-created_date']
-    inlines = [OrgInline]
+    inlines = [OrgInline, ComponentListUniqueInline]
 
 admin.site.register(Job, JobAdmin)
 admin.site.register(ComponentType, ComponentTypeAdmin)
