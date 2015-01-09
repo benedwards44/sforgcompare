@@ -42,20 +42,9 @@ $(document).ready(function ()
 			    type: 'get',
 			    success: function(resp) 
 			    {
-			    	if (!resp.error)
-			    	{
-			    		$('#codeModalBody').html(resp);
-				        // Remove nowrap attribute. This is handled better with CSS.
-						$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
-			    	}
-			    	else
-			    	{
-			    		console.log(resp);
-			    		console.log(resp.status);
-			    		console.log(resp.responseText);
-			    		$('#codeModalBody').html('<div class="alert alert-danger" role="alert"><p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>>/div>');
-			    	}
-
+		    		$('#codeModalBody').html(resp);
+			        // Remove nowrap attribute. This is handled better with CSS.
+					$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
 			    },
 			    failure: function(resp) 
 			    { 
