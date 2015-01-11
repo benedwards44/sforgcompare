@@ -143,7 +143,7 @@ def oauth_response(request):
 
 					org.save()
 			
-	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org, 'email': email}))
+	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org, 'email': email, 'instance_url': instance_url}))
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):
