@@ -128,7 +128,7 @@ function checkAnyChildVisible()
 			if ( !$(this).hasClass('success') )
 			{
 				childVisible = true;
-				return false;
+				return;
 			}
 		});
 
