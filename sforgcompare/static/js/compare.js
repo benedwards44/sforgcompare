@@ -4,8 +4,6 @@ $(document).ready(function ()
 {
 	$('tr.component').hide();
 	$('tr.success').hide();
-	$('#no_differences_message').hide();
-	
 
 	// Toggle file show and hide
 	$('tr.type td').click(function() 
@@ -137,28 +135,25 @@ function checkAnyChildVisible()
 		{
 			$(this).hide();
 		}
-		else
-		{
-			$(this).show();
-		}
 
 	});
+
+	var rowVisible = false;
 
 	// Check that anything at all is visible
 	$.each($('tr.type'), function()
 	{
-		var rowVisible = false;
 		if ($(this).is(':visible'))
 		{
 			rowVisible = true;
-			return false;
-		}
-
-		// If no rows are visible, display message
-		if (!rowVisible)
-		{
-			$('#no_differences_message').show();
+			return;
 		}
 	});
+
+	// If no rows are visible, display message
+	if (!rowVisible)
+	{
+		$('#no_differences_message').show();
+	}
 
 }
