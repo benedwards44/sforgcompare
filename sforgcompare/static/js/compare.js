@@ -137,6 +137,10 @@ function checkAnyChildVisible()
 		{
 			$(this).hide();
 		}
+		else
+		{
+			$(this).show();
+		}
 
 	});
 
