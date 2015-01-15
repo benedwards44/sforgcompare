@@ -147,8 +147,15 @@ def oauth_response(request):
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):
+
 	job = get_object_or_404(Job, random_id = job_id)
-	return HttpResponse(job.status + ':::' + job.error)
+
+	response_data = {
+		'status': job.status,
+		'error': job.error
+	}
+
+	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
 
 # Page for user to wait for job to run
 def compare_orgs(request, job_id):
