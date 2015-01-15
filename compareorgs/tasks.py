@@ -155,8 +155,8 @@ def download_metadata_metadata(job, org):
 			# Loop through child components of the component type
 			for component in component_type.component_set.all():
 
-				# 5k max file size. TODO - support multipe calls
-				if len(component_retrieve_list) < 5000:
+				# 10k max file size. TODO - support multipe calls
+				if len(component_retrieve_list) < 10000:
 
 					component_to_retrieve = metadata_client.factory.create('PackageTypeMembers')
 					component_to_retrieve.members = component.name
@@ -167,7 +167,7 @@ def download_metadata_metadata(job, org):
 					break
 
 			# Break parent loop if size is reached
-			if len(component_retrieve_list) >= 5000:
+			if len(component_retrieve_list) >= 10000:
 				break
 
 		# The overall package to retrieve
