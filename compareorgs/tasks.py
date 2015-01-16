@@ -188,7 +188,7 @@ def download_metadata_metadata(job, org):
 		while not retrieve_result.done:
 
 			# check job status
-			re = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
+			retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
 
 			# sleep job for 5 seconds
 			time.sleep(10)
