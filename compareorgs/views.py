@@ -216,10 +216,14 @@ def compare_results(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
 
+	print 'START'
+
 	# Build HTML here - improves page load performance
 	html_rows = ''
 	for component in job.sorted_component_list():
 		html_rows += component.row_html
+
+	print 'END'
 
 	if job.status != 'Finished':
 		return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
