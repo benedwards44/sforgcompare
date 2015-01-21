@@ -222,7 +222,7 @@ def compare_results(request, job_id):
 	
 	# Build HTML here - improves page load performance
 	html_rows = ''
-	for component in job.sorted_component_list().values():
+	for component in job.sorted_component_list().values('row_html'):
 		html_rows += component['row_html']
 
 	print 'END: ' + str(datetime.datetime.now())
