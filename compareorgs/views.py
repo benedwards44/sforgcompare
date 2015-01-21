@@ -217,14 +217,16 @@ def compare_results(request, job_id):
 	job = get_object_or_404(Job, random_id = job_id)
 
 	print 'Loop size: ' + str(len(job.sorted_component_list()))
-	print 'START'
+	print 'START: ' + str(datetime.datetime.now())
+	start_time = datetime.datetime.now()
 	
 	# Build HTML here - improves page load performance
 	html_rows = ''
-	for component in job.sorted_component_list():
+	for component in ComponentListUnique.objects.filter(job = job.id).order_by('order'):
 		html_rows += component.row_html
 
-	print 'END'
+	print 'END: ' + str(datetime.datetime.now())
+	print 'TIME: ' + str((datetime.datetime.now() - start_time).total_seconds())
 
 	if job.status != 'Finished':
 		return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
