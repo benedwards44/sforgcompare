@@ -217,6 +217,7 @@ def compare_results(request, job_id):
 	job = get_object_or_404(Job, random_id = job_id)
 
 	print 'START'
+	print 'Loop size: ' + str(len(job.sorted_component_list()))
 
 	# Build HTML here - improves page load performance
 	html_rows = ''
