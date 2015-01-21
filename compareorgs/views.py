@@ -216,13 +216,13 @@ def compare_results(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
 
-	print 'Loop size: ' + str(len(job.sorted_component_list()))
+	print 'Loop size: ' + str(job.sorted_component_list().count())
 	print 'START: ' + str(datetime.datetime.now())
 	start_time = datetime.datetime.now()
 	
 	# Build HTML here - improves page load performance
 	html_rows = ''
-	for component in ComponentListUnique.objects.filter(job = job.id).order_by('order'):
+	for component in job.sorted_component_list():
 		html_rows += component.row_html
 
 	print 'END: ' + str(datetime.datetime.now())
