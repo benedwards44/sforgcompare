@@ -222,8 +222,8 @@ def compare_results(request, job_id):
 	
 	# Build HTML here - improves page load performance
 	html_rows = ''
-	for component in job.sorted_component_list().values('row_html'):
-		html_rows += component['row_html']
+	for html_row in job.sorted_component_list().values_list('row_html'):
+		html_rows += html_row
 
 	print 'END: ' + str(datetime.datetime.now())
 	print 'TIME: ' + str((datetime.datetime.now() - start_time).total_seconds())
