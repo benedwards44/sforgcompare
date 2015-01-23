@@ -12,6 +12,9 @@ import json
 import requests
 import datetime
 import time
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 # Celery config
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
