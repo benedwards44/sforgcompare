@@ -10,7 +10,9 @@ import datetime
 import uuid
 from time import sleep
 from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling
-
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 def index(request):
 	"""
