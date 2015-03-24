@@ -241,6 +241,11 @@ table.diff_header td.diff_header {
     text-align: center;
     height: 32px;
     padding: 5px;
+    margin-bottom: 0;
+}
+
+#no_differences_message {
+    display: none;
 }
 
 /* Python diff css */

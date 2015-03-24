@@ -12,6 +12,9 @@ import json
 import requests
 import datetime
 import time
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 # Celery config
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
@@ -155,20 +158,10 @@ def download_metadata_metadata(job, org):
 			# Loop through child components of the component type
 			for component in component_type.component_set.all():
 
-				# 5k max file size. TODO - support multipe calls
-				if len(component_retrieve_list) < 5000:
-
-					component_to_retrieve = metadata_client.factory.create('PackageTypeMembers')
-					component_to_retrieve.members = component.name
-					component_to_retrieve.name = component_type.name
-					component_retrieve_list.append(component_to_retrieve)
-
-				else:
-					break
-
-			# Break parent loop if size is reached
-			if len(component_retrieve_list) >= 5000:
-				break
+				component_to_retrieve = metadata_client.factory.create('PackageTypeMembers')
+				component_to_retrieve.members = component.name
+				component_to_retrieve.name = component_type.name
+				component_retrieve_list.append(component_to_retrieve)
 
 		# The overall package to retrieve
 		package_to_retrieve = metadata_client.factory.create('Package')
@@ -196,8 +189,12 @@ def download_metadata_metadata(job, org):
 		if not retrieve_result.success:
 
 			org.status = 'Error'
-			org.error = retrieve_result.messages[0]
 
+			if 'errorMessage' in retrieve_result:
+				org.error = retrieve_result.errorMessage
+			elif 'messages' in retrieve_result:
+				org.error = retrieve_result.messages[0]
+			
 		else:
 
 			# Save the zip file result to server

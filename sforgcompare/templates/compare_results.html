@@ -27,25 +27,30 @@
 
 	<div id="compare_results">
 
-		<select class="form-control" id="display_option">
-	        <option value="all">Show All Components</option>
-	        <option value="diff" selected="selected">Show Only Differences</option>
-	    </select>
+		<p>
+            Your Org Compare results are presented below. Files are highlighted based on matches or differences. You can click on components to view the file and see highlighted differences within files.
+        </p>
 
-	    <div id="legend">
-	        <div class="alert alert-success legend" role="alert" id="legend_match">
-	            Match
-	        </div>
-	        <div class="alert alert-warning legend" role="alert" id="legend_diff">
-	            Diff in file
-	        </div>
-	        <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
-	            New file
-	        </div>
-	    </div>
+        <hr style="width:100%;margin: 10px 0;" />
 
-	    <div style="clear:both;"></div>
-	    <hr style="width:100%;margin:0;" />
+        <select class="form-control" id="display_option">
+            <option value="all">Show All Components</option>
+            <option value="diff" selected="selected">Show Only Differences</option>
+        </select>
+
+        <div id="legend">
+            <div class="alert alert-success legend" role="alert" id="legend_match">
+                Match
+            </div>
+            <div class="alert alert-warning legend" role="alert" id="legend_diff">
+                Diff in file
+            </div>
+            <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
+                New file
+            </div>
+        </div>
+
+        <div style="clear:both;"></div>
 
 		<table class="table table-hover" id="compare_results_table">
 

@@ -10,7 +10,9 @@ import datetime
 import uuid
 from time import sleep
 from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling
-
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 def index(request):
 	"""
@@ -147,8 +149,15 @@ def oauth_response(request):
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):
+
 	job = get_object_or_404(Job, random_id = job_id)
-	return HttpResponse(job.status + ':::' + job.error)
+
+	response_data = {
+		'status': job.status,
+		'error': job.error
+	}
+
+	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
 
 # Page for user to wait for job to run
 def compare_orgs(request, job_id):
@@ -208,11 +217,9 @@ def compare_orgs(request, job_id):
 def compare_results(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
-
+	
 	# Build HTML here - improves page load performance
-	html_rows = ''
-	for component in job.sorted_component_list():
-		html_rows += component.row_html
+	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
 
 	if job.status != 'Finished':
 		return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)

@@ -29,7 +29,7 @@ $(document).ready(function ()
 		{
 			loginUrl += 'test'
 		}
-		loginUrl += urlSuffix + $('#org_one_env').val() + 'org2';
+		loginUrl += urlSuffix + $('#org_two_env').val() + 'org2';
 		popupwindow(loginUrl);
 	});
 
