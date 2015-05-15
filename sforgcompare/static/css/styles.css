@@ -126,10 +126,16 @@ a.object_link:hover {
 
 #id_contextual_diff {
     float: left;
+    width: 30px;
 }
 
 #id_email {
     width: 230px;
+}
+
+#id_contextual_diff_label {
+    float: left;
+    margin-top: 10px;
 }
 
 .info_icon {
