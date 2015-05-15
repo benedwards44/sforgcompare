@@ -137,6 +137,12 @@
 
 				<input type="email" id="id_email" name="email" class="form-control" />
 
+				<label>
+					<input type="checkbox" id="id_contextual_diff" name="contextual_diff" class="form-control" />
+					Contextual Diff
+					<img src="/static/images/i-icon.png" class="info_icon" data-toggle="modal" data-target="#contextModal" />
+				</label>
+
 				<input type="submit" id="submitCompare" value="Compare Orgs" />
 
 				<input type="hidden" id="client_id" value="{{ client_id }}" />
@@ -205,6 +211,30 @@
 	        			For large Orgs, sometimes the process can take some time. If you'd rather do something else instead of staring at an orange loading circle then we can email you a link when the job is done so you can view your results.
 	        			<br/><br/>
 	        			Note: Because we don't want to store your metadata, the link will only be valid for an hour after the job is done. Once you've viewed your results, we clear all stored information.
+	        		</p>
+	      		</div>
+	      		<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			    </div>
+	    	</div>
+	  	</div>
+	</div>
+
+	<div class="modal fade" id="contextModal" tabindex="-1" role="dialog" aria-labelledby="contextModalLabel" aria-hidden="true">
+		<div class="modal-dialog small_dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">
+	        			<span aria-hidden="true">&times;</span>
+	        			<span class="sr-only">Close</span>
+	        		</button>
+	        		<h3 class="modal-title" id="emailModalLabel">
+	        			Contextual Diff
+	        		</h3>
+	      		</div>
+	      		<div class="modal-body">
+	        		<p>
+	        			Choose this option to enable a contextual diff. A contextual diff means that compare results will only show the lines of metadata that are deemed to be different, and a number of lines before an after. This is preferable for large files, as it will only show what is relevant, rather than the entire file.
 	        		</p>
 	      		</div>
 	      		<div class="modal-footer">

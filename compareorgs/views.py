@@ -33,6 +33,7 @@ def index(request):
 			job.created_date = datetime.datetime.now()
 			job.status = 'Not Started'
 			job.email = job_form.cleaned_data['email']
+			job.contextual_diff = job_form.cleaned_data['contextual_diff']
 			if job_form.cleaned_data['email_choice'] == 'yes':
 				job.email_result = True
 			else:

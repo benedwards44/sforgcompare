@@ -6,3 +6,4 @@ class JobForm(forms.Form):
 	api_choice = forms.CharField()
 	email_choice = forms.CharField()
 	email = forms.CharField()
+	contextual_diff = forms.BooleanField(required=False)

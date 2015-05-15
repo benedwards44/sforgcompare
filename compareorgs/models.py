@@ -8,6 +8,7 @@ class Job(models.Model):
 	api_choice = models.CharField(max_length=255,null=True,blank=True)
 	email_result = models.BooleanField()
 	email = models.CharField(max_length=255,blank=True)
+	contextual_diff = models.BooleanField(default=False)
 	status = models.CharField(max_length=255, blank=True)
 	error = models.TextField(blank=True)
 

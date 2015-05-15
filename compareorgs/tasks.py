@@ -453,8 +453,22 @@ def compare_orgs_task(job):
 					# If diff exists
 					if component_map['left' + row_value].content != component_map['right' + row_value].content:
 
+						# Content for comparison
+						left_content = component_map['left' + row_value].content.split('\n')
+						right_content = component_map['right' + row_value].content.split('\n')
+
+						# Instantiate Python diff tool
 						diff_tool = HtmlDiff()
-						component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
+
+						# If contextual diff, compare results differently
+						if job.contextual_diff:
+
+							component_result.diff_html = diff_tool.make_table(left_content, right_content, context=True, numlines=5)
+
+						# Otherwise, no contextual diff required
+						else:
+
+							component_result.diff_html = diff_tool.make_table(left_content, right_content)
 				
 						row_html += '<tr class="component warning component_' + component_map['left' + row_value].component_type.name + '">'
 						row_html += '<td id="' + str(component_result.id) + '" class="diff">' + component_map['left' + row_value].name + '</td>'
