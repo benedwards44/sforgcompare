@@ -32,25 +32,47 @@
 
 		<div id="wrapper">
 
-			<a href="http://www.tquila.com" class="logo" target="_blank">
-				<img src="/static/images/tquila-logo@1x.png" style="" border="0" />
-			</a>
+			<!-- Static navbar -->
+	      	<nav class="navbar navbar-default">
 
-			<div class="contact">
-				<a href="https://packagebuilder.herokuapp.com" target="_blank">Package Builder</a>
-				&nbsp;|&nbsp;
-				<a href="https://schemalister.herokuapp.com" target="_blank">Schema Lister</a>
-				&nbsp;|&nbsp;
-				<a href="https://sfswitch.herokuapp.com" target="_blank">Switch</a>
-				&nbsp;|&nbsp;
-				<a href="https://fieldcreator.herokuapp.com" target="_blank">Field Creator</a>
-				&nbsp;|&nbsp;
-				<a href="https://github.com/benedwards44/sforgcompare" target="_blank">Source Code</a>
-				&nbsp;|&nbsp;
-				<a href="https://twitter.com/benedwards44" target="_blank">@benedwards44</a>
-				&nbsp;|&nbsp;
-				<img src="/static/images/i-icon.png" class="info_icon" data-toggle="modal" data-target="#infoModal" style="float:right;margin:0" />
-			</div>
+		        <div class="container-fluid">
+
+		          	<div class="navbar-header">
+		            	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			              	<span class="sr-only">Toggle navigation</span>
+			              	<span class="icon-bar"></span>
+			              	<span class="icon-bar"></span>
+			              	<span class="icon-bar"></span>
+		            	</button>
+			            <a class="navbar-brand" href="http://www.tquila.com" target="_blank">
+			            	<img src="/static/images/tquila-logo@1x.png" border="0" />
+			            </a>
+		          	</div>
+
+		          	<div id="navbar" class="navbar-collapse collapse">
+
+		            	<ul class="nav navbar-nav navbar-right">
+		              		<li>
+		              			<a href="http://www.tquila.com/toolkit" target="_blank">Tquila Toolkit</a>
+		              		</li>
+		              		<li>
+		              			<a href="https://github.com/benedwards44/sforgcompare" target="_blank">Source Code</a>
+		              		</li>
+		              		<li>
+		              			<a href="https://twitter.com/benedwards44" target="_blank">@benedwards44</a>
+		              		</li>
+		              		<li>
+		              			<a href="#">
+		              				<img src="/static/images/i-icon.png" data-toggle="modal" data-target="#infoModal" />
+		              			</a>
+		              		</li>
+		            	</ul>
+
+		          	</div><!--/.nav-collapse -->
+
+		        </div><!--/.container-fluid -->
+
+		    </nav>
 
 			<div class="clear"></div>
 
@@ -69,7 +91,7 @@
 		        			<span class="sr-only">Close</span>
 		        		</button>
 		        		<h3 class="modal-title" id="apiModalLabel">
-		        			Salesforce Org Compare
+		        			Salesforce Package Builder
 		        		</h3>
 		      		</div>
 		      		<div class="modal-body">
@@ -87,6 +109,9 @@
 		        				<li><a href="https://sfswitch.herokuapp.com" target="_blank">Switch</a></li>
 		        				<li><a href="https://fieldcreator.herokuapp.com" target="_blank">Field Creator</a></li>
 		        			</ul>
+		        		</p>
+		        		<p>	
+		        			Also, be sure to check out the <a href="http://www.tquila.com/toolkit/" target="_blank">Tquila Toolkit</a>, where this app and many others are accessible and free for use!
 		        		</p>
 		      		</div>
 		      		<div class="modal-footer">
