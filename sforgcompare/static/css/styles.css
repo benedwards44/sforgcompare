@@ -2,17 +2,6 @@ body {
     font-family: "HelveticaNeueW02-45Ligh", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Nimbus Sans L", sans-serif;
     color: #999a9b;
 }
-#wrapper {
-    width: 100%;
-}
-#container {
-    width: 900px;
-    margin: 30px auto;
-}
-.inner {
-    width: 700px;
-    margin: 0px auto;
-}
 input[type="text"], input[type="password"] {
     width: 250px;
     padding: 5px;

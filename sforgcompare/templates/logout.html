@@ -2,21 +2,18 @@
 
 {% block content %}
 
-	<div class="inner">
+	<h1>Salesforce package.xml Builder</h1>
+	<p>
+		Successfully logged out of Salesforce and Package Builder
+	</p>
 
-		<h1>Salesforce package.xml Builder</h1>
-		<p>
-			Successfully logged out of Salesforce and Package Builder
-		</p>
+	<iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+	<iframe src="https://test.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
 
-		<iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
-		<iframe src="https://test.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+	<script>
+		setTimeout(function () {
+       		window.location.href = "/";
+    	}, 3000);
+	</script>
 
-		<script>
-			setTimeout(function () {
-	       		window.location.href = "/";
-	    	}, 3000);
-		</script>
-
-	</div>
 {% endblock %}
