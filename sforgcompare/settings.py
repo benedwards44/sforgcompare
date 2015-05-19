@@ -50,6 +50,12 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+# Add in request context processor
+from django.conf import global_settings
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    'django.core.context_processors.request',
+)
+
 ROOT_URLCONF = 'sforgcompare.urls'
 
 WSGI_APPLICATION = 'sforgcompare.wsgi.application'
@@ -91,4 +97,45 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 SALESFORCE_CONSUMER_KEY = '3MVG99qusVZJwhsnmdmjq1uHdUla25CKqXcVfJZBNH.S.AfNwV2hKu0opXFQu0gBSs8fBj8otutrcaqjQxCOT'
 SALESFORCE_CONSUMER_SECRET = '8518319892876668470'
 SALESFORCE_REDIRECT_URI = 'https://sforgcompare.herokuapp.com/oauth_response'
-SALESFORCE_API_VERSION = 32
+SALESFORCE_API_VERSION = 33
+
+# EMAIL SERVER SETTINGS
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ben@benedwards.co.nz'
+EMAIL_HOST_PASSWORD = '656y58nz'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error when DEBUG=False.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR + '/debug.log',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins', 'file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}
