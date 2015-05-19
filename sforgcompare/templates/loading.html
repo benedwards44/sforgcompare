@@ -39,7 +39,7 @@
 		<p>
 			There was an error processing your request: <i class="error_message"></i>
 			<br/><br/>
-			Please <a href="/">return</a> to the home page and try again.
+			Please <a href="/{% if request.GET.noheader == '1' %}?noheader=1{% endif %}">return</a> to the home page and try again.
 		</p>
 	</div>
 
@@ -54,7 +54,7 @@
 			    {
 			        if (resp.status == 'Finished')
 			        {
-			        	window.location = '/compare_result/{{ job.random_id }}/';
+			        	window.location = '/compare_result/{{ job.random_id }}/{% if request.GET.noheader == "1" %}?noheader=1{% endif %}';
 			        } 
 			        else if (resp.status == 'Error')
 			        {
