@@ -117,7 +117,7 @@
 
 		{% endif %}
 
-		<div class="{% if request.GET.noheader == '1' %}col-md-12{% else %}col-md-6 col-md-offset-3{% endif %}">
+		<div class="{% if request.GET.noheader == '1' %}col-md-12{% else %}col-md-10 col-md-offset-1{% endif %}">
 			{% block content %}{% endblock %}
 		</div>
 
