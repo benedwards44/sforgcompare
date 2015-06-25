@@ -211,7 +211,7 @@ def compare_orgs(request, job_id):
 	elif job.status == 'Finished':
 
 		# Return URL when job is finished
-		return_url = '/compare_result/' + str(schema.random_id) + '/'
+		return_url = '/compare_result/' + str(job.random_id) + '/'
 
 		# If no header is in URL, keep it there
 		if request.GET.noheader == '1':
