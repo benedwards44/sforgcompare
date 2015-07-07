@@ -226,19 +226,42 @@ def compare_orgs(request, job_id):
 def compare_results(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
-	
-	# Build HTML here - improves page load performance
-	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
 
 	if job.status != 'Finished':
 		return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
 	
-	return render_to_response('compare_results.html', RequestContext(request, {'org_left_username': job.sorted_orgs()[0].username, 'org_right_username': job.sorted_orgs()[1].username, 'html_rows': html_rows}))
+	# Build HTML here - improves page load performance
+	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
+
+	return render_to_response('compare_results.html', RequestContext(request, {
+		'org_left_username': job.sorted_orgs()[0].username, 
+		'org_right_username': job.sorted_orgs()[1].username, 
+		'html_rows': html_rows
+	}))
+
+
+def export(request, job_id):
+	""" 
+		Generate a zip file to download results for offline
+	"""
+
+	job = get_object_or_404(Job, random_id = job_id)
+
+	# Build HTML here - improves page load performance
+	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
+	
+	return render_to_response('compare_results_offline.html', RequestContext(request, {
+		'org_left_username': job.sorted_orgs()[0].username, 
+		'org_right_username': job.sorted_orgs()[1].username, 
+		'sorted_components': job.sorted_component_list()
+	}))
+
 
 # AJAX endpoint for getting the metadata of a component
 def get_metadata(request, component_id):
 	component = get_object_or_404(Component, pk = component_id)
 	return HttpResponse(component.content)
+
 
 # AJAX endpoint for getting the diff HTML of a component
 def get_diffhtml(request, component_id):
