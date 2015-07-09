@@ -312,7 +312,7 @@ def compare_results_offline(request, job_id):
 
 	# Filename for the 
 	zip_subdir = "compare_results"
-    zip_filename = "%s.zip" % zip_subdir
+	zip_filename = "%s.zip" % zip_subdir
 
 	# Open StringIO to grab in-memory ZIP contents
 	s = StringIO.StringIO()
