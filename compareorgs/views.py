@@ -254,7 +254,7 @@ def build_file(request, job_id):
 	job = get_object_or_404(Job, random_id = job_id)
 
 	# If file already exists
-	if os.path.exists('compare_results_' + str(job.id)):
+	if os.path.exists('compare_results_' + str(job.id) + '.zip'):
 		response_data = {
 			'status': 'Finished',
 			'error': ''
@@ -307,7 +307,7 @@ def download_file(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
 
-	zip_file = open('compare_results_' + str(job.id))
+	zip_file = open('compare_results_' + str(job.id) + '.zip')
 
 	response = HttpResponse(FileWrapper(zip_file.getvalue()), content_type='application/zip')
 	response['Content-Disposition'] = 'attachment; filename=compare_results.zip'
