@@ -1,104 +1,205 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Salesforce.com Org Compare Tool</title>
+		<meta name="keywords" content="salesforce, salesforce.com, force.com, compare, merge, sforgcompare" />
+  		<meta name="description" content="Compare the all metadata between Salesforce Orgs. Useful for seeing missing changes, customisation and building change sets or deployment packages." />
+  		<meta name="author" content="Ben Edwards (ben@benedwards.co.nz)" />
+  		<meta charset="UTF-8" />
 
-{% block scripts %}
-<script type="text/javascript" src="/static/js/jquery-migrate-1.1.0.min.js"></script>
-<script type="text/javascript" src="/static/jquery-syntaxhighlighter/jquery.syntaxhighlighter.min.js"></script>
-<script type="text/javascript" src="/static/js/compare.js"></script>
-{% endblock %}
+  		<link rel="stylesheet" href="/static/css/bootstrap-3.2.0.min.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
+		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/vnd.microsoft.icon" />
+		
+		<script type="text/javascript" src="/static/js/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="/static/js/main.js"></script>
+		<script type="text/javascript" src="/static/js/bootstrap-3.2.0.min.js"></script>
+		<script type="text/javascript" src="/static/js/jquery-migrate-1.1.0.min.js"></script>
+		<script type="text/javascript" src="/static/jquery-syntaxhighlighter/jquery.syntaxhighlighter.min.js"></script>
+		<script type="text/javascript" src="/static/js/compare.js"></script>
+	</head>	
 
-{% block content %}
+	<body>
 
-	<div class="loading-display">
+		<!-- Static navbar -->
+      	<nav class="navbar navbar-default">
 
-		<div style="float:left;">
-			<img src="/static/images/loading.gif" alt="Loading" title="Loading" />
+	        <div class="container-fluid">
+
+	          	<div class="navbar-header">
+	            	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+		              	<span class="sr-only">Toggle navigation</span>
+		              	<span class="icon-bar"></span>
+		              	<span class="icon-bar"></span>
+		              	<span class="icon-bar"></span>
+	            	</button>
+		            <a class="navbar-brand" href="http://www.tquila.com" target="_blank">
+		            	<img src="/static/images/tquila-logo@1x.png" border="0" />
+		            </a>
+	          	</div>
+
+	          	<div id="navbar" class="navbar-collapse collapse">
+
+	            	<ul class="nav navbar-nav navbar-right">
+	              		<li>
+	              			<a href="http://www.tquila.com/toolkit" target="_blank">Tquila Toolkit</a>
+	              		</li>
+	              		<li>
+	              			<a href="https://github.com/benedwards44/sforgcompare" target="_blank">Source Code</a>
+	              		</li>
+	              		<li>
+	              			<a href="https://twitter.com/benedwards44" target="_blank">@benedwards44</a>
+	              		</li>
+	              		<li>
+	              			<a href="#">
+	              				<img src="/static/images/i-icon.png" data-toggle="modal" data-target="#infoModal" />
+	              			</a>
+	              		</li>
+	            	</ul>
+
+	          	</div><!--/.nav-collapse -->
+
+	        </div><!--/.container-fluid -->
+
+	    </nav>
+
+	    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+			<div class="modal-dialog small_dialog">
+		    	<div class="modal-content">
+		      		<div class="modal-header">
+		        		<button type="button" class="close" data-dismiss="modal">
+		        			<span aria-hidden="true">&times;</span>
+		        			<span class="sr-only">Close</span>
+		        		</button>
+		        		<h3 class="modal-title" id="apiModalLabel">
+		        			Salesforce Package Builder
+		        		</h3>
+		      		</div>
+		      		<div class="modal-body">
+		        		<p>
+		        			For any errors or issues, please feel free to contact me on twitter <a href="https://twitter.com/benedwards44" target="_blank">@benedwards44</a> or via email <a href="mailto:ben@tquila.com">ben@tquila.com</a>.
+		        		</p>
+		        		<p>
+		        			I am constantly trying to update and improve this application, as well as other apps I'm working on. Feel free to contact me if you'd like to contribute or have any ideas. All my applications are open sourced on GitHub at <a href="http://github.com/benedwards44" target="_blank">http://github.com/benedwards44</a>.
+		        		</p>
+		        		<p>
+		        			If you haven't already, check out my other apps:
+		        			<ul>
+		        				<li><a href="https://packagebuilder.herokuapp.com" target="_blank">Package Builder</a></li>
+		        				<li><a href="https://schemalister.herokuapp.com" target="_blank">Schema Lister</a></li>
+		        				<li><a href="https://sfswitch.herokuapp.com" target="_blank">Switch</a></li>
+		        				<li><a href="https://fieldcreator.herokuapp.com" target="_blank">Field Creator</a></li>
+		        			</ul>
+		        		</p>
+		        		<p>	
+		        			Also, be sure to check out the <a href="http://www.tquila.com/toolkit/" target="_blank">Tquila Toolkit</a>, where this app and many others are accessible and free for use!
+		        		</p>
+		      		</div>
+		      		<div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				    </div>
+		    	</div>
+		  	</div>
 		</div>
 
-		<div style="float:left;margin-left:20px;">
-			<h1 style="font-size:1.5em;margin-top:20px;">
-				Building results
-			</h1>
-			<p>
-				Shouldn't be long...
-			</p>
+		<div class="clear"></div>
+
+		<div class="col-md-8 col-md-offset-2">
+		
+			<div class="loading-display">
+
+				<div style="float:left;">
+					<img src="/static/images/loading.gif" alt="Loading" title="Loading" />
+				</div>
+
+				<div style="float:left;margin-left:20px;">
+					<h1 style="font-size:1.5em;margin-top:20px;">
+						Building results
+					</h1>
+					<p>
+						Shouldn't be long...
+					</p>
+				</div>
+
+			</div>
+
+			<div id="compare_results">
+
+				<p>
+		            Your Org Compare results are presented below. Files are highlighted based on matches or differences. You can click on components to view the file and see highlighted differences within files.
+		        </p>
+
+		        <hr style="width:100%;margin: 10px 0;" />
+
+		        <select class="form-control" id="display_option">
+		            <option value="all">Show All Components</option>
+		            <option value="diff" selected="selected">Show Only Differences</option>
+		        </select>
+
+		        <div id="legend">
+		            <div class="alert alert-success legend" role="alert" id="legend_match">
+		                Match
+		            </div>
+		            <div class="alert alert-warning legend" role="alert" id="legend_diff">
+		                Diff in file
+		            </div>
+		            <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
+		                New file
+		            </div>
+		        </div>
+
+		        <div style="clear:both;"></div>
+
+				<table class="table table-hover" id="compare_results_table">
+
+					<thead>
+						<tr>
+							<th><h2>{{ org_left_username }}</h2></th>
+							<th><h2>{{ org_right_username }}</h2></th>
+						</tr>
+					</thead>
+
+					<tbody>
+						{% autoescape off %}
+							{{ html_rows }}
+						{% endautoescape %}
+					</tbody>
+
+				</table>
+
+				<div class="alert alert-info" role="alert" id="no_differences_message">
+					<p>
+						There are no differences between the Orgs selected.
+					</p>
+				</div>
+
+			</div>
+
+			<div class="modal fade" id="viewCodeModal" tabindex="-1" role="dialog" aria-labelledby="codeModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+			    	<div class="modal-content">
+			      		<div class="modal-header">
+			        		<button type="button" class="close" data-dismiss="modal">
+			        			<span aria-hidden="true">&times;</span>
+			        			<span class="sr-only">Close</span>
+			        		</button>
+			        		<h3 class="modal-title" id="codeModalLabel"></h3>
+			      		</div>
+			      		<div class="modal-body">
+			      			<div id="top_scrollbar">
+			                    <div id="scrollbar"></div>
+			                </div>
+			      			<div id="codeModalBody">
+			      			</div>
+			      		</div>
+			      		<div class="modal-footer">
+					        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					    </div>
+			    	</div>
+			  	</div>
+			</div>
 		</div>
 
-	</div>
+	</body>
 
-	<div id="compare_results">
-
-		<p>
-            Your Org Compare results are presented below. Files are highlighted based on matches or differences. You can click on components to view the file and see highlighted differences within files.
-        </p>
-
-        <hr style="width:100%;margin: 10px 0;" />
-
-        <select class="form-control" id="display_option">
-            <option value="all">Show All Components</option>
-            <option value="diff" selected="selected">Show Only Differences</option>
-        </select>
-
-        <div id="legend">
-            <div class="alert alert-success legend" role="alert" id="legend_match">
-                Match
-            </div>
-            <div class="alert alert-warning legend" role="alert" id="legend_diff">
-                Diff in file
-            </div>
-            <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
-                New file
-            </div>
-        </div>
-
-        <div style="clear:both;"></div>
-
-		<table class="table table-hover" id="compare_results_table">
-
-			<thead>
-				<tr>
-					<th><h2>{{ org_left_username }}</h2></th>
-					<th><h2>{{ org_right_username }}</h2></th>
-				</tr>
-			</thead>
-
-			<tbody>
-				{% autoescape off %}
-					{{ html_rows }}
-				{% endautoescape %}
-			</tbody>
-
-		</table>
-
-		<div class="alert alert-info" role="alert" id="no_differences_message">
-			<p>
-				There are no differences between the Orgs selected.
-			</p>
-		</div>
-
-	</div>
-
-	<div class="modal fade" id="viewCodeModal" tabindex="-1" role="dialog" aria-labelledby="codeModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-	    	<div class="modal-content">
-	      		<div class="modal-header">
-	        		<button type="button" class="close" data-dismiss="modal">
-	        			<span aria-hidden="true">&times;</span>
-	        			<span class="sr-only">Close</span>
-	        		</button>
-	        		<h3 class="modal-title" id="codeModalLabel"></h3>
-	      		</div>
-	      		<div class="modal-body">
-	      			<div id="top_scrollbar">
-	                    <div id="scrollbar"></div>
-	                </div>
-	      			<div id="codeModalBody">
-	      			</div>
-	      		</div>
-	      		<div class="modal-footer">
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			    </div>
-	    	</div>
-	  	</div>
-	</div>
-
-{% endblock %}
+</html>
