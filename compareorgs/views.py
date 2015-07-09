@@ -324,7 +324,11 @@ def compare_results_offline(request, job_id):
 	zip_file.write('components.db')
 	zip_file.write('compare_results_offline.html')
 
-	zip_file.write('staticfiles')
+	# Add all static files
+	for root, dirs, files in os.walk('staticfiles'):
+		for file in files:
+			zip_file.write(os.path.join(root, file))
+
 
 	# Close the file
 	zip_file.close()
