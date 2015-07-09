@@ -371,7 +371,6 @@ def create_offline_file(job, offline_job):
 		# Insert into database
 		c.executemany('INSERT INTO component_diff VALUES (?,?)', component_records)
 
-
 		# Create component table
 		c.execute('''CREATE TABLE component
 	             (id integer, metadata text)''')
@@ -425,6 +424,9 @@ def create_offline_file(job, offline_job):
 		for root, dirs, files in os.walk('staticfiles'):
 			for file in files:
 				zip_file.write(os.path.join(root, file))
+
+		#job.zip_file.name = 
+		#job.save()
 
 		# Close the file
 		zip_file.close()
