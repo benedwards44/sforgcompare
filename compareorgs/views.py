@@ -262,21 +262,29 @@ def compare_results_offline(request, job_id):
 	c.execute('''CREATE TABLE component_diff
              (id integer, diff_html text)''')
 
+	component_records = []
+
 	# Add data to diff table
 	for component in job.sorted_component_list():
 		if component.diff_html:
-			#c.execute("INSERT INTO component_diff VALUES (" + str(component.id) + ",'" + component.diff_html + "')")
-			c.execute("INSERT INTO component_diff VALUES (?, ?)", (component.id, component.diff_html))
+			component_records.append((str(component.id), component.diff_html))
+
+	# Insert into database
+	c.executemany('INSERT INTO component_diff VALUES (?,?)', component_records)
 
 
 	# Create component table
 	c.execute('''CREATE TABLE component
              (id integer, metadata text)''')
 
+	component_records = []
+
 	# Add data
 	for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
-		c.execute("INSERT INTO component VALUES (?, ?)", (component.id, component.content))
+		component_records.append((str(component.id), component.content))
 
+	# Insert into database
+	c.executemany('INSERT INTO component VALUES (?,?)', component_records)
 
 	# Save (commit) the changes
 	conn.commit()
