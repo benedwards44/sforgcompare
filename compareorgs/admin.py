@@ -27,7 +27,7 @@ class ComponentTypeAdmin(admin.ModelAdmin):
 class JobAdmin(admin.ModelAdmin):
     list_display = ('created_date','finished_date','status','error')
     ordering = ['-created_date']
-    inlines = [OrgInline, ComponentListUniqueInline]
+    inlines = [OrgInline]
 
 
 admin.site.register(Job, JobAdmin)

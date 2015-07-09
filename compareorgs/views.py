@@ -240,7 +240,7 @@ def compare_results(request, job_id):
 	}))
 
 
-def export(request, job_id):
+def compare_results_offline(request, job_id):
 	""" 
 		Generate a zip file to download results for offline
 	"""
@@ -249,11 +249,16 @@ def export(request, job_id):
 
 	# Build HTML here - improves page load performance
 	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
+
+
 	
 	return render_to_response('compare_results_offline.html', RequestContext(request, {
 		'org_left_username': job.sorted_orgs()[0].username, 
 		'org_right_username': job.sorted_orgs()[1].username, 
-		'sorted_components': job.sorted_component_list()
+		'html_rows': html_rows,
+		'sorted_components', job.sorted_component_list(),
+		'component_types_left', ComponentType.objects.filter(org = job.sorted_orgs()[0]),
+		'component_types_right', ComponentType.objects.filter(org = job.sorted_orgs()[1])
 	}))
 
 

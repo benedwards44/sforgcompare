@@ -3,7 +3,7 @@
 {% block scripts %}
 <script type="text/javascript" src="/static/js/jquery-migrate-1.1.0.min.js"></script>
 <script type="text/javascript" src="/static/jquery-syntaxhighlighter/jquery.syntaxhighlighter.min.js"></script>
-<script type="text/javascript" src="/static/js/compare.js"></script>
+<script type="text/javascript" src="/static/js/compare-offline.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -62,10 +62,9 @@
 			</thead>
 
 			<tbody>
-				{% for component in sorted_components %}
-
-
-				{% endfor %}
+				{% autoescape off %}
+					{{ html_rows }}
+				{% endautoescape %}
 			</tbody>
 
 		</table>
