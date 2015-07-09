@@ -283,7 +283,7 @@ def check_file_status(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
 
-	offline_job = OfflineFileJob.objects.filter(job = job)[0]
+	offline_job = OfflineFileJob.objects.filter(job = job).order_by('-id')[0]
 
 	response_data = {
 		'status': offline_job.status,
