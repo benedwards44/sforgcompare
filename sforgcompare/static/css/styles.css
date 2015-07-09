@@ -196,7 +196,7 @@ a.object_link:hover {
     width: 50%;
 }
 
-.modal-dialog {
+#viewCodeModal .modal-dialog {
     width: 97%;
 }
 

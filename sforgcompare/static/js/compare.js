@@ -167,7 +167,7 @@ function startDownloadJob(job_id) {
 		'Generating Offline File',
 		'Your download file is being generated...' +
 			'<div>' +
-				'Deploying changes. Time will vary depending on number and type of components.' +
+				'Your download file is being generated...' +
 			'</div>' +
 			'<div class="progress">' +
 				'<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>' +
