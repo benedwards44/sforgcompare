@@ -316,13 +316,13 @@ def compare_results_offline(request, job_id):
 	zip_file.write('compare_results_offline.html')
 
 	# Close the file
-	zip_file.close('components.db')
+	zip_file.close()
 
 	# Delete database and files
-	os.remove()
+	os.remove('components.db')
 	
 	# Return downloadable file
-	response = HttpResponse(zip_file, content_type='application/x-zip-compressed')
+	response = HttpResponse(ZipFile(zip_file, 'r'), content_type='application/zip')
 	response['Content-Disposition'] = 'attachment; filename=compare_result.zip'
 	return response
 
