@@ -352,7 +352,6 @@ def create_offline_file(job, offline_job):
 
 	try:
 
-	
 		# Create sqlite database
 		conn = sqlite3.connect('components.db')
 

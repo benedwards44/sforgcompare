@@ -64,6 +64,6 @@ class ComponentListUnique(models.Model):
 class OfflineFileJob(models.Model):
 	job = models.ForeignKey(Job)
 	status = models.CharField(max_length=255)
-	error = models.TextField()
+	error = models.TextField(blank=True, null=True)
 
 	
