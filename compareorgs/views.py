@@ -305,7 +305,7 @@ def compare_results_offline(request, job_id):
 
 	# Add database
 	zip_file.write('components.db')
-	zip_file.write('compare_result_offline.html')
+	zip_file.write('compare_results_offline.html')
 
 	# Close the zip file
 	zip_file.close()
