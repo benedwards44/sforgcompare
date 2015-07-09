@@ -179,7 +179,7 @@ function startDownloadJob(job_id) {
 
 	$.ajax(
 	{
-	    url: '/compare_result/' + job_id + '/build_file/'
+	    url: '/compare_result/' + job_id + '/build_file/',
 	    type: 'get',
 	    dataType: 'json',
 	    success: function(resp) {
