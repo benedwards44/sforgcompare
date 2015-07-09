@@ -342,7 +342,7 @@ def download_metadata_tooling(job, org):
 
 
 @app.task
-def create_offline_file(offline_job):
+def create_offline_file(job, offline_job):
 
 	# Build HTML here - improves page load performance
 	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
@@ -403,7 +403,7 @@ def create_offline_file(offline_job):
 	compare_result.close()
 
 	# Filename for the 
-	zip_subdir = "compare_results"
+	zip_subdir = "compare_results_" + str(job.id)
 	zip_filename = "%s.zip" % zip_subdir
 
 	# Open StringIO to grab in-memory ZIP contents

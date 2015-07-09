@@ -245,7 +245,7 @@ def compare_results(request, job_id):
 	}))
 
 
-def compare_results_offline(request, job_id):
+def build_file(request, job_id):
 	""" 
 		Generate a zip file to download results for offline
 	"""
@@ -261,20 +261,46 @@ def compare_results_offline(request, job_id):
 	# Start async job
 	try:
 
-		create_offline_file.delay(offline_job)
+		create_offline_file.delay(job, offline_job)
 
 	except Exception as ex:
 		# If error, save error to job
-		offline_job.status = 'Not Started'
+		offline_job.status = 'Error'
 		offline_job.error = ex
 		offline_job.save()
 
-	return HttpResponse('Job Started')
+	response_data = {
+		'status': offline_job.status,
+		'error': offline_job.error
+	}
+
+	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
 	
-	# Return downloadable file
-	#response = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
-	#response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
-	#return response
+
+# AJAX endpoint for page to constantly check if job is finished
+def check_file_status(request, job_id):
+
+	job = get_object_or_404(Job, random_id = job_id)
+
+	offline_job = OfflineFileJob.objects.filter(job = job)[0]
+
+	response_data = {
+		'status': offline_job.status,
+		'error': offline_job.error
+	}
+
+	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
+
+
+
+def download_file(request, job_id):
+
+	job = get_object_or_404(Job, random_id = job_id)
+
+	response = HttpResponse(ZipFile('compare_results_' + job.id, 'r'), mimetype = "application/x-zip-compressed")
+	response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+	return response
+
 
 
 # AJAX endpoint for getting the metadata of a component
