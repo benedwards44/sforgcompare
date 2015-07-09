@@ -298,12 +298,10 @@ def download_file(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
 
-	from django.utils.encoding import smart_str
-	response = HttpResponse(mimetype='application/force-download')
-	response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('compare_results.zip')
-	response['X-Sendfile'] = smart_str("compare_results_" + str(job.id))
-	# It's usually a good idea to set the 'Content-Length' header too.
-	# You can also set any other required headers: Cache-Control, etc.
+	zip_file = open('compare_results_' + str(job.id))
+
+	response = HttpResponse(FileWrapper(zip_file.getvalue()), content_type='application/zip')
+	response['Content-Disposition'] = 'attachment; filename=compare_results.zip'
 	return response
 
 	"""

@@ -161,9 +161,8 @@ function checkAnyChildVisible()
 
 function startDownloadJob(job_id) {
 
-	alert('Coming soon...');
+	//alert('Coming soon...');
 
-	/*
 	updateModal(
 		'Generating Offline File',
 		'Your download file is being generated, this can take a few minutes...' +
@@ -209,7 +208,6 @@ function startDownloadJob(job_id) {
 	    }
 	});
 
-	*/
 }
 
 function updateModal(header, body, allow_close)
@@ -244,13 +242,23 @@ function check_status(job_id)
 		        {
 					// Redirect to download file
 					window.location = '/compare_result/' + job_id + '/download_file/';
+
+					updateModal(
+						'Download Ready',
+						'<div class="alert alert-success" role="alert">Your file is ready. Click the link to download.<br/><a href="/compare_result/' + job_id + '/download_file/">Download</a></div>',
+						true
+					);
+
+
 					clearInterval(refreshIntervalId);
 		        } 
 		        else if (resp.status == 'Error')
 		        {
-					updateModal('Error',
-								'<div class="alert alert-danger" role="alert">There was an error builing your file: ' + resp.error + '</div>',
-								true);
+					updateModal(
+						'Error',
+						'<div class="alert alert-danger" role="alert">There was an error builing your file: ' + resp.error + '</div>',
+						true
+					);
 
 					clearInterval(refreshIntervalId);
 		        }
