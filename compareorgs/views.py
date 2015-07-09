@@ -278,11 +278,17 @@ def compare_results_offline(request, job_id):
 	# Just be sure any changes have been committed or they will be lost.
 	conn.close()
 
+	# Create html file
+	compare_result = open('compare_result_offline.html','w+')
+	compare_result.write('<html><body><h1>Hello</h1></body></html>')
+	compare_result.close()
+
 	# Create zip file for all content
 	zip_file = ZipFile('compare_result.zip', 'w')
 
 	# Add database
 	zip_file.write('components.db')
+	zip_file.write('compare_result_offline.html')
 
 	# Close the zip file
 	zip_file.close()
