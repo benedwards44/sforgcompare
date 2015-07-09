@@ -11,6 +11,8 @@ import uuid
 from time import sleep
 from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling
 import sys
+import sqlite3
+import os
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
@@ -250,16 +252,39 @@ def compare_results_offline(request, job_id):
 	# Build HTML here - improves page load performance
 	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
 
+	# Create sqlite database
+	conn = sqlite3.connect('components.db')
 
+	c = conn.cursor()
+
+	# Create component diff table
+	c.execute('''CREATE TABLE component_diff
+             (string id, string diff_html)''')
+
+	# Create component table
+	c.execute('''CREATE TABLE component
+             (string id, string metadata)''')
+
+	# Save (commit) the changes
+	conn.commit()
+
+	# We can also close the connection if we are done with it.
+	# Just be sure any changes have been committed or they will be lost.
+	conn.close()
+
+	# Create zip file for all content
+	zip_file = ZipFile('compare_result.zip', 'w')
+
+	# Add database
+	zip_file.write('components.db')
+
+	# Close the zip file
+	zip_file.close()
 	
-	return render_to_response('compare_results_offline.html', RequestContext(request, {
-		'org_left_username': job.sorted_orgs()[0].username, 
-		'org_right_username': job.sorted_orgs()[1].username, 
-		'html_rows': html_rows,
-		'sorted_components': job.sorted_component_list(),
-		'components_left': Component.objects.filter(component_type__org = job.sorted_orgs()[0]),
-		'components_right': Component.objects.filter(component_type__org = job.sorted_orgs()[1])
-	}))
+	# Return downloadable file
+	response = HttpResponse(zip_file, content_type='application/force-download')
+	response['Content-Disposition'] = 'attachment; filename="%s"' % 'compare_result.zip'
+	return response
 
 
 # AJAX endpoint for getting the metadata of a component

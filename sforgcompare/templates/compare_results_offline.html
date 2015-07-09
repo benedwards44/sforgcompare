@@ -3,7 +3,7 @@
 {% block scripts %}
 <script type="text/javascript" src="/static/js/jquery-migrate-1.1.0.min.js"></script>
 <script type="text/javascript" src="/static/jquery-syntaxhighlighter/jquery.syntaxhighlighter.min.js"></script>
-<script type="text/javascript" src="/static/js/compare-offline.js"></script>
+<script type="text/javascript" src="/static/js/compare.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -100,25 +100,5 @@
 	    	</div>
 	  	</div>
 	</div>
-
-	<!-- Store component metadata and diff html -->
-	{% for component in sorted_components %}
-		<div class="diff_html" style="display:none;">
-			<textarea id="{{ component.id }}">{{ component.diff_html }}</textarea>
-		</div>
-	{% endfor %}
-
-	{% for component in components_left %}
-		<div class="component_metadata" style="display:none;">
-			<textarea id="{{ component.id }}">{{ component.content }}</textarea>
-		</div>
-	{% endfor %}
-
-	{% for component in components_right %}
-		<div class="component_metadata" style="display:none;">
-			<textarea id="{{ component.id }}">{{ component.content }}</textarea>
-		</div>
-	{% endfor %}
-
 
 {% endblock %}
