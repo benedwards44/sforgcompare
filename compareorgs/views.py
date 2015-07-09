@@ -292,7 +292,7 @@ def check_file_status(request, job_id):
 	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
 
 
-
+# Serve the zip file for download
 def download_file(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)

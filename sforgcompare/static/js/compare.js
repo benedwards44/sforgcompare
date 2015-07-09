@@ -161,9 +161,8 @@ function checkAnyChildVisible()
 
 function startDownloadJob(job_id) {
 
-	alert('coming soon');
+	//alert('coming soon');
 
-	/*
 	updateModal(
 		'Generating Offline File',
 		'Your download file is being generated...' +
@@ -211,7 +210,6 @@ function startDownloadJob(job_id) {
 	    	);
 	    }
 	});
-	*/
 
 }
 
@@ -246,10 +244,7 @@ function check_status(job_id)
 		        if (resp.status == 'Finished')
 		        {
 					// Redirect to download file
-
-
-
-
+					window.location = '/compare_result/' + job_id + '/download_file/';
 					clearInterval(refreshIntervalId);
 		        } 
 		        else if (resp.status == 'Error')
