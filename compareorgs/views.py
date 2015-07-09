@@ -322,7 +322,7 @@ def compare_results_offline(request, job_id):
 	os.remove('components.db')
 	
 	# Return downloadable file
-	response = HttpResponse(ZipFile(zip_file, 'r'), content_type='application/zip')
+	response = HttpResponse(ZipFile('compare_result.zip', 'r'), content_type='application/zip')
 	response['Content-Disposition'] = 'attachment; filename=compare_result.zip'
 	return response
 
