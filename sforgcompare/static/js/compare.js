@@ -161,12 +161,12 @@ function checkAnyChildVisible()
 
 function startDownloadJob(job_id) {
 
-	//alert('Coming soon...');
+	alert('Coming soon...');
 
-
+	/*
 	updateModal(
 		'Generating Offline File',
-		'Your download file is being generated...' +
+		'Your download file is being generated, this can take a few minutes...' +
 		'<div class="progress">' +
 			'<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>' +
 		'</div>',
@@ -209,7 +209,7 @@ function startDownloadJob(job_id) {
 	    }
 	});
 
-
+	*/
 }
 
 function updateModal(header, body, allow_close)
