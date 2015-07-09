@@ -253,6 +253,15 @@ def build_file(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
 
+	# If file already exists
+	if os.path.exists('compare_results_' + str(job.id)):
+		response_data = {
+			'status': 'Finished',
+			'error': ''
+		}
+		return HttpResponse(json.dumps(response_data), content_type = 'application/json')
+
+
 	# Create offline job to run
 	offline_job = OfflineFileJob()
 	offline_job.job = job
