@@ -288,7 +288,17 @@ def compare_results_offline(request, job_id):
 
 	# Create html file
 	compare_result = open('compare_result_offline.html','w+')
-	compare_result.write('<html><body><h1>Hello</h1></body></html>')
+
+	# Build the html using the template contentxt
+	t = loader.get_template('compare_result_offline.html')
+	c = Context({ 
+		'org_left_username': job.sorted_orgs()[0].username, 
+		'org_right_username': job.sorted_orgs()[1].username, 
+		'html_rows': html_rows
+	})
+
+	# Write template contents to file
+	compare_result.write(t.render(c))
 	compare_result.close()
 
 	# Create zip file for all content
