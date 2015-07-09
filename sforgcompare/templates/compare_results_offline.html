@@ -101,4 +101,18 @@
 	  	</div>
 	</div>
 
+	<!-- Store component metadata and diff html -->
+	{% for component in sorted_components %}
+		<textarea id="{{ component.id}" class="diff_html" style="display:none;">{{ component.diff_html }}</textarea>
+	{% endfor %}
+
+	{% for component in components_left %}
+		<textarea id="{{ component.id}" class="component_metadata" style="display:none;">{{ component.content }}</textarea>
+	{% endfor %}
+
+	{% for component in components_right %}
+		<textarea id="{{ component.id}" class="component_metadata" style="display:none;">{{ component.content }}</textarea>
+	{% endfor %}
+
+
 {% endblock %}

@@ -257,8 +257,8 @@ def compare_results_offline(request, job_id):
 		'org_right_username': job.sorted_orgs()[1].username, 
 		'html_rows': html_rows,
 		'sorted_components', job.sorted_component_list(),
-		'component_types_left', ComponentType.objects.filter(org = job.sorted_orgs()[0]),
-		'component_types_right', ComponentType.objects.filter(org = job.sorted_orgs()[1])
+		'components_left', Component.objects.filter(component_type__org = job.sorted_orgs()[0]),
+		'components_right', Component.objects.filter(component_type__org = job.sorted_orgs()[1])
 	}))
 
 
