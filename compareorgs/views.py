@@ -260,11 +260,11 @@ def compare_results_offline(request, job_id):
 
 	# Create component diff table
 	c.execute('''CREATE TABLE component_diff
-             (string id, string diff_html)''')
+             (id text, diff_html text)''')
 
 	# Create component table
 	c.execute('''CREATE TABLE component
-             (string id, string metadata)''')
+             (id text, metadata text)''')
 
 	# Save (commit) the changes
 	conn.commit()
