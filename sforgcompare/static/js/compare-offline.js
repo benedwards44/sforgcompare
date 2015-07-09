@@ -34,53 +34,31 @@ $(document).ready(function ()
 		// If diff file - query for diff HTML that Python generated
 		if ( $(this).hasClass('diff') )
 		{
-			$.ajax(
-			{
-			    url: '/get_diffhtml/' + $(this).attr('id'),
-			    type: 'get',
-			    success: function(resp) 
-			    {
-		    		$('#codeModalBody').html(resp);
-			        // Remove nowrap attribute. This is handled better with CSS.
-					$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
-			    },
-			    failure: function(resp) 
-			    { 
-			        $('#codeModalBody').html('<div class="alert alert-danger" role="alert"><p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>>/div>');
-			    }
-			});
+			var metadata = $('.diff_html textarea#' + $(this).attr('id')).val();
+    		$('#codeModalBody').html(metadata);
+	        // Remove nowrap attribute. This is handled better with CSS.
+			$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
 		}
 		// Otherwise obtain metadata for display
 		else
 		{
-			$.ajax(
-			{
-			    url: '/get_metadata/' + $(this).attr('id'),
-			    type: 'get',
-			    success: function(resp) 
-			    {
-			    	var metadata;
-			    	if (componentType == 'ApexClass' || componentType == 'ApexTrigger' || componentType == 'classes' || componentType == 'triggers')
-			    	{
-			    		metadata = resp;
-			    	}
-			    	else
-			    	{
-			    		metadata = resp.replace(/</g, '&lt;')
-										.replace(/>/g,'&gt;')
-										.replace(/\n/g, '<br/>');
-			    	}
+	    	var metadata = $('.component_metadata textarea#' + $(this).attr('id')).val();
 
-			    	var $content = $('<pre class="highlight">' + metadata + '</pre>');
-					$content.syntaxHighlight();
-					$('#codeModalBody').html($content);
-			        $.SyntaxHighlighter.init();
-			    },
-			    failure: function(resp) 
-			    { 
-			        $('#codeModalBody').html('<div class="alert alert-danger" role="alert"><p>There was an error getting the metadata:</p><br/><p>' + resp + '</p>>/div>');
-			    }
-			});
+	    	if (componentType == 'ApexClass' || componentType == 'ApexTrigger' || componentType == 'classes' || componentType == 'triggers')
+	    	{
+	    		// Do nothing
+	    	}
+	    	else
+	    	{
+	    		metadata = metadata.replace(/</g, '&lt;')
+								.replace(/>/g,'&gt;')
+								.replace(/\n/g, '<br/>');
+	    	}
+
+	    	var $content = $('<pre class="highlight">' + metadata + '</pre>');
+			$content.syntaxHighlight();
+			$('#codeModalBody').html($content);
+	        $.SyntaxHighlighter.init();
 		}
 		
 		// Load modal
