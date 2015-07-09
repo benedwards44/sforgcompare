@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.template import Context, Template
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
@@ -264,7 +265,7 @@ def compare_results_offline(request, job_id):
 
 	# Add data to diff table
 	for component in job.sorted_component_list():
-		c.execute("INSERT INTO component_diff VALUES (" + component.id + ",'" + component.diff_html + "')")
+		c.execute("INSERT INTO component_diff VALUES (" + str(component.id) + ",'" + component.diff_html + "')")
 
 
 	# Create component table
