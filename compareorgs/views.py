@@ -241,7 +241,8 @@ def compare_results(request, job_id):
 	return render_to_response('compare_results.html', RequestContext(request, {
 		'org_left_username': job.sorted_orgs()[0].username, 
 		'org_right_username': job.sorted_orgs()[1].username, 
-		'html_rows': html_rows
+		'html_rows': html_rows,
+		'job': job
 	}))
 
 
