@@ -14,6 +14,8 @@ import sys
 import sqlite3
 import os
 from zipfile import ZipFile
+import StringIO
+
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
@@ -308,8 +310,15 @@ def compare_results_offline(request, job_id):
 	compare_result.write(t.render(c))
 	compare_result.close()
 
+	# Filename for the 
+	zip_subdir = "compare_results"
+    zip_filename = "%s.zip" % zip_subdir
+
+	# Open StringIO to grab in-memory ZIP contents
+	s = StringIO.StringIO()
+
 	# Create zip file for all content
-	zip_file = ZipFile('compare_result.zip', 'w')
+	zip_file = ZipFile(s, 'w')
 
 	# Add database
 	zip_file.write('components.db')
@@ -322,8 +331,8 @@ def compare_results_offline(request, job_id):
 	os.remove('components.db')
 	
 	# Return downloadable file
-	response = HttpResponse(ZipFile('compare_result.zip', 'r'), content_type='application/zip')
-	response['Content-Disposition'] = 'attachment; filename=compare_result.zip'
+	response = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
+	response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 	return response
 
 
