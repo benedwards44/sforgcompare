@@ -7,6 +7,7 @@ from postmark import PMMail
 from suds.client import Client
 from base64 import b64decode
 from zipfile import ZipFile
+from django.template import RequestContext, Context, Template, loader
 import os
 import json	
 import requests
