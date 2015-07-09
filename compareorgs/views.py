@@ -265,7 +265,8 @@ def compare_results_offline(request, job_id):
 
 	# Add data to diff table
 	for component in job.sorted_component_list():
-		c.execute("INSERT INTO component_diff VALUES (" + str(component.id) + ",'" + component.diff_html + "')")
+		if component.diff_html:
+			c.execute("INSERT INTO component_diff VALUES (" + str(component.id) + ",'" + component.diff_html + "')")
 
 
 	# Create component table
