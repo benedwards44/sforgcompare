@@ -286,10 +286,10 @@ def compare_results_offline(request, job_id):
 	conn.close()
 
 	# Create html file
-	compare_result = open('compare_result_offline.html','w+')
+	compare_result = open('compare_results_offline.html','w+')
 
 	# Build the html using the template contentxt
-	t = loader.get_template('compare_result_offline.html')
+	t = loader.get_template('compare_results_offline.html')
 	c = Context({ 
 		'org_left_username': job.sorted_orgs()[0].username, 
 		'org_right_username': job.sorted_orgs()[1].username, 
