@@ -302,7 +302,6 @@ def download_file(request, job_id):
 	return response
 
 
-
 # AJAX endpoint for getting the metadata of a component
 def get_metadata(request, component_id):
 	component = get_object_or_404(Component, pk = component_id)
