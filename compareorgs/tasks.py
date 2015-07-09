@@ -352,9 +352,7 @@ def create_offline_file(job, offline_job):
 
 	try:
 
-		# Build HTML here - improves page load performance
-		html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
-
+	
 		# Create sqlite database
 		conn = sqlite3.connect('components.db')
 
@@ -403,7 +401,7 @@ def create_offline_file(job, offline_job):
 		c = Context({ 
 			'org_left_username': job.sorted_orgs()[0].username, 
 			'org_right_username': job.sorted_orgs()[1].username, 
-			'html_rows': html_rows
+			'html_rows': ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
 		})
 
 		# Write template contents to file

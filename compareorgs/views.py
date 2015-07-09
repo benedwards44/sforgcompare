@@ -298,9 +298,19 @@ def download_file(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
 
+	from django.utils.encoding import smart_str
+	response = HttpResponse(mimetype='application/force-download')
+	response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('compare_results.zip')
+	response['X-Sendfile'] = smart_str("compare_results_" + str(job.id))
+	# It's usually a good idea to set the 'Content-Length' header too.
+	# You can also set any other required headers: Cache-Control, etc.
+	return response
+
+	"""
 	response = HttpResponse(ZipFile('compare_results_' + job.id, 'r'), mimetype = "application/x-zip-compressed")
 	response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 	return response
+	"""
 
 
 # AJAX endpoint for getting the metadata of a component
