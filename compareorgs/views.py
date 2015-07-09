@@ -306,13 +306,10 @@ def compare_results_offline(request, job_id):
 	# Add database
 	zip_file.write('components.db')
 	zip_file.write('compare_results_offline.html')
-
-	# Close the zip file
-	zip_file.close()
 	
 	# Return downloadable file
 	response = HttpResponse(zip_file, content_type='application/force-download')
-	response['Content-Disposition'] = 'attachment; filename="%s"' % 'compare_result.zip'
+	response['Content-Disposition'] = 'attachment; filename=compare_result.zip'
 	return response
 
 
