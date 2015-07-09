@@ -274,3 +274,4 @@ function check_status(job_id)
 		    }
 		});
 	}, 1000);
+}
