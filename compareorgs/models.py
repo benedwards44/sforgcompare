@@ -58,3 +58,11 @@ class ComponentListUnique(models.Model):
 	diff_html = models.TextField(blank=True, null=True)
 	row_html = models.TextField(blank=True, null=True)
 	order = models.PositiveSmallIntegerField()
+
+
+class OfflineFileJob(models.Model):
+	job = models.ForeignKey(Job)
+	status = models.CharField(max_length=255)
+	error = models.TextField()
+
+	

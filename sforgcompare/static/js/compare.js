@@ -105,6 +105,11 @@ $(document).ready(function ()
 
 	});
 
+	$('#download').click(function() 
+	{
+		alert('coming soon.');
+	});
+
 	$('.loading-display').hide();
 	$('#compare_results').show();
 	checkAnyChildVisible();

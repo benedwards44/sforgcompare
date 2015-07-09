@@ -2,14 +2,14 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, Context, Template, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
-from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
 from compareorgs.forms import JobForm
 import json	
 import requests
 import datetime
 import uuid
 from time import sleep
-from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling
+from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling, create_offline_file
 import sys
 import sqlite3
 import os
@@ -252,94 +252,29 @@ def compare_results_offline(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
 
-	# Build HTML here - improves page load performance
-	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
+	# Create offline job to run
+	offline_job = OfflineFileJob()
+	offline_job.job = job
+	offline_job.status = 'Not Started'
+	offline_job.save()
 
-	# Create sqlite database
-	conn = sqlite3.connect('components.db')
+	# Start async job
+	try:
 
-	c = conn.cursor()
+		create_offline_file.delay(offline_job)
 
-	# Create component diff table
-	c.execute('''CREATE TABLE component_diff
-             (id integer, diff_html text)''')
+	except Exception as ex:
+		# If error, save error to job
+		offline_job.status = 'Not Started'
+		offline_job.error = ex
+		offline_job.save()
 
-	component_records = []
-
-	# Add data to diff table
-	for component in job.sorted_component_list():
-		if component.diff_html:
-			component_records.append((str(component.id), component.diff_html))
-
-	# Insert into database
-	c.executemany('INSERT INTO component_diff VALUES (?,?)', component_records)
-
-
-	# Create component table
-	c.execute('''CREATE TABLE component
-             (id integer, metadata text)''')
-
-	component_records = []
-
-	# Add data
-	for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
-		component_records.append((str(component.id), component.content))
-
-	# Insert into database
-	c.executemany('INSERT INTO component VALUES (?,?)', component_records)
-
-	# Save (commit) the changes
-	conn.commit()
-
-	# We can also close the connection if we are done with it.
-	# Just be sure any changes have been committed or they will be lost.
-	conn.close()
-
-	# Create html file
-	compare_result = open('compare_results_offline.html','w+')
-
-	# Build the html using the template contentxt
-	t = loader.get_template('compare_results_offline.html')
-	c = Context({ 
-		'org_left_username': job.sorted_orgs()[0].username, 
-		'org_right_username': job.sorted_orgs()[1].username, 
-		'html_rows': html_rows
-	})
-
-	# Write template contents to file
-	compare_result.write(t.render(c))
-	compare_result.close()
-
-	# Filename for the 
-	zip_subdir = "compare_results"
-	zip_filename = "%s.zip" % zip_subdir
-
-	# Open StringIO to grab in-memory ZIP contents
-	s = StringIO.StringIO()
-
-	# Create zip file for all content
-	zip_file = ZipFile(s, 'w')
-
-	# Add database
-	zip_file.write('components.db')
-	zip_file.write('compare_results_offline.html')
-
-	# Add all static files
-	for root, dirs, files in os.walk('staticfiles'):
-		for file in files:
-			zip_file.write(os.path.join(root, file))
-
-
-	# Close the file
-	zip_file.close()
-
-	# Delete database and files
-	os.remove('components.db')
+	return HttpResponse('Job Started')
 	
 	# Return downloadable file
-	response = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
-	response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
-	return response
+	#response = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
+	#response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+	#return response
 
 
 # AJAX endpoint for getting the metadata of a component

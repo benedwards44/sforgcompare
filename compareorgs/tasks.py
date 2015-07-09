@@ -21,7 +21,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
 app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'))
 
 # Import models
-from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
 
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
@@ -339,6 +339,96 @@ def download_metadata_tooling(job, org):
 
 	# Check if both jobs are now finished
 	check_overall_status(job)
+
+
+@app.task
+def create_offline_file(offline_job):
+
+	# Build HTML here - improves page load performance
+	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
+
+	# Create sqlite database
+	conn = sqlite3.connect('components.db')
+
+	c = conn.cursor()
+
+	# Create component diff table
+	c.execute('''CREATE TABLE component_diff
+             (id integer, diff_html text)''')
+
+	component_records = []
+
+	# Add data to diff table
+	for component in job.sorted_component_list():
+		if component.diff_html:
+			component_records.append((str(component.id), component.diff_html))
+
+	# Insert into database
+	c.executemany('INSERT INTO component_diff VALUES (?,?)', component_records)
+
+
+	# Create component table
+	c.execute('''CREATE TABLE component
+             (id integer, metadata text)''')
+
+	component_records = []
+
+	# Add data
+	for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
+		component_records.append((str(component.id), component.content))
+
+	# Insert into database
+	c.executemany('INSERT INTO component VALUES (?,?)', component_records)
+
+	# Save (commit) the changes
+	conn.commit()
+
+	# We can also close the connection if we are done with it.
+	# Just be sure any changes have been committed or they will be lost.
+	conn.close()
+
+	# Create html file
+	compare_result = open('compare_results_offline.html','w+')
+
+	# Build the html using the template contentxt
+	t = loader.get_template('compare_results_offline.html')
+	c = Context({ 
+		'org_left_username': job.sorted_orgs()[0].username, 
+		'org_right_username': job.sorted_orgs()[1].username, 
+		'html_rows': html_rows
+	})
+
+	# Write template contents to file
+	compare_result.write(t.render(c))
+	compare_result.close()
+
+	# Filename for the 
+	zip_subdir = "compare_results"
+	zip_filename = "%s.zip" % zip_subdir
+
+	# Open StringIO to grab in-memory ZIP contents
+	s = StringIO.StringIO()
+
+	# Create zip file for all content
+	zip_file = ZipFile(s, 'w')
+
+	# Add database
+	zip_file.write('components.db')
+	zip_file.write('compare_results_offline.html')
+
+	# Add all static files
+	for root, dirs, files in os.walk('staticfiles'):
+		for file in files:
+			zip_file.write(os.path.join(root, file))
+
+	# Close the file
+	zip_file.close()
+
+	# Delete database and files
+	os.remove('components.db')
+
+	offline_job.status = 'Finished'
+	offline_job.save()
 
 
 # Compare two Org's metadata and return results
