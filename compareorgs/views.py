@@ -274,6 +274,11 @@ def compare_results_offline(request, job_id):
 	c.execute('''CREATE TABLE component
              (id integer, metadata text)''')
 
+	# Add data
+	for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
+		c.execute("INSERT INTO component VALUES (?, ?)", (component.id, component.content))
+
+
 	# Save (commit) the changes
 	conn.commit()
 
