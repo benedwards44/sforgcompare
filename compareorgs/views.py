@@ -324,7 +324,7 @@ def compare_results_offline(request, job_id):
 	zip_file.write('components.db')
 	zip_file.write('compare_results_offline.html')
 
-	zip_file.write('/static/css/bootstrap-3.2.0.min.css')
+	zip_file.write('sforgcompare/sforgcompare/static/css/bootstrap-3.2.0.min.css')
 
 	# Close the file
 	zip_file.close()
