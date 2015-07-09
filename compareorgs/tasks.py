@@ -13,6 +13,8 @@ import requests
 import datetime
 import time
 import sys
+import sqlite3
+import StringIO
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
