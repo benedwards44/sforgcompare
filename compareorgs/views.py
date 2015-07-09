@@ -13,6 +13,7 @@ from compareorgs.tasks import download_metadata_metadata, download_metadata_tool
 import sys
 import sqlite3
 import os
+from zipfile import ZipFile
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
