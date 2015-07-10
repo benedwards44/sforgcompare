@@ -420,7 +420,7 @@ def create_offline_file(job, offline_job):
 		zip_file = ZipFile(s, 'w')
 
 		# Add database
-		zip_file.write('components.db')
+		zip_file.write(job.random_id + '.db')
 		zip_file.write('compare_results_offline.html')
 
 		# Add all static files
