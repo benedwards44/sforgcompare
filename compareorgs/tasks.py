@@ -18,7 +18,6 @@ import time
 import sys
 import sqlite3
 import StringIO
-import tinys3
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
@@ -440,19 +439,29 @@ def create_offline_file(job, offline_job):
 		# =================================
 
 		# Connect to AWS
-		conn = tinys3.Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-
-		# re-open the file
-		zip_zile = open(job.random_id + '.zip','rb')
-		conn.upload(job.random_id + '.zip', zip_zile, settings.AWS_STORAGE_BUCKET_NAME)
+		conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
 
 		# Connect to bucket
 		aws_bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
 
+		# Create key
+		k = Key(aws_bucket)
+
+		# Set filename
+		k.key = job.random_id + '.zip'
+
+		# Upload file
+		k.set_contents_from_filename(job.random_id + 'zip')
+
 		# Delete database and zip files
-		os.remove(job.random_id  + '.zip')
-		os.remove(job.random_id + '.db')
-		os.remove('compare_results_offline.html')
+		if os.path.exists(job.random_id  + '.zip'):
+			os.remove(job.random_id  + '.zip')
+
+		if os.path.exists(job.random_id + '.db'):
+			os.remove(job.random_id + '.db')
+
+		if os.path.exists('compare_results_offline.html'):
+			os.remove('compare_results_offline.html')
 
 		# Update status to finished
 		offline_job.status = 'Finished'

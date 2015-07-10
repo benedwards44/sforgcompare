@@ -17,4 +17,3 @@ django-sslify==0.2.4
 python-postmark==0.4.4
 suds==0.4
 django-s3direct==0.3.10
-tinys3==0.1.11
