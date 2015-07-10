@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'compareorgs',
+    'storages',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -110,10 +111,7 @@ EMAIL_USE_TLS = True
 AWS_ACCESS_KEY_ID = 'AKIAIQAERGOFN6JEVEOA'
 AWS_SECRET_ACCESS_KEY = '/UelhTft1EROYfoPbNGgO6SvWdkugOkoCC7AoVQS'
 AWS_STORAGE_BUCKET_NAME = 'sforgcompare'
-
-# The region of your bucket, more info:
-# http://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
-S3DIRECT_REGION = 'eu-west-1'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

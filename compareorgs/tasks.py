@@ -10,6 +10,9 @@ from zipfile import ZipFile
 from django.template import RequestContext, Context, Template, loader
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.core.cache import cache
 import os
 import json	
 import requests
@@ -427,17 +430,19 @@ def create_offline_file(job, offline_job):
 			for file in files:
 				zip_file.write(os.path.join(root, file))
 
-		#job.zip_file.name = 
-		#job.save()
 
 		# Close the file
 		zip_file.close()
+
+		#job.zip_file.name = 
+		#job.save()
 
 
 		# =================================
 		# Start logic to send file to AWS S3
 		# =================================
 
+		"""
 		# Connect to AWS
 		conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
 
@@ -453,6 +458,7 @@ def create_offline_file(job, offline_job):
 		# Upload file
 		k.set_contents_from_filename(job.random_id + '.zip')
 
+
 		# Delete database and zip files
 		if os.path.exists(job.random_id  + '.zip'):
 			os.remove(job.random_id  + '.zip')
@@ -462,6 +468,7 @@ def create_offline_file(job, offline_job):
 
 		if os.path.exists('compare_results_offline.html'):
 			os.remove('compare_results_offline.html')
+		"""
 
 		# Update status to finished
 		offline_job.status = 'Finished'

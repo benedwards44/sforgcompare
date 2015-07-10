@@ -161,8 +161,9 @@ function checkAnyChildVisible()
 
 function startDownloadJob(job_id) {
 
-	//alert('Coming soon...');
+	alert('Coming soon...');
 
+	/*
 	updateModal(
 		'Generating Offline File',
 		'Your download file is being generated, this can take a few minutes...' +
@@ -186,7 +187,7 @@ function startDownloadJob(job_id) {
 
 	    		updateModal(
 		    		'Error Generating File',
-		    		'<div class="alert alert-danger" role="alert">There was an error builing your file: ' + resp.error + '</div>',
+		    		'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp.error + '</div>',
 		    		true
 		    	);
 
@@ -202,11 +203,12 @@ function startDownloadJob(job_id) {
 	        // Error starting job
 	    	updateModal(
 	    		'Error Generating File',
-	    		'<div class="alert alert-danger" role="alert">There was an error builing your file: ' + resp + '</div>',
+	    		'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp + '</div>',
 	    		true
 	    	);
 	    }
 	});
+*/
 
 }
 
@@ -256,7 +258,7 @@ function check_status(job_id)
 		        {
 					updateModal(
 						'Error',
-						'<div class="alert alert-danger" role="alert">There was an error builing your file: ' + resp.error + '</div>',
+						'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp.error + '</div>',
 						true
 					);
 
@@ -268,7 +270,7 @@ function check_status(job_id)
 		    { 
 				updateModal(
 		    		'Error Generating File',
-		    		'<div class="alert alert-danger" role="alert">There was an error builing your file: ' + resp + '</div>',
+		    		'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp + '</div>',
 		    		true
 		    	);
 
