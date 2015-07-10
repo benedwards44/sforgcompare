@@ -451,7 +451,7 @@ def create_offline_file(job, offline_job):
 		k.key = job.random_id + '.zip'
 
 		# Upload file
-		k.set_contents_from_filename(job.random_id + 'zip')
+		k.set_contents_from_filename(job.random_id + '.zip')
 
 		# Delete database and zip files
 		if os.path.exists(job.random_id  + '.zip'):
