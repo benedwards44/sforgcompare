@@ -106,6 +106,15 @@ EMAIL_HOST_PASSWORD = '656y58nz'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+# AWS Settings
+AWS_ACCESS_KEY_ID = 'AKIAIQAERGOFN6JEVEOA'
+AWS_SECRET_ACCESS_KEY = '/UelhTft1EROYfoPbNGgO6SvWdkugOkoCC7AoVQS'
+AWS_STORAGE_BUCKET_NAME = 'sforgcompare'
+
+# The region of your bucket, more info:
+# http://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
+S3DIRECT_REGION = 'eu-west-1'
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
