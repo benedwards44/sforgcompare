@@ -8,6 +8,8 @@ from suds.client import Client
 from base64 import b64decode
 from zipfile import ZipFile
 from django.template import RequestContext, Context, Template, loader
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
 import os
 import json	
 import requests
@@ -16,6 +18,7 @@ import time
 import sys
 import sqlite3
 import StringIO
+import tinys3
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
@@ -353,7 +356,7 @@ def create_offline_file(job, offline_job):
 	try:
 
 		# Create sqlite database
-		conn = sqlite3.connect('components.db')
+		conn = sqlite3.connect(job.random_id + '.db')
 
 		c = conn.cursor()
 
@@ -407,7 +410,7 @@ def create_offline_file(job, offline_job):
 		compare_result.close()
 
 		# Filename for the 
-		zip_subdir = "compare_results_" + str(job.id)
+		zip_subdir = job.random_id
 		zip_filename = "%s.zip" % zip_subdir
 
 		# Open StringIO to grab in-memory ZIP contents
@@ -431,9 +434,27 @@ def create_offline_file(job, offline_job):
 		# Close the file
 		zip_file.close()
 
-		# Delete database and files
-		os.remove('components.db')
 
+		# =================================
+		# Start logic to send file to AWS S3
+		# =================================
+
+		# Connect to AWS
+		conn = tinys3.Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+
+		# re-open the file
+		zip_zile = open(job.random_id + '.zip','rb')
+		conn.upload(job.random_id + '.zip', zip_zile, settings.AWS_STORAGE_BUCKET_NAME)
+
+		# Connect to bucket
+		aws_bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+
+		# Delete database and zip files
+		os.remove(job.random_id  + '.zip')
+		os.remove(job.random_id + '.db')
+		os.remove('compare_results_offline.html')
+
+		# Update status to finished
 		offline_job.status = 'Finished'
 
 	except Exception as error:

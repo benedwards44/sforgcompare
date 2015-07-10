@@ -161,9 +161,8 @@ function checkAnyChildVisible()
 
 function startDownloadJob(job_id) {
 
-	alert('Coming soon...');
+	//alert('Coming soon...');
 
-	/*
 	updateModal(
 		'Generating Offline File',
 		'Your download file is being generated, this can take a few minutes...' +
@@ -208,7 +207,6 @@ function startDownloadJob(job_id) {
 	    	);
 	    }
 	});
-*/
 
 }
 
