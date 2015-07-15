@@ -439,10 +439,10 @@ def create_offline_file(job, offline_job):
 		zip_file.close()
 
 		# Re-open the file
-		zip_file = open(temp_dir_string + 'compare_results_offline.html')
+		zip_file = open(temp_dir_string + 'compare_results.zip')
 
 		# Save file to model
-		job.zip_file.save(job.random_id + '.zip', ContentFile(zip_file))
+		job.zip_file.save(job.random_id + '.zip', File(zip_file))
 		job.save()
 
 		# Close the file again
