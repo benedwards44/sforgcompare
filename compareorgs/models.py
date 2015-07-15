@@ -11,7 +11,7 @@ class Job(models.Model):
 	contextual_diff = models.BooleanField(default=False)
 	status = models.CharField(max_length=255, blank=True)
 	error = models.TextField(blank=True)
-	zip_file = models.FileField(upload_to='zipfiles', blank=True, null=True)
+	zip_file = models.FileField(upload_to='/', blank=True, null=True)
 
 	def sorted_orgs(self):
 		return self.org_set.order_by('org_number')
