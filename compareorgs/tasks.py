@@ -1,5 +1,13 @@
 from __future__ import absolute_import
 from celery import Celery
+import os
+import json	
+import requests
+import datetime
+import time
+import sys
+import sqlite3
+import StringIO
 
 # Celery config
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
@@ -20,14 +28,7 @@ from zipfile import ZipFile
 from django.template import RequestContext, Context, Template, loader
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
-import os
-import json	
-import requests
-import datetime
-import time
-import sys
-import sqlite3
-import StringIO
+
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
