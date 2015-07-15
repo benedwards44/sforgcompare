@@ -34,16 +34,19 @@ $(document).ready(function ()
 		// If diff file - query for diff HTML that Python generated
 		if ( $(this).hasClass('diff') )
 		{
-			var metadata = $('.diff_html textarea#' + $(this).attr('id')).val();
+			var metadata = //;
+
+
     		$('#codeModalBody').html(metadata);
+
 	        // Remove nowrap attribute. This is handled better with CSS.
 			$('#codeModalBody td[nowrap="nowrap"]').removeAttr('nowrap');
 		}
 		// Otherwise obtain metadata for display
 		else
 		{
-	    	var metadata = $('.component_metadata textarea#' + $(this).attr('id')).val();
-
+	    	var metadata = 'query';
+	    	
 	    	if (componentType == 'ApexClass' || componentType == 'ApexTrigger' || componentType == 'classes' || componentType == 'triggers')
 	    	{
 	    		// Do nothing
