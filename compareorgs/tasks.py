@@ -420,7 +420,7 @@ def create_offline_file(job, offline_job):
 		s = StringIO.StringIO()
 
 		# Create zip file for all content
-		zip_file = s3_storage.ZipFile(s, 'w')
+		zip_file = ZipFile(s, 'w')
 
 		# Add database
 		zip_file.write(job.random_id + '.db')
