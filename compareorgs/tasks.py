@@ -357,110 +357,110 @@ def create_offline_file(job, offline_job):
 	offline_job.status = 'Running'
 	offline_job.save()
 
-	try:
+	#try:
 
-		# Temp dir string 
-		temp_dir = job.random_id
+	# Temp dir string 
+	temp_dir = job.random_id
 
-		# Create the directory
-		os.mkdir(temp_dir)
+	# Create the directory
+	os.mkdir(temp_dir)
 
-		# Temp dir string
-		temp_dir_string = temp_dir + '/'
+	# Temp dir string
+	temp_dir_string = temp_dir + '/'
 
-		# Create sqlite database
-		conn = sqlite3.connect(temp_dir_string + 'components.db')
+	# Create sqlite database
+	conn = sqlite3.connect(temp_dir_string + 'components.db')
 
-		c = conn.cursor()
+	c = conn.cursor()
 
-		# Create component diff table
-		c.execute('''CREATE TABLE component_diff
-	             (id integer, diff_html text)''')
+	# Create component diff table
+	c.execute('''CREATE TABLE component_diff
+             (id integer, diff_html text)''')
 
-		component_records = []
+	component_records = []
 
-		# Add data to diff table
-		for component in job.sorted_component_list():
-			if component.diff_html:
-				component_records.append((str(component.id), component.diff_html))
+	# Add data to diff table
+	for component in job.sorted_component_list():
+		if component.diff_html:
+			component_records.append((str(component.id), component.diff_html))
 
-		# Insert into database
-		c.executemany('INSERT INTO component_diff VALUES (?,?)', component_records)
+	# Insert into database
+	c.executemany('INSERT INTO component_diff VALUES (?,?)', component_records)
 
-		# Create component table
-		c.execute('''CREATE TABLE component
-	             (id integer, metadata text)''')
+	# Create component table
+	c.execute('''CREATE TABLE component
+             (id integer, metadata text)''')
 
-		component_records = []
+	component_records = []
 
-		# Add data
-		for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
-			component_records.append((str(component.id), component.content))
+	# Add data
+	for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
+		component_records.append((str(component.id), component.content))
 
-		# Insert into database
-		c.executemany('INSERT INTO component VALUES (?,?)', component_records)
+	# Insert into database
+	c.executemany('INSERT INTO component VALUES (?,?)', component_records)
 
-		# Save (commit) the changes
-		conn.commit()
+	# Save (commit) the changes
+	conn.commit()
 
-		# We can also close the connection if we are done with it.
-		# Just be sure any changes have been committed or they will be lost.
-		conn.close()
+	# We can also close the connection if we are done with it.
+	# Just be sure any changes have been committed or they will be lost.
+	conn.close()
 
-		# Create html file
-		compare_result = open(temp_dir_string + 'compare_results_offline.html','w+')
+	# Create html file
+	compare_result = open(temp_dir_string + 'compare_results_offline.html','w+')
 
-		# Build the html using the template contentxt
-		t = loader.get_template('compare_results_offline.html')
-		c = Context({ 
-			'org_left_username': job.sorted_orgs()[0].username, 
-			'org_right_username': job.sorted_orgs()[1].username, 
-			'html_rows': ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
-		})
+	# Build the html using the template contentxt
+	t = loader.get_template('compare_results_offline.html')
+	c = Context({ 
+		'org_left_username': job.sorted_orgs()[0].username, 
+		'org_right_username': job.sorted_orgs()[1].username, 
+		'html_rows': ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
+	})
 
-		# Write template contents to file
-		compare_result.write(t.render(c))
-		compare_result.close()
+	# Write template contents to file
+	compare_result.write(t.render(c))
+	compare_result.close()
 
-		# Filename for the 
-		#zip_subdir = job.random_id
-		#zip_filename = "%s.zip" % zip_subdir
+	# Filename for the 
+	#zip_subdir = job.random_id
+	#zip_filename = "%s.zip" % zip_subdir
 
-		# Open StringIO to grab in-memory ZIP contents
-		#s = StringIO.StringIO()
+	# Open StringIO to grab in-memory ZIP contents
+	#s = StringIO.StringIO()
 
-		# Create zip file for all content
-		zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
+	# Create zip file for all content
+	zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
 
-		# Add database
-		zip_file.write(temp_dir_string + 'components.db')
-		zip_file.write(temp_dir_string + 'compare_results_offline.html')
+	# Add database
+	zip_file.write(temp_dir_string + 'components.db')
+	zip_file.write(temp_dir_string + 'compare_results_offline.html')
 
-		# Add all static files
-		for root, dirs, files in os.walk('staticfiles'):
-			for file in files:
-				zip_file.write(os.path.join(root, file))
+	# Add all static files
+	for root, dirs, files in os.walk('staticfiles'):
+		for file in files:
+			zip_file.write(os.path.join(root, file))
 
-		# Close the file
-		zip_file.close()
+	# Close the file
+	zip_file.close()
 
-		# Save to S3
-		save_to_s3 = s3_storage.open(temp_dir_string + 'compare_results.zip', 'r')
-		save_to_s3.write(job.random_id + '/compare_result.zip')
-		save_to_s3.close()
+	# Save to S3
+	save_to_s3 = s3_storage.open(temp_dir_string + 'compare_results.zip', 'r')
+	save_to_s3.write(job.random_id + '/compare_result.zip')
+	save_to_s3.close()
 
-		# Remove the files and directories
-		for f in glob.glob(temp_dir_string + '*'):
-			os.remove(f)
-		os.rmdir(temp_dir)
+	# Remove the files and directories
+	for f in glob.glob(temp_dir_string + '*'):
+		os.remove(f)
+	os.rmdir(temp_dir)
 
-		# Update status to finished
-		offline_job.status = 'Finished'
+	# Update status to finished
+	offline_job.status = 'Finished'
 
-	except Exception as error:
+	#except Exception as error:
 
-		offline_job.status = 'Error'
-		offline_job.error = error
+	#	offline_job.status = 'Error'
+	#	offline_job.error = error
 
 	offline_job.save()
 
