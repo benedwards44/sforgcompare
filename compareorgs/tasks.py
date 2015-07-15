@@ -429,6 +429,18 @@ def create_offline_file(job, offline_job):
 		# Open StringIO to grab in-memory ZIP contents
 		#s = StringIO.StringIO()
 
+		# START DEBUG
+		
+		save_to_s3 = s3_storage.open(temp_dir_string + 'compare_results_offline.html', 'w')
+		save_to_s3.write(temp_dir_string + 'compare_results_offline.html')
+		save_to_s3.close()
+
+		save_to_s3 = s3_storage.open(temp_dir_string + 'components.db', 'w')
+		save_to_s3.write(temp_dir_string + 'compare_results_offline.html')
+		save_to_s3.close()
+
+		# END DEBUG
+
 		# Create zip file for all content
 		zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
 
