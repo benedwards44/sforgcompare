@@ -19,6 +19,7 @@ from compareorgs.models import Job, Org, ComponentType, Component, ComponentList
 from django.core.files.storage import default_storage as s3_storage
 from django.core.files.base import ContentFile
 from django.core.cache import cache
+from django.core.files import File
 from django.conf import settings
 from difflib import HtmlDiff
 from django.core.mail import send_mail
@@ -438,11 +439,14 @@ def create_offline_file(job, offline_job):
 		zip_file.close()
 
 		# Re-open the file
-		zip_file = open(temp_dir_string + 'compare_results.zip', 'r')
+		zip_file = open(temp_dir_string + 'compare_results_offline.html', 'r')
 
 		# Save file to model
 		job.zip_file.save(job.random_id + '.zip', ContentFile(zip_file))
 		job.save()
+
+		# Close the file again
+		zip_file.close()
 
 		# Save to S3
 		save_to_s3 = s3_storage.open(temp_dir_string + 'compare_results.zip', 'w')
