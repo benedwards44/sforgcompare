@@ -430,7 +430,7 @@ def create_offline_file(job, offline_job):
 	#s = StringIO.StringIO()
 
 	# Create zip file for all content
-	zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
+	zip_file = ZipFile('compare_results.zip', 'w')
 
 	# Add database
 	zip_file.write(temp_dir_string + 'components.db')
@@ -445,7 +445,7 @@ def create_offline_file(job, offline_job):
 	zip_file.close()
 
 	# Save to S3
-	save_to_s3 = s3_storage.open(temp_dir_string + 'compare_results.zip', 'r')
+	save_to_s3 = s3_storage.open('compare_results.zip', 'r')
 	save_to_s3.write(job.random_id + '/compare_result.zip')
 	save_to_s3.close()
 
