@@ -1,5 +1,15 @@
 from __future__ import absolute_import
 from celery import Celery
+
+# Celery config
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
+app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'))
+
+# Import models
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
+from django.core.files.storage import default_storage as s3_storage
+from django.core.files.base import ContentFile
+from django.core.cache import cache
 from django.conf import settings
 from difflib import HtmlDiff
 from django.core.mail import send_mail
@@ -10,9 +20,6 @@ from zipfile import ZipFile
 from django.template import RequestContext, Context, Template, loader
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
-from django.core.files.storage import default_storage as s3_storage
-from django.core.files.base import ContentFile
-from django.core.cache import cache
 import os
 import json	
 import requests
@@ -23,13 +30,6 @@ import sqlite3
 import StringIO
 reload(sys)
 sys.setdefaultencoding("utf-8")
-
-# Celery config
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
-app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'))
-
-# Import models
-from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
 
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
