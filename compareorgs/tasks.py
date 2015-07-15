@@ -358,8 +358,17 @@ def create_offline_file(job, offline_job):
 
 	try:
 
+		# Temp dir string 
+		temp_dir = job.random_id
+
+		# Create the directory
+		os.mkdir(temp_dir)
+
+		# Temp dir string
+		temp_dir_string = temp_dir + '/'
+
 		# Create sqlite database
-		conn = sqlite3.connect(job.random_id + '.db')
+		conn = sqlite3.connect(temp_dir_string + 'components.db')
 
 		c = conn.cursor()
 
@@ -398,7 +407,7 @@ def create_offline_file(job, offline_job):
 		conn.close()
 
 		# Create html file
-		compare_result = open('compare_results_offline.html','w+')
+		compare_result = open(temp_dir_string + 'compare_results_offline.html','w+')
 
 		# Build the html using the template contentxt
 		t = loader.get_template('compare_results_offline.html')
@@ -420,11 +429,11 @@ def create_offline_file(job, offline_job):
 		#s = StringIO.StringIO()
 
 		# Create zip file for all content
-		zip_file = ZipFile(job.random_id + '.zip', 'w')
+		zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
 
 		# Add database
-		zip_file.write(job.random_id + '.db')
-		zip_file.write('compare_results_offline.html')
+		zip_file.write(temp_dir_string + 'components.db')
+		zip_file.write(temp_dir_string + 'compare_results_offline.html')
 
 		# Add all static files
 		for root, dirs, files in os.walk('staticfiles'):
@@ -435,18 +444,12 @@ def create_offline_file(job, offline_job):
 		zip_file.close()
 
 		# Save to S3
-		save_to_s3 = s3_storage.open(job.random_id + '.zip', 'r')
+		save_to_s3 = s3_storage.open(temp_dir_string + 'compare_results.zip', 'r')
 		save_to_s3.write(job.random_id + '/compare_result.zip')
 		save_to_s3.close()
 
-
-		# Delete files from Heroku local file storage
-		if os.path.exists(job.random_id + '.db'):
-			os.remove(job.random_id + '.db')
-
-		if os.path.exists('compare_results_offline.html'):
-			os.remove('compare_results_offline.html')
-
+		# Remove the created directory
+		os.rmdir(temp_dir)
 
 		# Update status to finished
 		offline_job.status = 'Finished'
