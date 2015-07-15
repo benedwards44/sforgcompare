@@ -422,25 +422,6 @@ def create_offline_file(job, offline_job):
 		compare_result.write(t.render(c))
 		compare_result.close()
 
-		# Filename for the 
-		#zip_subdir = job.random_id
-		#zip_filename = "%s.zip" % zip_subdir
-
-		# Open StringIO to grab in-memory ZIP contents
-		#s = StringIO.StringIO()
-
-		# START DEBUG
-		
-		save_to_s3 = s3_storage.open(temp_dir_string + 'compare_results_offline.html', 'w')
-		save_to_s3.write(temp_dir_string + 'compare_results_offline.html')
-		save_to_s3.close()
-
-		save_to_s3 = s3_storage.open(temp_dir_string + 'components.db', 'w')
-		save_to_s3.write(temp_dir_string + 'compare_results_offline.html')
-		save_to_s3.close()
-
-		# END DEBUG
-
 		# Create zip file for all content
 		zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
 
@@ -455,6 +436,10 @@ def create_offline_file(job, offline_job):
 
 		# Close the file
 		zip_file.close()
+
+		# Save file to model
+		job.zip_file.save(temp_dir_string + 'compare_result.zip', ContentFile('content'))
+		job.save()
 
 		# Save to S3
 		save_to_s3 = s3_storage.open(temp_dir_string + 'compare_results.zip', 'w')
