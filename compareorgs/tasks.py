@@ -10,7 +10,7 @@ from zipfile import ZipFile
 from django.template import RequestContext, Context, Template, loader
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
-from django.core.files.storage import default_storage
+from django.core.files.storage import default_storage as s3_storage
 from django.core.files.base import ContentFile
 from django.core.cache import cache
 import os
@@ -397,7 +397,7 @@ def create_offline_file(job, offline_job):
 		conn.close()
 
 		# Create html file
-		compare_result = open('compare_results_offline.html','w+')
+		compare_result = s3_storage.open('compare_results_offline.html','w+')
 
 		# Build the html using the template contentxt
 		t = loader.get_template('compare_results_offline.html')
@@ -419,7 +419,7 @@ def create_offline_file(job, offline_job):
 		s = StringIO.StringIO()
 
 		# Create zip file for all content
-		zip_file = ZipFile(s, 'w')
+		zip_file = s3_storage.ZipFile(s, 'w')
 
 		# Add database
 		zip_file.write(job.random_id + '.db')
@@ -434,41 +434,14 @@ def create_offline_file(job, offline_job):
 		# Close the file
 		zip_file.close()
 
-		#job.zip_file.name = 
-		#job.save()
 
+		# Delete files from S3
+		if s3_storage.exists(job.random_id + '.db'):
+			s3_storage.delete(job.random_id + '.db')
 
-		# =================================
-		# Start logic to send file to AWS S3
-		# =================================
+		if s3_storage.exists('compare_results_offline.html'):
+			s3_storage.delete('compare_results_offline.html')
 
-		"""
-		# Connect to AWS
-		conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-
-		# Connect to bucket
-		aws_bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
-
-		# Create key
-		k = Key(aws_bucket)
-
-		# Set filename
-		k.key = job.random_id + '.zip'
-
-		# Upload file
-		k.set_contents_from_filename(job.random_id + '.zip')
-
-
-		# Delete database and zip files
-		if os.path.exists(job.random_id  + '.zip'):
-			os.remove(job.random_id  + '.zip')
-
-		if os.path.exists(job.random_id + '.db'):
-			os.remove(job.random_id + '.db')
-
-		if os.path.exists('compare_results_offline.html'):
-			os.remove('compare_results_offline.html')
-		"""
 
 		# Update status to finished
 		offline_job.status = 'Finished'
