@@ -8,6 +8,7 @@ import time
 import sys
 import sqlite3
 import StringIO
+import glob
 
 # Celery config
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
@@ -448,7 +449,9 @@ def create_offline_file(job, offline_job):
 		save_to_s3.write(job.random_id + '/compare_result.zip')
 		save_to_s3.close()
 
-		# Remove the created directory
+		# Remove the files and directories
+		for f in glob.glob(temp_dir_string + '*'):
+			os.remove(f)
 		os.rmdir(temp_dir)
 
 		# Update status to finished
