@@ -398,7 +398,7 @@ def create_offline_file(job, offline_job):
 		conn.close()
 
 		# Create html file
-		compare_result = s3_storage.open('compare_results_offline.html','w+')
+		compare_result = open('compare_results_offline.html','w+')
 
 		# Build the html using the template contentxt
 		t = loader.get_template('compare_results_offline.html')
@@ -435,13 +435,18 @@ def create_offline_file(job, offline_job):
 		# Close the file
 		zip_file.close()
 
+		# Save to S3
+		save_to_s3 = s3_storage.open(zip_file, 'r')
+		save_to_s3.write(job.random_id + '/compare_result.zip')
+		save_to_s3.close()
 
-		# Delete files from S3
-		if s3_storage.exists(job.random_id + '.db'):
-			s3_storage.delete(job.random_id + '.db')
 
-		if s3_storage.exists('compare_results_offline.html'):
-			s3_storage.delete('compare_results_offline.html')
+		# Delete files from Heroku local file storage
+		if os.path.exists(job.random_id + '.db'):
+			os.remove(job.random_id + '.db')
+
+		if os.path.exists('compare_results_offline.html'):
+			os.remove('compare_results_offline.html')
 
 
 		# Update status to finished
