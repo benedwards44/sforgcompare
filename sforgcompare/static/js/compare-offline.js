@@ -22,7 +22,7 @@ $(document).ready(function ()
 	$('tr.component td').click(function() 
 	{
 		// Set loading gif while metadata loads
-		$('#codeModalBody').html('<img src="/static/images/loading.gif" alt="Loading" title="Loading" width="30" height="30" />');
+		$('#codeModalBody').html('<img src="staticfiles/images/loading.gif" alt="Loading" title="Loading" width="30" height="30" />');
 
 		// Component type of the cell clicked
 		var componentType = $(this).parent().attr('class').split('_')[1].trim();
