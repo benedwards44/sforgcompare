@@ -427,8 +427,10 @@ def create_offline_file(job, offline_job):
 		zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
 
 		# Add database
-		zip_file.write(temp_dir_string + 'components.db')
-		zip_file.write(temp_dir_string + 'compare_results_offline.html')
+		zip_file.write(temp_dir_string + 'components.db', 'components.db')
+
+		# Add html file
+		zip_file.write(temp_dir_string + 'compare_results_offline.html', 'compare_results_offline.html')
 
 		# Add all static files
 		for root, dirs, files in os.walk('staticfiles'):
@@ -442,16 +444,11 @@ def create_offline_file(job, offline_job):
 		zip_file = open(temp_dir_string + 'compare_results.zip')
 
 		# Save file to model
-		job.zip_file.save(job.random_id + '.zip', File(zip_file))
+		job.zip_file.save(temp_dir_string + 'compare_results.zip', File(zip_file))
 		job.save()
 
 		# Close the file again
 		zip_file.close()
-
-		# Save to S3
-		save_to_s3 = s3_storage.open(temp_dir_string + 'compare_results.zip', 'w')
-		save_to_s3.write(temp_dir_string + 'compare_result.zip')
-		save_to_s3.close()
 
 		# Remove the files and directories
 		for f in glob.glob(temp_dir_string + '*'):
