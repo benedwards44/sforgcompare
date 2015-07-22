@@ -251,7 +251,6 @@ function check_status(job_id)
 						true
 					);
 
-
 					clearInterval(refreshIntervalId);
 		        } 
 		        else if (resp.status == 'Error')

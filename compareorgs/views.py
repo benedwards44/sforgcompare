@@ -296,28 +296,11 @@ def check_file_status(request, job_id):
 
 	response_data = {
 		'status': offline_job.status,
+		'url': job.zip_file,
 		'error': offline_job.error
 	}
 
 	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
-
-
-# Serve the zip file for download
-def download_file(request, job_id):
-
-	job = get_object_or_404(Job, random_id = job_id)
-
-	zip_file = open('compare_results_' + str(job.id) + '.zip')
-
-	response = HttpResponse(FileWrapper(zip_file.getvalue()), content_type='application/zip')
-	response['Content-Disposition'] = 'attachment; filename=compare_results.zip'
-	return response
-
-	"""
-	response = HttpResponse(ZipFile('compare_results_' + job.id, 'r'), mimetype = "application/x-zip-compressed")
-	response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
-	return response
-	"""
 
 
 # AJAX endpoint for getting the metadata of a component
