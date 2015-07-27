@@ -434,11 +434,11 @@ def create_offline_file(job, offline_job):
 
 		# Create JSON files
 		component_diff_json = open(temp_dir_string + 'component_diffs.json','w+')
-		component_diff_json.write(json.dumps(component_diff_records))
+		component_diff_json.write('var diff_data = ' + str(component_diff_records) + ';')
 		component_diff_json.close()
 
 		component_json = open(temp_dir_string + 'components.json','w+')
-		component_json.write(json.dumps(component_records))
+		component_json.write('var component_data = ' + str(component_records) + ';')
 		component_json.close()
 
 		# Create html file
