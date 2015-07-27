@@ -369,6 +369,8 @@ def create_offline_file(job, offline_job):
 		# Temp dir string
 		temp_dir_string = temp_dir + '/'
 
+		"""
+
 		# Create sqlite database
 		conn = sqlite3.connect(temp_dir_string + 'components.db')
 
@@ -408,6 +410,37 @@ def create_offline_file(job, offline_job):
 		# Just be sure any changes have been committed or they will be lost.
 		conn.close()
 
+		"""
+
+		# Let's try using a JSON file instead
+		component_diff_records = []
+
+		# Create diff_html to add to JSON
+		for component in job.sorted_component_list():
+			if component.diff_html:
+				component_diff_records.append({
+					'pk': str(component.id),
+					'diff_html': component.diff_html
+				})
+
+		# Component records for JSON
+		component_records = []
+
+		for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
+			component_records.append({
+				'pk': str(component.id),
+				'content': component.content
+			})
+
+		# Create JSON files
+		component_diff_json = open(temp_dir_string + 'component_diffs.json','w+')
+		component_diff_json.write(json.dumps(component_diff_records))
+		component_diff_json.close()
+
+		component_json = open(temp_dir_string + 'components.json','w+')
+		component_json.write(json.dumps(component_records))
+		component_json.close()
+
 		# Create html file
 		compare_result = open(temp_dir_string + 'compare_results_offline.html','w+')
 
@@ -427,7 +460,11 @@ def create_offline_file(job, offline_job):
 		zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
 
 		# Add database
-		zip_file.write(temp_dir_string + 'components.db', 'data/components.db')
+		#zip_file.write(temp_dir_string + 'components.db', 'data/components.db')
+
+		# Add JSON files
+		zip_file.write(temp_dir_string + 'component_diffs.json', 'data/component_diffs.json')
+		zip_file.write(temp_dir_string + 'components.json', 'data/components.json')
 
 		# Add html file
 		zip_file.write(temp_dir_string + 'compare_results_offline.html', 'compare_results_offline.html')
