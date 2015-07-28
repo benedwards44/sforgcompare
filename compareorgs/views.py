@@ -307,7 +307,7 @@ def check_file_status(request, job_id):
 
 		response_data = {
 			'status': 'Error',
-			'url': ''
+			'url': '',
 			'error': job.zip_file_error
 		}
 
@@ -315,7 +315,7 @@ def check_file_status(request, job_id):
 
 		response_data = {
 			'status': 'Running',
-			'url': ''
+			'url': '',
 			'error': ''
 		}
 
