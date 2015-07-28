@@ -264,8 +264,8 @@ def download_metadata_metadata(job, org):
 					except:
 						continue
 
-					# Delete zip file, no need to store
-					os.remove('metadata.zip')
+				# Delete zip file, no need to store
+				os.remove('metadata.zip')
 
 		org.status = 'Finished'
 
