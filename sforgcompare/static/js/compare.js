@@ -64,7 +64,7 @@ $(document).ready(function ()
 			    	{
 			    		if (componentName.indexOf('meta.xml') != -1) 
 			    		{
-		    				metadata = metadata.replace(/</g, '&lt;')
+		    				metadata = resp.replace(/</g, '&lt;')
 									.replace(/>/g,'&gt;')
 									.replace(/\n/g, '<br/>');
 	    				}
