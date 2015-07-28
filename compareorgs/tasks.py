@@ -376,7 +376,7 @@ def create_offline_file(job, offline_job):
 		# Iterate over all diff data for array
 		for component in job.sorted_component_list():
 			if component.diff_html:
-				component_diff_records['diff-' + str(component.id)] = component.diff_html
+				component_data['diff-' + str(component.id)] = component.diff_html
 
 		# Iterate over all metadata for the array
 		for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
