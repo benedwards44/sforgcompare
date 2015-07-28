@@ -177,8 +177,8 @@ def download_metadata_metadata(job, org):
 				component_to_retrieve.name = component_type.name
 				component_retrieve_list.append(component_to_retrieve)
 
-		# Download components in chunks of 5000. This is what is supported by the metadata API
-		for components_to_retrieve in chunks(component_retrieve_list, 5000):
+		# Download components in chunks of 1000. This is to try not hit any file and size limits
+		for components_to_retrieve in chunks(component_retrieve_list, 1000):
 
 			# The overall package to retrieve
 			package_to_retrieve = metadata_client.factory.create('Package')
