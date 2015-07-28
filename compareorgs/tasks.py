@@ -370,76 +370,21 @@ def create_offline_file(job, offline_job):
 		# Temp dir string
 		temp_dir_string = temp_dir + '/'
 
-		"""
+		# Create an Array for IDs and the component data
+		component_data = {}
 
-		# Create sqlite database
-		conn = sqlite3.connect(temp_dir_string + 'components.db')
-
-		c = conn.cursor()
-
-		# Create component diff table
-		c.execute('''CREATE TABLE component_diff
-	             (id integer, diff_html text)''')
-
-		component_records = []
-
-		# Add data to diff table
+		# Iterate over all diff data for array
 		for component in job.sorted_component_list():
 			if component.diff_html:
-				component_records.append((str(component.id), component.diff_html))
+				component_diff_records['diff-' + str(component.id)] = component.diff_html
 
-		# Insert into database
-		c.executemany('INSERT INTO component_diff VALUES (?,?)', component_records)
-
-		# Create component table
-		c.execute('''CREATE TABLE component
-	             (id integer, metadata text)''')
-
-		component_records = []
-
-		# Add data
+		# Iterate over all metadata for the array
 		for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
-			component_records.append((str(component.id), component.content))
+			component_data['component-' + str(component.id)] = component.content
 
-		# Insert into database
-		c.executemany('INSERT INTO component VALUES (?,?)', component_records)
-
-		# Save (commit) the changes
-		conn.commit()
-
-		# We can also close the connection if we are done with it.
-		# Just be sure any changes have been committed or they will be lost.
-		conn.close()
-
-		"""
-
-		# Let's try using a JSON file instead
-		component_diff_records = []
-
-		# Create diff_html to add to JSON
-		for component in job.sorted_component_list():
-			if component.diff_html:
-				component_diff_records.append({
-					'pk': str(component.id),
-					'diff_html': component.diff_html
-				})
-
-		# Component records for JSON
-		component_records = []
-
-		for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
-			component_records.append({
-				'pk': str(component.id),
-				'content': component.content
-			})
-
-		# Create JSON files
-		component_diff_json = open(temp_dir_string + 'component_diffs.json','w+')
-		component_diff_json.write('var diff_data = ' + json.dumps(component_diff_records) + ';')
-		component_diff_json.close()
-
+		# Create JSON file
 		component_json = open(temp_dir_string + 'components.json','w+')
-		component_json.write('var component_data = ' + json.dumps(component_records) + ';')
+		component_json.write('var component_data = ' + json.dumps(component_data) + ';')
 		component_json.close()
 
 		# Create html file
@@ -460,11 +405,7 @@ def create_offline_file(job, offline_job):
 		# Create zip file for all content
 		zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
 
-		# Add database
-		#zip_file.write(temp_dir_string + 'components.db', 'data/components.db')
-
 		# Add JSON files
-		zip_file.write(temp_dir_string + 'component_diffs.json', 'data/component_diffs.json')
 		zip_file.write(temp_dir_string + 'components.json', 'data/components.json')
 
 		# Add html file
