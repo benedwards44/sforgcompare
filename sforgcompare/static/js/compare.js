@@ -164,7 +164,7 @@ function startDownloadJob(file_url, job_id) {
 
 		updateModal(
 			'File Ready For Download',
-			'<div class="alert alert-success" role="alert">Your file has been successfully generated.</div><br/><br/><a class="btn btn-success" href="' + file_url + '">Download File</a>',
+			'<div class="alert alert-success" role="alert" style="margin-bottom:10px;">Your file has been successfully generated.</div><div class="text-right"><a class="btn btn-success" href="' + file_url + '">Download File</a></div>',
 			true
 		);
 
@@ -251,7 +251,7 @@ function check_status(job_id)
 		        {
 		        	updateModal(
 						'File Ready For Download',
-						'<div class="alert alert-success" role="alert">Your file has been successfully generated.</div><br/><br/><a class="btn btn-success" href="' + resp.url + '">Download File</a>',
+						'<div class="alert alert-success" role="alert" style="margin-bottom:10px;">Your file has been successfully generated.</div><div class="text-right"><a class="btn btn-success" href="' + resp.url + '">Download File</a></div>',
 						true
 					);
 
