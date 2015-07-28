@@ -158,7 +158,6 @@ function checkAnyChildVisible()
 
 }
 
-
 function startDownloadJob(job_id) {
 
 	updateModal(
@@ -238,14 +237,17 @@ function check_status(job_id)
 		    {
 		        if (resp.status == 'Finished')
 		        {
-		        	// Refresh the page
-		        	window.location.reload();
+		        	updateModal(
+						'File Ready For Download',
+						'<div class="alert alert-success" role="alert">Your file has been successfully generated.</div><br/><br/><a class="btn btn-success" href="' + resp.url + '">Download File</a>',
+						true
+					);
 
 					clearInterval(refreshIntervalId);
 		        } 
 		        else if (resp.status == 'Error')
 		        {
-		        	
+
 					updateModal(
 						'Error',
 						'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp.error + '</div>',

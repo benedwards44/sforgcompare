@@ -442,7 +442,10 @@ def create_offline_file(job, offline_job):
 		offline_job.status = 'Error'
 		offline_job.error = error
 
+		job.zip_file_error = error
+
 	offline_job.save()
+	job.save()
 
 
 # Compare two Org's metadata and return results

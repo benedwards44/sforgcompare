@@ -290,15 +290,34 @@ def build_file(request, job_id):
 # AJAX endpoint for page to constantly check if job is finished
 def check_file_status(request, job_id):
 
+	# Query for job
 	job = get_object_or_404(Job, random_id = job_id)
 
-	offline_job = OfflineFileJob.objects.filter(job = job).order_by('-id')[0]
+	# If job is finished
+	if job.zip_file:
 
-	response_data = {
-		'status': offline_job.status,
-		'url': job.zip_file,
-		'error': offline_job.error
-	}
+		response_data = {
+			'status': 'Finished',
+			'url': job.zip_file,
+			'error': ''
+		}
+
+	# Else check for any errors
+	elif job.zip_file_error:
+
+		response_data = {
+			'status': 'Error',
+			'url': ''
+			'error': job.zip_file_error
+		}
+
+	else:
+
+		response_data = {
+			'status': 'Running',
+			'url': ''
+			'error': ''
+		}
 
 	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
 
