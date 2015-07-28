@@ -34,8 +34,7 @@ $(document).ready(function ()
 		// If diff file - query for diff HTML that Python generated
 		if ( $(this).hasClass('diff') )
 		{
-			var metadata = //;
-
+			var metadata = component_data['diff-' + $(this).attr('id')];
 
     		$('#codeModalBody').html(metadata);
 
@@ -45,7 +44,7 @@ $(document).ready(function ()
 		// Otherwise obtain metadata for display
 		else
 		{
-	    	var metadata = 'query';
+	    	var metadata = component_data['component-' + $(this).attr('id')];
 	    	
 	    	if (componentType == 'ApexClass' || componentType == 'ApexTrigger' || componentType == 'classes' || componentType == 'triggers')
 	    	{
