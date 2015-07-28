@@ -158,53 +158,65 @@ function checkAnyChildVisible()
 
 }
 
-function startDownloadJob(job_id) {
+function startDownloadJob(file_url, job_id) {
 
-	updateModal(
-		'Generating Offline File',
-		'Your download file is being generated, this can take a few minutes...' +
-		'<div class="progress">' +
-			'<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>' +
-		'</div>',
-		false
-	);
+	if (file_url != '' && file_url != null) {
 
-	$('#downloadOfflineModal').modal();
+		updateModal(
+			'File Ready For Download',
+			'<div class="alert alert-success" role="alert">Your file has been successfully generated.</div><br/><br/><a class="btn btn-success" href="' + file_url + '">Download File</a>',
+			true
+		);
 
-	$.ajax(
-	{
-	    url: '/compare_result/' + job_id + '/build_file/',
-	    type: 'get',
-	    dataType: 'json',
-	    success: function(resp) {
-	    	
-	    	// There was an error running the job
-	    	if (resp.status == 'Error') {
+		$('#downloadOfflineModal').modal();
+	}
+	else {
 
-	    		updateModal(
+		updateModal(
+			'Generating Offline File',
+			'Your download file is being generated, this can take a few minutes...' +
+			'<div class="progress">' +
+				'<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>' +
+			'</div>',
+			false
+		);
+
+		$('#downloadOfflineModal').modal();
+
+		$.ajax(
+		{
+		    url: '/compare_result/' + job_id + '/build_file/',
+		    type: 'get',
+		    dataType: 'json',
+		    success: function(resp) {
+		    	
+		    	// There was an error running the job
+		    	if (resp.status == 'Error') {
+
+		    		updateModal(
+			    		'Error Generating File',
+			    		'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp.error + '</div>',
+			    		true
+			    	);
+
+		    	}
+		    	// Job has successfully started. Start looping for progress
+		    	else {
+
+		    		check_status(job_id);
+		    	}
+		    },
+		    failure: function(resp) { 
+		        
+		        // Error starting job
+		    	updateModal(
 		    		'Error Generating File',
-		    		'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp.error + '</div>',
+		    		'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp + '</div>',
 		    		true
 		    	);
-
-	    	}
-	    	// Job has successfully started. Start looping for progress
-	    	else {
-
-	    		check_status(job_id);
-	    	}
-	    },
-	    failure: function(resp) { 
-	        
-	        // Error starting job
-	    	updateModal(
-	    		'Error Generating File',
-	    		'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp + '</div>',
-	    		true
-	    	);
-	    }
-	});
-
+		    }
+		});
+	}
 }
 
 function updateModal(header, body, allow_close)
