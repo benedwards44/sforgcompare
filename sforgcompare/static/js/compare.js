@@ -62,7 +62,16 @@ $(document).ready(function ()
 			    	var metadata;
 			    	if (componentType == 'ApexClass' || componentType == 'ApexTrigger' || componentType == 'classes' || componentType == 'triggers')
 			    	{
-			    		metadata = resp;
+			    		if (componentName.indexOf('meta.xml') != -1) 
+			    		{
+		    				metadata = metadata.replace(/</g, '&lt;')
+									.replace(/>/g,'&gt;')
+									.replace(/\n/g, '<br/>');
+	    				}
+	    				else 
+	    				{
+	    					metadata = resp;
+	    				}
 			    	}
 			    	else
 			    	{

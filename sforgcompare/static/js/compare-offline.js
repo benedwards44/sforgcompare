@@ -44,11 +44,19 @@ $(document).ready(function ()
 		// Otherwise obtain metadata for display
 		else
 		{
+
+			console.log(componentName);
+
 	    	var metadata = component_data['component-' + $(this).attr('id')];
 	    	
 	    	if (componentType == 'ApexClass' || componentType == 'ApexTrigger' || componentType == 'classes' || componentType == 'triggers')
 	    	{
-	    		// Do nothing
+	    		if (componentName.indexOf('meta.xml') != -1) {
+
+	    			metadata = metadata.replace(/</g, '&lt;')
+								.replace(/>/g,'&gt;')
+								.replace(/\n/g, '<br/>');
+	    		}
 	    	}
 	    	else
 	    	{
