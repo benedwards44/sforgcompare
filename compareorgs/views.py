@@ -262,6 +262,9 @@ def rerunjob(request, job_id):
 	for component_types in job.sorted_orgs():
 		component_types.sorted_component_types().delete()
 
+	# Save job changes
+	job.save()
+
 	# Redirect user and re-run the job
 	return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
 
