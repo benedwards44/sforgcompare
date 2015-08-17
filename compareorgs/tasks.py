@@ -573,7 +573,7 @@ def compare_orgs_task(job):
 						# If contextual diff, compare results differently
 						if job.contextual_diff:
 
-							component_result.diff_html = diff_tool.make_table(left_content, right_content, context=True, numlines=5)
+							component_result.diff_html = diff_tool.make_table(left_content, right_content, context=True, numlines=7)
 
 						# Otherwise, no contextual diff required
 						else:

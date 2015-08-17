@@ -246,6 +246,26 @@ def compare_results(request, job_id):
 	}))
 
 
+# Re-run the job, user the user doens't have to re-authenticate
+def rerunjob(request, job_id):
+
+	# Query for job
+	job = get_object_or_404(Job, random_id = job_id)
+
+	# Set the status to force re-run
+	job.status = 'Not Started'
+
+	# Delete component unique list
+	job.sorted_component_list().delete()
+
+	# Delete component types and components
+	for component_types in job.sorted_orgs():
+		component_types.sorted_component_types().delete()
+
+	# Redirect user and re-run the job
+	return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
+
+
 def build_file(request, job_id):
 	""" 
 		Generate a zip file to download results for offline

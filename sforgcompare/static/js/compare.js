@@ -228,6 +228,20 @@ function startDownloadJob(file_url, job_id) {
 	}
 }
 
+function reRun(job_id) {
+
+	var reRunJob = confirm('This will clear this current job and re-download metadata and compare the results.');
+
+	if (reRunJob) {
+
+		window.location = '/re-run-job/' + job_id;
+	}
+	else {
+
+		return false;
+	}
+}
+
 function updateModal(header, body, allow_close)
 {
 	if (allow_close)

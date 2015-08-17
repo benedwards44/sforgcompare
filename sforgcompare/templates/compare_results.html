@@ -34,7 +34,8 @@
 	    </div>
 
 	    <div class="col-md-4 text-right">
-	    	<button class="btn btn-warning" onclick="startDownloadJob('{% if job.zip_file %}{{ job.zip_file.url }}{% endif %}', '{{ job.random_id }}');">Download Offline</button>
+	    	<button class="btn btn-warning" onclick="startDownloadJob('{% if job.zip_file %}{{ job.zip_file.url }}{% endif %}', '{{ job.random_id }}');">Download Offline</button> <br/>
+	    	<button class="btn btn-error" onclick="reRun('{{ job.random_id }}');">Re-Run</button> 
 	    </div>
 
 	    <div class="clearfix"></div>
