@@ -27,15 +27,15 @@
 
 	<div id="compare_results">
 
-		<div class="col-md-8">
+		<div class="col-md-7">
 			<p>
 	            Your Org Compare results are presented below. Files are highlighted based on matches or differences. You can click on components to view the file and see highlighted differences within files.
 	        </p>
 	    </div>
 
-	    <div class="col-md-4 text-right">
+	    <div class="col-md-5 text-right">
 	    	<button class="btn btn-warning" onclick="startDownloadJob('{% if job.zip_file %}{{ job.zip_file.url }}{% endif %}', '{{ job.random_id }}');">Download Offline</button> 
-	    	<br/><br/>
+	    	&nbsp;&nbsp;
 	    	<button class="btn btn-danger" onclick="reRun('{{ job.random_id }}');">Re-Run</button> 
 	    </div>
 
