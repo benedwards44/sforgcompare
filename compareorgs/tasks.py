@@ -10,6 +10,7 @@ import sys
 import sqlite3
 import StringIO
 import glob
+import traceback
 
 # Celery config
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
@@ -272,7 +273,7 @@ def download_metadata_metadata(job, org):
 
 	except Exception as error:
 		org.status = 'Error'
-		org.error = error
+		org.error = traceback.format_exc()
 
 	org.save()
 
@@ -351,7 +352,7 @@ def download_metadata_tooling(job, org):
 
 	except Exception as error:
 		org.status = 'Error'
-		org.error = error
+		org.error = traceback.format_exc()
 
 	org.save()
 
@@ -446,7 +447,7 @@ def create_offline_file(job, offline_job):
 	except Exception as error:
 
 		offline_job.status = 'Error'
-		offline_job.error = error
+		offline_job.error = traceback.format_exc()
 
 	offline_job.save()
 
@@ -606,7 +607,7 @@ def compare_orgs_task(job):
 	except Exception as error:
 
 		job.status = 'Error'
-		job.error = error
+		job.error = traceback.format_exc()
 
 		send_error_email(job, error)
 
