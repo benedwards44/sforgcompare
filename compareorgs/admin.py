@@ -35,5 +35,11 @@ class JobAdmin(admin.ModelAdmin):
     inlines = [OrgInline, OfflineFileJobInline]
 
 
+class OrgAdmin(admin.ModelAdmin):
+    list_display = ('job','org_name','username','status')
+    ordering = ['job']
+
+
 admin.site.register(Job, JobAdmin)
+admin.site.register(Org, OrgAdmin)
 admin.site.register(ComponentType, ComponentTypeAdmin)
