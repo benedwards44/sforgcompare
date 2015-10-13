@@ -30,7 +30,7 @@ class ComponentTypeAdmin(admin.ModelAdmin):
 	inlines = [ComponentInline]
 
 class JobAdmin(admin.ModelAdmin):
-    list_display = ('created_date','finished_date','status','error')
+    list_display = ('created_date','finished_date','email','status','error')
     ordering = ['-created_date']
     inlines = [OrgInline, OfflineFileJobInline]
 
