@@ -164,10 +164,12 @@ def download_metadata_metadata(job, org):
 		retrieve_request.packageNames = None
 		retrieve_request.specificFiles = None
 
-		component_retrieve_list = []
+		#component_retrieve_list = []
 
 		# Now query through all components and download actual metadata
 		for component_type in ComponentType.objects.filter(org = org.id):
+
+			component_retrieve_list = []
 
 			# Loop through child components of the component type
 			for component in component_type.component_set.all():
@@ -181,93 +183,94 @@ def download_metadata_metadata(job, org):
 		# Download components in chunks of 1000. This is to try not hit any file and size limits
 		#for components_to_retrieve in chunks(component_retrieve_list, 1000):
 
-		# The overall package to retrieve
-		package_to_retrieve = metadata_client.factory.create('Package')
-		package_to_retrieve.apiAccessLevel = None
-		package_to_retrieve.types = component_retrieve_list
+			# The overall package to retrieve
+			package_to_retrieve = metadata_client.factory.create('Package')
+			package_to_retrieve.apiAccessLevel = None
+			package_to_retrieve.types = component_retrieve_list
 
-		# Add retrieve package to the retrieve request
-		retrieve_request.unpackaged = package_to_retrieve
+			# Add retrieve package to the retrieve request
+			retrieve_request.unpackaged = package_to_retrieve
 
-		# Start the async retrieve job
-		retrieve_job = metadata_client.service.retrieve(retrieve_request)
+			# Start the async retrieve job
+			retrieve_job = metadata_client.service.retrieve(retrieve_request)
 
-		# Set the retrieve result - should be unfinished initially
-		retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id, True)
-
-		# Continue to query retrieve result until it's done
-		while not retrieve_result.done:
-
-			# sleep job for 5 seconds
-			time.sleep(10)
-
-			# check job status
+			# Set the retrieve result - should be unfinished initially
 			retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id, True)
 
-		if not retrieve_result.success:
+			# Continue to query retrieve result until it's done
+			while not retrieve_result.done:
 
-			org.status = 'Error'
+				# sleep job for 5 seconds
+				time.sleep(10)
 
-			if 'errorMessage' in retrieve_result:
-				org.error = retrieve_result.errorMessage
-			elif 'messages' in retrieve_result:
-				org.error = retrieve_result.messages[0]
-		
-		else:
+				# check job status
+				retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id, True)
 
-			# Save the zip file result to server
-			zip_file = open('metadata.zip', 'w+')
-			zip_file.write(b64decode(retrieve_result.zipFile))
-			zip_file.close()
+			if not retrieve_result.success:
 
-			# Delete all existing components for package - they need to be renamed
-			ComponentType.objects.filter(org = org.id).delete()
+				org.status = 'Error'
 
-			# Open zip file
-			metadata = ZipFile('metadata.zip', 'r')
+				if 'errorMessage' in retrieve_result:
+					org.error = retrieve_result.errorMessage
+				elif 'messages' in retrieve_result:
+					org.error = retrieve_result.messages[0]
+			
+			else:
 
-			# Loop through files in the zip file
-			for filename in metadata.namelist():
+				# Save the zip file result to server
+				zip_file = open('metadata.zip', 'w+')
+				zip_file.write(b64decode(retrieve_result.zipFile))
+				zip_file.close()
 
-				try:
+				# Delete all existing components for package - they need to be renamed
+				#ComponentType.objects.filter(org = org.id, name = component_type).delete()
+				component_type.delete()
 
-					# Set folder and component name
-					folder_name = filename.split('/')[0]
-					component_name = filename.split('/')[1]
+				# Open zip file
+				metadata = ZipFile('metadata.zip', 'r')
 
-					# Check if component type exists
-					if ComponentType.objects.filter(org = org.id, name = folder_name):
+				# Loop through files in the zip file
+				for filename in metadata.namelist():
 
-						# If exists, use this as parent component type
-						component_type_record = ComponentType.objects.filter(org = org.id, name = folder_name)[0]
+					try:
 
-					else:
+						# Set folder and component name
+						folder_name = filename.split('/')[0]
+						component_name = filename.split('/')[1]
 
-						# create the component type record and save
-						component_type_record = ComponentType()
-						component_type_record.org = org
-						component_type_record.name = folder_name
-						component_type_record.save()
+						# Check if component type exists
+						if ComponentType.objects.filter(org = org.id, name = folder_name):
 
-					# create the component record and save
-					component_record = Component()
-					component_record.component_type = component_type_record
+							# If exists, use this as parent component type
+							component_type_record = ComponentType.objects.filter(org = org.id, name = folder_name)[0]
 
-					# If more / exist, append
-					if len(filename.split('/')) > 2:
-						component_record.name = component_name + '/' + filename.split('/')[2]
-					else:
-						component_record.name = component_name
-					component_record.content = metadata.read(filename)
-					component_record.save()
+						else:
 
-				# not in a folder (could be package.xml). Skip record
-				except:
-					continue
+							# create the component type record and save
+							component_type_record = ComponentType()
+							component_type_record.org = org
+							component_type_record.name = folder_name
+							component_type_record.save()
 
-			# Delete zip file, no need to store
-			if os.path.isfile('metadata.zip'):
-				os.remove('metadata.zip')
+						# create the component record and save
+						component_record = Component()
+						component_record.component_type = component_type_record
+
+						# If more / exist, append
+						if len(filename.split('/')) > 2:
+							component_record.name = component_name + '/' + filename.split('/')[2]
+						else:
+							component_record.name = component_name
+						component_record.content = metadata.read(filename)
+						component_record.save()
+
+					# not in a folder (could be package.xml). Skip record
+					except:
+						continue
+
+				# Delete zip file, no need to store
+				if os.path.isfile('metadata.zip'):
+					os.remove('metadata.zip')
 
 		org.status = 'Finished'
 
