@@ -187,7 +187,7 @@ def download_metadata_metadata(job, org):
 		if len(component_retrieve_list) <= 5000:
 
 			# Execute the callout for all components
-			retrieve_files(org, metadata_client, component_retrieve_list, None)
+			retrieve_files(org, metadata_client, retrieve_request, component_retrieve_list, None)
 
 		else:
 
@@ -206,7 +206,7 @@ def download_metadata_metadata(job, org):
 					component_retrieve_list.append(component_to_retrieve)
 
 				# Execute the retrieve for the component type
-				retrieve_files(org, metadata_client, component_retrieve_list, component_type.name)
+				retrieve_files(org, metadata_client, retrieve_request, component_retrieve_list, component_type.name)
 			
 
 	except Exception as error:
@@ -299,7 +299,7 @@ def download_metadata_tooling(job, org):
 	check_overall_status(job)
 
 
-def retrieve_files(org, metadata_client, component_retrieve_list, component_type):
+def retrieve_files(org, metadata_client, retrieve_request, component_retrieve_list, component_type):
 	"""
 		Method to phyiscally retrieve files from Salesforce via the metadata API 
 	"""
