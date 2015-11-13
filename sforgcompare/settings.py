@@ -117,7 +117,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 # Mail Settings
 """
 POSTMARK_API_KEY     = os.environ.get('POSTMARK_API_KEY')
-POSTMARK_SENDER      = 'ben@tquila.com'
+POSTMARK_SENDER      = 'ben@benedwards.co.nz'
 POSTMARK_TEST_MODE   = False
 POSTMARK_TRACK_OPENS = False
 """

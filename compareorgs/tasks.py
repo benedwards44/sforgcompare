@@ -212,7 +212,8 @@ def download_metadata_metadata(job, org):
 	except Exception as error:
 
 		org.status = 'Error'
-		org.error = traceback.format_exc()
+		org.error = error
+		org.error_stacktrace = traceback.format_exc()
 
 	org.save()
 
@@ -291,7 +292,8 @@ def download_metadata_tooling(job, org):
 
 	except Exception as error:
 		org.status = 'Error'
-		org.error = traceback.format_exc()
+		org.error = error
+		org.error_stacktrace = traceback.format_exc()
 
 	org.save()
 
@@ -487,7 +489,8 @@ def create_offline_file(job, offline_job):
 	except Exception as error:
 
 		offline_job.status = 'Error'
-		offline_job.error = traceback.format_exc()
+		offline_job.error = error
+		offline_job.error_stacktrace = traceback.format_exc()
 
 	offline_job.save()
 
@@ -647,7 +650,8 @@ def compare_orgs_task(job):
 	except Exception as error:
 
 		job.status = 'Error'
-		job.error = traceback.format_exc()
+		job.error = error
+		job.error_stacktrace = traceback.format_exc()
 
 		send_error_email(job, error)
 
@@ -656,14 +660,14 @@ def compare_orgs_task(job):
 	job.save()
 
 	if job.email_result and job.status == 'Finished':
-		#send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
-		message = PMMail(api_key = os.environ.get('POSTMARK_API_KEY'),
-				subject = email_subject,
-                sender = "ben@tquila.com",
-                to = job.email,
-                text_body = email_body,
-                tag = "orgcompareemail")
-		message.send()
+
+		send_mail(
+			email_subject, 
+			email_body, 
+			settings.DEFAULT_FROM_EMAIL, 
+			[job.email], 
+			fail_silently=True
+		)
 
 
 def check_overall_status(job):
@@ -705,12 +709,11 @@ def send_error_email(job, error):
 
 		email_subject = 'Error running Salesforce Org Compare job.'
 
-		#send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
-		message = PMMail(api_key = os.environ.get('POSTMARK_API_KEY'),
-				subject = email_subject,
-	            sender = "ben@tquila.com",
-	            to = job.email,
-	            text_body = email_body,
-	            tag = "orgcompareemail")
-		message.send()
+		send_mail(
+			email_subject,
+			email_body,
+			settings.DEFAULT_FROM_EMAIL,
+			[job.email],
+			fail_silently=True
+		)
 
