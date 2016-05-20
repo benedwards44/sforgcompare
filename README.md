@@ -14,6 +14,9 @@ The tool uses the following technologies:
 
 ## Setup
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benedwards44/sforgcompare)
+
+
 1. Create Heroku application
 2. Install Heroku addons - Database, PostMark (outbound email tool), RedisToGo, Heroku Scheduler
 2. Deploy code
