@@ -1,8 +1,8 @@
 {
   "name": "Salesforce Org Compare",
   "description": "Salesforce + Heroku application which compares metadata between two environments and presents the differences.",
-  "repository": "https://github.com/JAertgeerts/sforgcompare",
-  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "repository": "https://github.com/benedwards44/sforgcompare",
+  "logo": "http://embed.widencdn.net/img/widen/2eeabwoerq/exact/Salesforce%20Logo.jpeg?u=2a5vvq",
   "keywords": ["python", "django", "celery", "redis", "salesforce"],
   "image": "heroku/python",
   "addons": [
