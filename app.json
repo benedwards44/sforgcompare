@@ -1,0 +1,7 @@
+{
+  "name": "Salesforce Org Compare",
+  "description": "Salesforce + Heroku application which compares metadata between two environments and presents the differences.",
+  "repository": "https://github.com/JAertgeerts/sforgcompare",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["python", "django", "celery", "redis", "salesforce"]
+}
