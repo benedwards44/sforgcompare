@@ -10,5 +10,5 @@
     "heroku-postgresql:hobby-dev",
     "scheduler:standard",
     "postmark:10k"
-  ],
+  ]
 }
