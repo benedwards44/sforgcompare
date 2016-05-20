@@ -3,5 +3,12 @@
   "description": "Salesforce + Heroku application which compares metadata between two environments and presents the differences.",
   "repository": "https://github.com/JAertgeerts/sforgcompare",
   "logo": "https://node-js-sample.herokuapp.com/node.png",
-  "keywords": ["python", "django", "celery", "redis", "salesforce"]
+  "keywords": ["python", "django", "celery", "redis", "salesforce"],
+  "image": "heroku/python",
+  "addons": [
+    "redistogo:nano",
+    "heroku-postgresql:hobby-dev",
+    "scheduler:standard",
+    "postmark:10k"
+  ],
 }
