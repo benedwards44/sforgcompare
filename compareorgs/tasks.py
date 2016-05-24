@@ -48,7 +48,7 @@ def download_metadata_metadata(job, org):
 	try:
 
 		# instantiate the metadata WSDL
-		metadata_client = Client('http://sforgcompare.herokuapp.com/static/metadata-34.xml')
+		metadata_client = Client('http://sforgcompare.herokuapp.com/static/metadata-' + str(settings.SALESFORCE_API_VERSION) + '.xml')
 
 		# URL for metadata API
 		metadata_url = org.instance_url + '/services/Soap/m/' + str(settings.SALESFORCE_API_VERSION) + '.0/' + org.org_id
