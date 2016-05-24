@@ -1,5 +1,28 @@
 from __future__ import absolute_import
 from celery import Celery
+import os
+import json	
+import ast
+import requests
+import datetime
+import time
+import sys
+import sqlite3
+import StringIO
+import glob
+import traceback
+
+# Celery config
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
+app = Celery('tasks', broker=os.environ.get('REDIS_URL', 'redis://localhost'))
+
+# Import models
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
+from compareorgs.utils import chunks
+from django.core.files.storage import default_storage as s3_storage
+from django.core.files.base import ContentFile
+from django.core.cache import cache
+from django.core.files import File
 from django.conf import settings
 from difflib import HtmlDiff
 from django.core.mail import send_mail
@@ -7,21 +30,12 @@ from postmark import PMMail
 from suds.client import Client
 from base64 import b64decode
 from zipfile import ZipFile
-import os
-import json	
-import requests
-import datetime
-import time
-import sys
+from django.template import RequestContext, Context, Template, loader
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
+
 reload(sys)
 sys.setdefaultencoding("utf-8")
-
-# Celery config
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
-app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'))
-
-# Import models
-from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
 
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
@@ -34,7 +48,7 @@ def download_metadata_metadata(job, org):
 	try:
 
 		# instantiate the metadata WSDL
-		metadata_client = Client('http://sforgcompare.herokuapp.com/static/metadata-32.xml')
+		metadata_client = Client('http://sforgcompare.herokuapp.com/static/metadata-' + str(settings.SALESFORCE_API_VERSION) + '.xml')
 
 		# URL for metadata API
 		metadata_url = org.instance_url + '/services/Soap/m/' + str(settings.SALESFORCE_API_VERSION) + '.0/' + org.org_id
@@ -150,111 +164,56 @@ def download_metadata_metadata(job, org):
 		retrieve_request.packageNames = None
 		retrieve_request.specificFiles = None
 
+		# List of components to retrieve files for
 		component_retrieve_list = []
 
+		# Component types for the org
+		component_types = ComponentType.objects.filter(org = org.id)
+
 		# Now query through all components and download actual metadata
-		for component_type in ComponentType.objects.filter(org = org.id):
+		for component_type in component_types:
 
 			# Loop through child components of the component type
 			for component in component_type.component_set.all():
 
+				# Create PackageTypeMember instant to retrieve
 				component_to_retrieve = metadata_client.factory.create('PackageTypeMembers')
 				component_to_retrieve.members = component.name
 				component_to_retrieve.name = component_type.name
 				component_retrieve_list.append(component_to_retrieve)
 
-		# The overall package to retrieve
-		package_to_retrieve = metadata_client.factory.create('Package')
-		package_to_retrieve.apiAccessLevel = None
-		package_to_retrieve.types = component_retrieve_list
+		# If more than 5k components to retrieve, run it in batches. Otherwise just do it in
+		# one big hit
+		if len(component_retrieve_list) <= 5000:
 
-		# Add retrieve package to the retrieve request
-		retrieve_request.unpackaged = package_to_retrieve
+			# Execute the callout for all components
+			retrieve_files(org, metadata_client, retrieve_request, component_retrieve_list, None)
 
-		# Start the async retrieve job
-		retrieve_job = metadata_client.service.retrieve(retrieve_request)
-
-		# Set the retrieve result - should be unfinished initially
-		retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
-
-		# Continue to query retrieve result until it's done
-		while not retrieve_result.done:
-
-			# check job status
-			retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id)
-
-			# sleep job for 5 seconds
-			time.sleep(10)
-
-		if not retrieve_result.success:
-
-			org.status = 'Error'
-
-			if 'errorMessage' in retrieve_result:
-				org.error = retrieve_result.errorMessage
-			elif 'messages' in retrieve_result:
-				org.error = retrieve_result.messages[0]
-			
 		else:
 
-			# Save the zip file result to server
-			zip_file = open('metadata.zip', 'w+')
-			zip_file.write(b64decode(retrieve_result.zipFile))
-			zip_file.close()
+			# Iterate over the component types and run in batches
+			for component_type in component_types:
 
-			# Delete all existing components for package - they need to be renamed
-			ComponentType.objects.filter(org = org.id).delete()
+				component_retrieve_list = []
 
-			# Open zip file
-			metadata = ZipFile('metadata.zip', 'r')
+				# Loop through child components of the component type
+				for component in component_type.component_set.all():
 
-			# Loop through files in the zip file
-			for filename in metadata.namelist():
+					# Create PackageTypeMember instant to retrieve
+					component_to_retrieve = metadata_client.factory.create('PackageTypeMembers')
+					component_to_retrieve.members = component.name
+					component_to_retrieve.name = component_type.name
+					component_retrieve_list.append(component_to_retrieve)
 
-				try:
-
-					# Set folder and component name
-					folder_name = filename.split('/')[0]
-					component_name = filename.split('/')[1]
-
-					# Check if component type exists
-					if ComponentType.objects.filter(org = org.id, name = folder_name):
-
-						# If exists, use this as parent component type
-						component_type_record = ComponentType.objects.filter(org = org.id, name = folder_name)[0]
-
-					else:
-
-						# create the component type record and save
-						component_type_record = ComponentType()
-						component_type_record.org = org
-						component_type_record.name = folder_name
-						component_type_record.save()
-
-					# create the component record and save
-					component_record = Component()
-					component_record.component_type = component_type_record
-
-					# If more / exist, append
-					if len(filename.split('/')) > 2:
-						component_record.name = component_name + '/' + filename.split('/')[2]
-					else:
-						component_record.name = component_name
-					component_record.content = metadata.read(filename)
-					component_record.save()
-
-				# not in a folder (could be package.xml). Skip record
-				except:
-					continue
-
-			# Delete zip file, no need to store
-			os.remove('metadata.zip')
-
-			org.status = 'Finished'
+				# Execute the retrieve for the component type
+				retrieve_files(org, metadata_client, retrieve_request, component_retrieve_list, component_type.name)
+			
 
 	except Exception as error:
+
 		org.status = 'Error'
 		org.error = error
+		org.error_stacktrace = traceback.format_exc()
 
 	org.save()
 
@@ -329,16 +288,211 @@ def download_metadata_tooling(job, org):
 				if count_children == 0:
 					component_type_record.delete()
 
-			org.status = 'Finished'
+			
 
 	except Exception as error:
 		org.status = 'Error'
 		org.error = error
+		org.error_stacktrace = traceback.format_exc()
 
 	org.save()
 
 	# Check if both jobs are now finished
 	check_overall_status(job)
+
+
+def retrieve_files(org, metadata_client, retrieve_request, component_retrieve_list, component_type):
+	"""
+		Method to phyiscally retrieve files from Salesforce via the metadata API 
+	"""
+
+	# The overall package to retrieve
+	package_to_retrieve = metadata_client.factory.create('Package')
+	package_to_retrieve.apiAccessLevel = None
+	package_to_retrieve.types = component_retrieve_list
+
+	# Add retrieve package to the retrieve request
+	retrieve_request.unpackaged = package_to_retrieve
+
+	# Start the async retrieve job
+	retrieve_job = metadata_client.service.retrieve(retrieve_request)
+
+	# Set the retrieve result - should be unfinished initially
+	retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id, True)
+
+	# Continue to query retrieve result until it's done
+	while not retrieve_result.done:
+
+		# sleep job for 5 seconds
+		time.sleep(10)
+
+		# check job status
+		retrieve_result = metadata_client.service.checkRetrieveStatus(retrieve_job.id, True)
+
+	if not retrieve_result.success:
+
+		org.status = 'Error'
+
+		if 'errorMessage' in retrieve_result:
+			org.error = retrieve_result.errorMessage
+		elif 'messages' in retrieve_result:
+			org.error = retrieve_result.messages[0]
+	
+	else:
+
+		# Save the zip file result to server
+		zip_file = open('metadata.zip', 'w+')
+		zip_file.write(b64decode(retrieve_result.zipFile))
+		zip_file.close()
+
+		# Delete all existing components for package - they need to be renamed
+		if component_type:
+			ComponentType.objects.filter(org = org.id, name = component_type).delete()
+		else:
+			ComponentType.objects.filter(org = org.id).delete()
+
+		# Open zip file
+		metadata = ZipFile('metadata.zip', 'r')
+
+		# Loop through files in the zip file
+		for filename in metadata.namelist():
+
+			try:
+
+				# Set folder and component name
+				folder_name = filename.split('/')[0]
+				component_name = filename.split('/')[1]
+
+				# Check if component type exists
+				if ComponentType.objects.filter(org = org.id, name = folder_name):
+
+					# If exists, use this as parent component type
+					component_type_record = ComponentType.objects.filter(org = org.id, name = folder_name)[0]
+
+				else:
+
+					# create the component type record and save
+					component_type_record = ComponentType()
+					component_type_record.org = org
+					component_type_record.name = folder_name
+					component_type_record.save()
+
+				# create the component record and save
+				component_record = Component()
+				component_record.component_type = component_type_record
+
+				# If more / exist, append
+				if len(filename.split('/')) > 2:
+					component_record.name = component_name + '/' + filename.split('/')[2]
+				else:
+					component_record.name = component_name
+				component_record.content = metadata.read(filename)
+				component_record.save()
+
+			# not in a folder (could be package.xml). Skip record
+			except:
+				continue
+
+		# Delete zip file, no need to store
+		if os.path.isfile('metadata.zip'):
+			os.remove('metadata.zip')
+
+
+		# Set the Org to finish when all of above is complete
+		org.status = 'Finished'
+
+
+@app.task
+def create_offline_file(job, offline_job):
+
+	offline_job.status = 'Running'
+	offline_job.save()
+
+	try:
+
+		# Temp dir string 
+		temp_dir = job.random_id
+
+		# Create the directory
+		os.mkdir(temp_dir)
+
+		# Temp dir string
+		temp_dir_string = temp_dir + '/'
+
+		# Create an Array for IDs and the component data
+		component_data = {}
+
+		# Iterate over all diff data for array
+		for component in job.sorted_component_list():
+			if component.diff_html:
+				component_data['diff-' + str(component.id)] = component.diff_html
+
+		# Iterate over all metadata for the array
+		for component in Component.objects.filter(component_type__org__in = [job.sorted_orgs()[0],job.sorted_orgs()[1]]):
+			component_data['component-' + str(component.id)] = component.content
+
+		# Create JSON file
+		component_json = open(temp_dir_string + 'components.json','w+')
+		component_json.write('var component_data = ' + json.dumps(component_data) + ';')
+		component_json.close()
+
+		# Create html file
+		compare_result = open(temp_dir_string + 'compare_results_offline.html','w+')
+
+		# Build the html using the template contentxt
+		t = loader.get_template('compare_results_offline.html')
+		c = Context({ 
+			'org_left_username': job.sorted_orgs()[0].username, 
+			'org_right_username': job.sorted_orgs()[1].username, 
+			'html_rows': ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
+		})
+
+		# Write template contents to file
+		compare_result.write(t.render(c))
+		compare_result.close()
+
+		# Create zip file for all content
+		zip_file = ZipFile(temp_dir_string + 'compare_results.zip', 'w')
+
+		# Add JSON files
+		zip_file.write(temp_dir_string + 'components.json', 'data/components.json')
+
+		# Add html file
+		zip_file.write(temp_dir_string + 'compare_results_offline.html', 'compare_results_offline.html')
+
+		# Add all static files
+		for root, dirs, files in os.walk('staticfiles'):
+			for file in files:
+				zip_file.write(os.path.join(root, file))
+
+		# Close the file
+		zip_file.close()
+
+		# Re-open the file
+		zip_file = open(temp_dir_string + 'compare_results.zip')
+
+		# Save file to model
+		job.zip_file.save(temp_dir + '.zip', File(zip_file))
+		job.save()
+
+		# Close the file again
+		zip_file.close()
+
+		# Remove the files and directories
+		for f in glob.glob(temp_dir_string + '*'):
+			os.remove(f)
+		os.rmdir(temp_dir)
+
+		# Update status to finished
+		offline_job.status = 'Finished'
+
+	except Exception as error:
+
+		offline_job.status = 'Error'
+		offline_job.error = error
+		offline_job.error_stacktrace = traceback.format_exc()
+
+	offline_job.save()
 
 
 # Compare two Org's metadata and return results
@@ -453,8 +607,22 @@ def compare_orgs_task(job):
 					# If diff exists
 					if component_map['left' + row_value].content != component_map['right' + row_value].content:
 
+						# Content for comparison
+						left_content = component_map['left' + row_value].content.split('\n')
+						right_content = component_map['right' + row_value].content.split('\n')
+
+						# Instantiate Python diff tool
 						diff_tool = HtmlDiff()
-						component_result.diff_html = diff_tool.make_table(component_map['left' + row_value].content.split('\n'), component_map['right' + row_value].content.split('\n'))
+
+						# If contextual diff, compare results differently
+						if job.contextual_diff:
+
+							component_result.diff_html = diff_tool.make_table(left_content, right_content, context=True, numlines=7)
+
+						# Otherwise, no contextual diff required
+						else:
+
+							component_result.diff_html = diff_tool.make_table(left_content, right_content)
 				
 						row_html += '<tr class="component warning component_' + component_map['left' + row_value].component_type.name + '">'
 						row_html += '<td id="' + str(component_result.id) + '" class="diff">' + component_map['left' + row_value].name + '</td>'
@@ -483,6 +651,7 @@ def compare_orgs_task(job):
 
 		job.status = 'Error'
 		job.error = error
+		job.error_stacktrace = traceback.format_exc()
 
 		send_error_email(job, error)
 
@@ -491,14 +660,14 @@ def compare_orgs_task(job):
 	job.save()
 
 	if job.email_result and job.status == 'Finished':
-		#send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
-		message = PMMail(api_key = os.environ.get('POSTMARK_API_KEY'),
-				subject = email_subject,
-                sender = "ben@tquila.com",
-                to = job.email,
-                text_body = email_body,
-                tag = "orgcompareemail")
-		message.send()
+
+		send_mail(
+			email_subject, 
+			email_body, 
+			settings.DEFAULT_FROM_EMAIL, 
+			[job.email], 
+			fail_silently=True
+		)
 
 
 def check_overall_status(job):
@@ -540,12 +709,11 @@ def send_error_email(job, error):
 
 		email_subject = 'Error running Salesforce Org Compare job.'
 
-		#send_mail('Your Org Compare Results', email_body, 'ben@tquila.com', [job.email], fail_silently=False)
-		message = PMMail(api_key = os.environ.get('POSTMARK_API_KEY'),
-				subject = email_subject,
-	            sender = "ben@tquila.com",
-	            to = job.email,
-	            text_body = email_body,
-	            tag = "orgcompareemail")
-		message.send()
+		send_mail(
+			email_subject,
+			email_body,
+			settings.DEFAULT_FROM_EMAIL,
+			[job.email],
+			fail_silently=True
+		)
 

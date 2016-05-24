@@ -8,8 +8,12 @@ class Job(models.Model):
 	api_choice = models.CharField(max_length=255,null=True,blank=True)
 	email_result = models.BooleanField()
 	email = models.CharField(max_length=255,blank=True)
+	contextual_diff = models.BooleanField(default=False)
 	status = models.CharField(max_length=255, blank=True)
 	error = models.TextField(blank=True)
+	error_stacktrace = models.TextField(blank=True)
+	zip_file = models.FileField(upload_to='/', blank=True, null=True)
+	zip_file_error = models.TextField(blank=True, null=True)
 
 	def sorted_orgs(self):
 		return self.org_set.order_by('org_number')
@@ -27,6 +31,7 @@ class Org(models.Model):
 	username = models.CharField(max_length=255, blank=True)
 	status = models.CharField(max_length=255, blank=True)
 	error = models.TextField(blank=True)
+	error_stacktrace = models.TextField(blank=True)
 
 	def sorted_component_types(self):
 		return self.componenttype_set.order_by('name')
@@ -57,3 +62,12 @@ class ComponentListUnique(models.Model):
 	diff_html = models.TextField(blank=True, null=True)
 	row_html = models.TextField(blank=True, null=True)
 	order = models.PositiveSmallIntegerField()
+
+
+class OfflineFileJob(models.Model):
+	job = models.ForeignKey(Job)
+	status = models.CharField(max_length=255)
+	error = models.TextField(blank=True, null=True)
+	error_stacktrace = models.TextField(blank=True)
+
+	

@@ -1,16 +1,21 @@
 from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.template import RequestContext, Context, Template, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
-from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique
+from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
 from compareorgs.forms import JobForm
 import json	
 import requests
 import datetime
 import uuid
 from time import sleep
-from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling
+from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling, create_offline_file
 import sys
+import sqlite3
+import os
+from zipfile import ZipFile
+import StringIO
+
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
@@ -33,6 +38,7 @@ def index(request):
 			job.created_date = datetime.datetime.now()
 			job.status = 'Not Started'
 			job.email = job_form.cleaned_data['email']
+			job.contextual_diff = job_form.cleaned_data['contextual_diff']
 			if job_form.cleaned_data['email_choice'] == 'yes':
 				job.email_result = True
 			else:
@@ -209,7 +215,15 @@ def compare_orgs(request, job_id):
 
 	elif job.status == 'Finished':
 
-		return HttpResponseRedirect('/compare_result/' + str(job.random_id))
+		# Return URL when job is finished
+		return_url = '/compare_result/' + str(job.random_id) + '/'
+
+		# If no header is in URL, keep it there
+		if 'noheader' in request.GET:
+			if request.GET.noheader == '1':
+				return_url += '?noheader=1'
+
+		return HttpResponseRedirect(return_url)
 
 	return render_to_response('loading.html', RequestContext(request, {'job': job}))	
 
@@ -217,19 +231,125 @@ def compare_orgs(request, job_id):
 def compare_results(request, job_id):
 
 	job = get_object_or_404(Job, random_id = job_id)
-	
-	# Build HTML here - improves page load performance
-	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
 
 	if job.status != 'Finished':
 		return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
 	
-	return render_to_response('compare_results.html', RequestContext(request, {'org_left_username': job.sorted_orgs()[0].username, 'org_right_username': job.sorted_orgs()[1].username, 'html_rows': html_rows}))
+	# Build HTML here - improves page load performance
+	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
+
+	return render_to_response('compare_results.html', RequestContext(request, {
+		'org_left_username': job.sorted_orgs()[0].username, 
+		'org_right_username': job.sorted_orgs()[1].username, 
+		'html_rows': html_rows,
+		'job': job
+	}))
+
+
+# Re-run the job, user the user doens't have to re-authenticate
+def rerunjob(request, job_id):
+
+	# Query for job
+	job = get_object_or_404(Job, random_id = job_id)
+
+	# Set the status to force re-run
+	job.status = 'Not Started'
+
+	# Delete component unique list
+	job.sorted_component_list().delete()
+
+	# Delete component types and components
+	for component_types in job.sorted_orgs():
+		component_types.sorted_component_types().delete()
+
+	# Save job changes
+	job.save()
+
+	# Redirect user and re-run the job
+	return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job.api_choice)
+
+
+def build_file(request, job_id):
+	""" 
+		Generate a zip file to download results for offline
+	"""
+
+	job = get_object_or_404(Job, random_id = job_id)
+
+	# If file already exists
+	if os.path.exists('compare_results_' + str(job.id) + '.zip'):
+		response_data = {
+			'status': 'Finished',
+			'error': ''
+		}
+		return HttpResponse(json.dumps(response_data), content_type = 'application/json')
+
+
+	# Create offline job to run
+	offline_job = OfflineFileJob()
+	offline_job.job = job
+	offline_job.status = 'Not Started'
+	offline_job.save()
+
+	# Start async job
+	try:
+
+		create_offline_file.delay(job, offline_job)
+
+	except Exception as ex:
+		# If error, save error to job
+		offline_job.status = 'Error'
+		offline_job.error = ex
+		offline_job.save()
+
+	response_data = {
+		'status': offline_job.status,
+		'error': offline_job.error
+	}
+
+	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
+	
+
+# AJAX endpoint for page to constantly check if job is finished
+def check_file_status(request, job_id):
+
+	# Query for job
+	job = get_object_or_404(Job, random_id = job_id)
+
+	# If job is finished
+	if job.zip_file:
+
+		response_data = {
+			'status': 'Finished',
+			'url': job.zip_file.url,
+			'error': ''
+		}
+
+	# Else check for any errors
+	elif job.zip_file_error:
+
+		response_data = {
+			'status': 'Error',
+			'url': '',
+			'error': job.zip_file_error
+		}
+
+	else:
+
+		response_data = {
+			'status': 'Running',
+			'url': '',
+			'error': ''
+		}
+
+	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
+
 
 # AJAX endpoint for getting the metadata of a component
 def get_metadata(request, component_id):
 	component = get_object_or_404(Component, pk = component_id)
 	return HttpResponse(component.content)
+
 
 # AJAX endpoint for getting the diff HTML of a component
 def get_diffhtml(request, component_id):

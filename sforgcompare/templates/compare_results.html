@@ -27,28 +27,42 @@
 
 	<div id="compare_results">
 
-		<p>
-            Your Org Compare results are presented below. Files are highlighted based on matches or differences. You can click on components to view the file and see highlighted differences within files.
-        </p>
+		<div class="col-md-7">
+			<p>
+	            Your Org Compare results are presented below. Files are highlighted based on matches or differences. You can click on components to view the file and see highlighted differences within files.
+	        </p>
+	    </div>
+
+	    <div class="col-md-5 text-right">
+	    	<button class="btn btn-warning" onclick="startDownloadJob('{% if job.zip_file %}{{ job.zip_file.url }}{% endif %}', '{{ job.random_id }}');">Download Offline</button> 
+	    	&nbsp;&nbsp;
+	    	<button class="btn btn-primary" onclick="reRun('{{ job.random_id }}');">Re-Run</button> 
+	    </div>
+
+	    <div class="clearfix"></div>
 
         <hr style="width:100%;margin: 10px 0;" />
 
-        <select class="form-control" id="display_option">
-            <option value="all">Show All Components</option>
-            <option value="diff" selected="selected">Show Only Differences</option>
-        </select>
+        <div class="col-md-5">
+	        <select class="form-control" id="display_option">
+	            <option value="all">Show All Components</option>
+	            <option value="diff" selected="selected">Show Only Differences</option>
+	        </select>
+	    </div>
 
-        <div id="legend">
-            <div class="alert alert-success legend" role="alert" id="legend_match">
-                Match
-            </div>
-            <div class="alert alert-warning legend" role="alert" id="legend_diff">
-                Diff in file
-            </div>
-            <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
-                New file
-            </div>
-        </div>
+	    <div class="col-md-7 text-right">
+	        <div id="legend">
+	            <div class="alert alert-success legend" role="alert" id="legend_match">
+	                Match
+	            </div>
+	            <div class="alert alert-warning legend" role="alert" id="legend_diff">
+	                Diff in file
+	            </div>
+	            <div class="alert alert-danger legend" role="alert" id="legend_nomatch">
+	                New file
+	            </div>
+	        </div>
+	    </div>
 
         <div style="clear:both;"></div>
 
@@ -97,6 +111,16 @@
 	      		<div class="modal-footer">
 			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 			    </div>
+	    	</div>
+	  	</div>
+	</div>
+
+	<div class="modal fade" id="downloadOfflineModal" tabindex="-1" role="dialog" aria-labelledby="downloadOfflineModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header"></div>
+	      		<div class="modal-body"></div>
+	      		<div class="modal-footer"></div>
 	    	</div>
 	  	</div>
 	</div>
