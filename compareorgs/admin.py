@@ -2,7 +2,7 @@ from django.contrib import admin
 from compareorgs.models import Job, Org, Component, ComponentType, ComponentListUnique, OfflineFileJob
 
 class OrgInline(admin.TabularInline):
-	fields = ['org_number','org_name', 'username', 'access_token', 'status', 'error']
+	fields = ['org_number','org_name', 'username', 'access_token', 'status', 'error', 'error_stacktrace']
 	ordering = ['org_number']
 	model = Org
 	extra = 0
