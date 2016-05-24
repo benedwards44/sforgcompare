@@ -15,6 +15,7 @@ import sqlite3
 import os
 from zipfile import ZipFile
 import StringIO
+import traceback
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -195,6 +196,7 @@ def compare_orgs(request, job_id):
 
 					job.status = 'Error'
 					job.error = error
+					job.error_stacktrace = traceback.format_exc()
 					job.save()
 
 			else:
@@ -211,6 +213,7 @@ def compare_orgs(request, job_id):
 
 					job.status = 'Error'
 					job.error = error
+					job.error_stacktrace = traceback.format_exc()
 					job.save()
 
 	elif job.status == 'Finished':
