@@ -683,6 +683,7 @@ def check_overall_status(job):
 
 				job.status = 'Error'
 				job.error = all_orgs[0].error
+				job.error_stacktrace = all_orgs[0].error_stacktrace
 				job.save()
 
 				send_error_email(job, job.error)
@@ -691,6 +692,7 @@ def check_overall_status(job):
 
 				job.status = 'Error'
 				job.error = all_orgs[1].error
+				job.error_stacktrace = all_orgs[1].error_stacktrace
 				job.save()
 
 				send_error_email(job, job.error)
