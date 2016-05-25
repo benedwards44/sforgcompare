@@ -14,7 +14,7 @@ import traceback
 
 # Celery config
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
-app = Celery('tasks', broker=os.environ.get('REDIS_URL', 'redis://localhost'))
+app = Celery('tasks', broker=os.environ.get('REDISTOGO_URL', 'redis://localhost'))
 
 # Import models
 from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob

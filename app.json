@@ -54,6 +54,16 @@
       "description": "Port for the email server.",
       "required": "true",
       "value": "587"
+    },
+    "ADMIN_NAME": {
+      "description": "Name of the Administrator where e-mail notifications are sent to at application error.",
+      "required": "true",
+      "value": "YOUR NAME"
+    },
+    "ADMIN_EMAIL": {
+      "description": "Email of the Administrator where e-mail notifications are sent to at application error.",
+      "required": "true",
+      "value": "YOUR-EMAIL@ADDRESS.COM"
     }
   },
   "addons": [
@@ -61,5 +71,8 @@
     "heroku-postgresql:hobby-dev",
     "scheduler:standard",
     "postmark:10k"
-  ]
+  ],
+  "scripts": {
+    "postdeploy": "manage.py syncdb --noinput"
+  }
 }
