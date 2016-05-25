@@ -20,4 +20,5 @@ The tool uses the following technologies:
 1. Create Heroku application
 2. Install Heroku addons - Database, PostMark (outbound email tool), RedisToGo, Heroku Scheduler
 2. Deploy code
-3. Set up variables in settings.py - Salesforce OAuth config and email settings
+3. Create a Connected App in your Salesforce organization.
+4. Configure the following Heroku environment variables with the values of your Connected App: SALESFORCE_CONSUMER_KEY, SALESFORCE_CONSUMER_SECRET.

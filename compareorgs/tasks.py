@@ -48,7 +48,7 @@ def download_metadata_metadata(job, org):
 	try:
 
 		# instantiate the metadata WSDL
-		metadata_client = Client('http://sforgcompare.herokuapp.com/static/metadata-' + str(settings.SALESFORCE_API_VERSION) + '.xml')
+		metadata_client = Client(settings.APP_URL + '/static/metadata-' + str(settings.SALESFORCE_API_VERSION) + '.xml')
 
 		# URL for metadata API
 		metadata_url = org.instance_url + '/services/Soap/m/' + str(settings.SALESFORCE_API_VERSION) + '.0/' + org.org_id
@@ -643,7 +643,7 @@ def compare_orgs_task(job):
 			job.status = 'Finished'
 
 			email_body = 'Your Org compare job is complete:\n'
-			email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.random_id)
+			email_body += settings.APP_URL + '/compare_result/' + str(job.random_id)
 			email_body += '\n\nYour result will be deleted after one day in order to avoid storing any metadata.'
 
 			email_subject = 'Your Salesforce Org Compare results are ready.'
