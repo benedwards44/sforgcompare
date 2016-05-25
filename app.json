@@ -5,10 +5,74 @@
   "logo": "http://embed.widencdn.net/img/widen/2eeabwoerq/exact/Salesforce%20Logo.jpeg?u=2a5vvq",
   "keywords": ["python", "django", "celery", "redis", "salesforce"],
   "image": "heroku/python",
+  "env": {
+    "HEROKU_URL": {
+      "description": "Application URL.",
+      "required": "true",
+      "value": "https://appname.herokuapp.com"
+    },
+    "SECRET_KEY": {
+      "description": "Super secret app key.",
+      "generator": "secret"
+    },
+    "SALESFORCE_CONSUMER_KEY": {
+      "description": "Salesforce connected app consumer key.",
+      "required": "true",
+      "value": "KEY"
+    },
+    "SALESFORCE_CONSUMER_SECRET": {
+      "description": "Salesforce connected app cunsumer secret.",
+      "required": "true",
+      "value": "SUPERSECRET"
+    },
+    "SALESFORCE_API_VERSION": {
+      "description": "Salesforce API version for the Metadata API.",
+      "required": "true",
+      "value": "36"
+    },
+    "DEFAULT_FROM_EMAIL": {
+      "description": "Default email from where the notification e-mails can be sent.",
+      "required": "true",
+      "value": "info@salesforce.com"
+    },
+    "EMAIL_HOST": {
+      "description": "Email server host from where the notification e-mails can be sent.",
+      "required": "true",
+      "value": "mail.salesforce.com"
+    },
+    "EMAIL_HOST_USER": {
+      "description": "Email host user from which the notification e-mails can be sent.",
+      "required": "true",
+      "value": "SUPERSECRET"
+    },
+    "EMAIL_HOST_PASSWORD": {
+      "description": "Password for the email user.",
+      "required": "true",
+      "value": "SUPERSECRET"
+    },
+    "EMAIL_PORT": {
+      "description": "Port for the email server.",
+      "required": "true",
+      "value": "587"
+    },
+    "ADMIN_NAME": {
+      "description": "Name of the Administrator where e-mail notifications are sent to at application error.",
+      "required": "true",
+      "value": "YOUR NAME"
+    },
+    "ADMIN_EMAIL": {
+      "description": "Email of the Administrator where e-mail notifications are sent to at application error.",
+      "required": "true",
+      "value": "YOUR-EMAIL@ADDRESS.COM"
+    }
+  },
   "addons": [
     "redistogo:nano",
     "heroku-postgresql:hobby-dev",
     "scheduler:standard",
     "postmark:10k"
-  ]
+  ],
+  "scripts": {
+    "postdeploy": "manage.py syncdb --noinput"
+  }
 }
