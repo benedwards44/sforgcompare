@@ -310,6 +310,7 @@ def retrieve_files(org, metadata_client, retrieve_request, component_retrieve_li
 	package_to_retrieve = metadata_client.factory.create('Package')
 	package_to_retrieve.apiAccessLevel = None
 	package_to_retrieve.types = component_retrieve_list
+	package_to_retrieve.version = str(settings.SALESFORCE_API_VERSION) + '.0' # This stupid line of code took me ages to get right!!! Documentation was crap
 
 	# Add retrieve package to the retrieve request
 	retrieve_request.unpackaged = package_to_retrieve
@@ -683,6 +684,7 @@ def check_overall_status(job):
 
 				job.status = 'Error'
 				job.error = all_orgs[0].error
+				job.error_stacktrace = all_orgs[0].error_stacktrace
 				job.save()
 
 				send_error_email(job, job.error)
@@ -691,6 +693,7 @@ def check_overall_status(job):
 
 				job.status = 'Error'
 				job.error = all_orgs[1].error
+				job.error_stacktrace = all_orgs[1].error_stacktrace
 				job.save()
 
 				send_error_email(job, job.error)
