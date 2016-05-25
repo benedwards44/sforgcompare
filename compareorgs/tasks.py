@@ -310,7 +310,7 @@ def retrieve_files(org, metadata_client, retrieve_request, component_retrieve_li
 	package_to_retrieve = metadata_client.factory.create('Package')
 	package_to_retrieve.apiAccessLevel = None
 	package_to_retrieve.types = component_retrieve_list
-	package_to_retrieve.version = str(settings.SALESFORCE_API_VERSION) + '.0' # This stupid line of code took me ages to get right!!! Documentation was crap
+	package_to_retrieve.packageType = None # This stupid line of code took me ages to work out!
 
 	# Add retrieve package to the retrieve request
 	retrieve_request.unpackaged = package_to_retrieve
