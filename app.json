@@ -67,7 +67,7 @@
     }
   },
   "addons": [
-    "redistogo:nano",
+    "heroku-redis:hobby-dev",
     "heroku-postgresql:hobby-dev",
     "scheduler:standard",
     "postmark:10k"
