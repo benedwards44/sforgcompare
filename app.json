@@ -6,6 +6,11 @@
   "keywords": ["python", "django", "celery", "redis", "salesforce"],
   "image": "heroku/python",
   "env": {
+    "HEROKU_URL": {
+      "description": "Application URL.",
+      "required": "true",
+      "value": "https://appname.herokuapp.com"
+    },
     "SECRET_KEY": {
       "description": "Super secret app key.",
       "generator": "secret"

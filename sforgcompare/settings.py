@@ -1,6 +1,5 @@
 import os
 import urlparse
-import socket
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -47,7 +46,7 @@ MIDDLEWARE_CLASSES = (
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-APP_URL = socket.gethostbyname(socket.gethostname())
+APP_URL = os.environ.get('HEROKU_URL')
 
 # Add in request context processor
 from django.conf import global_settings
