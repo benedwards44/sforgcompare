@@ -89,7 +89,7 @@ STATICFILES_DIRS = (
 )
 
 # Redis settings
-redis_url = urlparse.urlparse(os.environ.get('REDIS_URL'))
+redis_url = urlparse.urlparse(os.environ.get('REDISTOGO_URL'))
 CACHES = {
     "default": {
          "BACKEND": "redis_cache.RedisCache",
