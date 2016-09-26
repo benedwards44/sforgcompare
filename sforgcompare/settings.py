@@ -16,7 +16,7 @@ TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_DEBUG = DEBUG
 
 ADMINS = (
-    ('Ben Edwards', 'ben@benedwards.co.nz'),
+    ('Ben Edwards', 'ben@edwards.nz'),
 )
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -117,7 +117,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 # Mail Settings
 """
 POSTMARK_API_KEY     = os.environ.get('POSTMARK_API_KEY')
-POSTMARK_SENDER      = 'ben@benedwards.co.nz'
+POSTMARK_SENDER      = 'ben@edwards.nz'
 POSTMARK_TEST_MODE   = False
 POSTMARK_TRACK_OPENS = False
 """
