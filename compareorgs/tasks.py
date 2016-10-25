@@ -245,11 +245,17 @@ def download_metadata_tooling(job, org):
 
 		for component_type in metadata_types:
 
-			data_query = 'select+id+from+' + component_type
-			metadata_records = requests.get(tooling_url + 'query/?q=' + data_query, headers = headers)
+			# Build the query string
+			data_query = 'select+id+from+%s+where+NamespacePrefix=null' % component_type
+
+			# Execute the query 
+			metadata_records = requests.get(tooling_url + 'query/?q=' + data_query, headers=headers)
+
+			# Convert to JSON object
+			metadata_json = metadata_records.json()
 			
 			# Only continue if records exist to query
-			if 'records' in metadata_records.json():
+			if 'records' in metadata_json:
 
 				# create the component type record and save
 				component_type_record = ComponentType()
@@ -259,31 +265,30 @@ def download_metadata_tooling(job, org):
 
 				count_children = 0
 
-				for component in metadata_records.json()['records']:
+				for component in metadata_json['records']:
 
+					# Get the URL to query for the full body
 					metadata_url = org.instance_url + component['attributes']['url']
 
-					record = requests.get(metadata_url, headers = headers)
+					# Query for body
+					record = requests.get(metadata_url, headers=headers)
 
-					# Only take non package components
-					if record.json()['NamespacePrefix'] == None:
+					# create the component record and save
+					component_record = Component()
+					component_record.component_type = component_type_record
+					
+					if component_type == 'ApexPage' or component_type == 'ApexComponent':
+						component_record.name = record.json()['Name']
+						component_record.content = record.json()['Markup']
 
-						# create the component record and save
-						component_record = Component()
-						component_record.component_type = component_type_record
+					#ApexClass or ApexTrigger
+					else:
+						component_record.name = record.json()['FullName']
+						component_record.content = record.json()['Body']
 						
-						if component_type == 'ApexPage' or component_type == 'ApexComponent':
-							component_record.name = record.json()['Name']
-							component_record.content = record.json()['Markup']
+					component_record.save()
 
-						#ApexClass or ApexTrigger
-						else:
-							component_record.name = record.json()['FullName']
-							component_record.content = record.json()['Body']
-							
-						component_record.save()
-
-						count_children += 1
+					count_children += 1
 
 				if count_children == 0:
 					component_type_record.delete()
