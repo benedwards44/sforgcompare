@@ -54,12 +54,12 @@ def download_metadata_metadata(job, org):
 		metadata_url = org.instance_url + '/services/Soap/m/' + str(settings.SALESFORCE_API_VERSION) + '.0/' + org.org_id
 
 		# set the metadata url based on the login result
-		metadata_client.set_options(location = metadata_url)
+		metadata_client.set_options(location=metadata_url)
 
 		# set the session id from the login result
 		session_header = metadata_client.factory.create("SessionHeader")
 		session_header.sessionId = org.access_token
-		metadata_client.set_options(soapheaders = session_header)
+		metadata_client.set_options(soapheaders=session_header)
 		
 		# query for the list of metadata types
 		all_metadata = metadata_client.service.describeMetadata(settings.SALESFORCE_API_VERSION)
@@ -106,27 +106,30 @@ def download_metadata_metadata(job, org):
 				# Loop through folders
 				for folder in all_folders:
 
-					# Create component for folder to query
-					folder_component = metadata_client.factory.create("ListMetadataQuery")
-					folder_component.type = component_type.xmlName
-					folder_component.folder = folder.fullName
+					# Exclude managed package folders
+					if 'namespacePrefix' not in folder or not folder.namespacePrefix:
 
-					folder_list.append(folder_component)
+						# Create component for folder to query
+						folder_component = metadata_client.factory.create("ListMetadataQuery")
+						folder_component.type = component_type.xmlName
+						folder_component.folder = folder.fullName
 
-					if len(folder_list) >= 3 or (len(all_folders) - folder_loop_counter) <= 3:
+						folder_list.append(folder_component)
 
-						# Loop through folder components
-						for folder_component in metadata_client.service.listMetadata(folder_list, settings.SALESFORCE_API_VERSION):
+						if len(folder_list) >= 3 or (len(all_folders) - folder_loop_counter) <= 3:
 
-							# create the component record and save
-							component_record = Component()
-							component_record.component_type = component_type_record
-							component_record.name = folder_component.fullName
-							component_record.save()
+							# Loop through folder components
+							for folder_component in metadata_client.service.listMetadata(folder_list, settings.SALESFORCE_API_VERSION):
 
-						folder_list = []
+								# create the component record and save
+								component_record = Component()
+								component_record.component_type = component_type_record
+								component_record.name = folder_component.fullName
+								component_record.save()
 
-					folder_loop_counter = folder_loop_counter + 1
+							folder_list = []
+
+						folder_loop_counter = folder_loop_counter + 1
 
 			# Run the metadata query only if the list has reached 3 (the max allowed to query)
 			# at one time, or if there is less than 3 components left to query 
@@ -135,17 +138,20 @@ def download_metadata_metadata(job, org):
 				# loop through the components returned from the component query
 				for component in metadata_client.service.listMetadata(component_list, settings.SALESFORCE_API_VERSION):
 
-					# Query database for parent component_type
-					component_type_query = ComponentType.objects.filter(name = component.type, org = org.id)
+					# Exclude managed package components
+					if 'namespacePrefix' not in component or not component.namespacePrefix:
 
-					# Only add if found
-					if component_type_query:
+						# Query database for parent component_type
+						component_type_query = ComponentType.objects.filter(name=component.type, org=org.id)
 
-						# create the component record and save
-						component_record = Component()
-						component_record.component_type = component_type_query[0]
-						component_record.name = component.fullName
-						component_record.save()
+						# Only add if found
+						if component_type_query:
+
+							# create the component record and save
+							component_record = Component()
+							component_record.component_type = component_type_query[0]
+							component_record.name = component.fullName
+							component_record.save()
 		
 				# clear list once done. This list will re-build to 3 components and re-query the service
 				component_list = []
