@@ -221,6 +221,7 @@ def download_metadata_metadata(job, org):
 		org.error = error
 		org.error_stacktrace = traceback.format_exc()
 
+	org.status = 'Finished'
 	org.save()
 
 	# Check if both jobs are now finished
@@ -306,6 +307,8 @@ def download_metadata_tooling(job, org):
 		org.error = error
 		org.error_stacktrace = traceback.format_exc()
 
+
+	org.status = 'Finished'
 	org.save()
 
 	# Check if both jobs are now finished
@@ -685,7 +688,7 @@ def compare_orgs_task(job):
 def check_overall_status(job):
 
 	# Check if both jobs are now finished
-	all_orgs = Org.objects.filter(job = job)
+	all_orgs = Org.objects.filter(job=job)
 	
 	if len(all_orgs) == 2:
 
