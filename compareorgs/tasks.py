@@ -40,7 +40,7 @@ sys.setdefaultencoding("utf-8")
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
 @app.task
-def download_metadata_metadata(job, org): 
+def download_metadata_metadata(job, org):
 
 	org.status = 'Downloading Metadata'
 	org.save()
