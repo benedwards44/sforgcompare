@@ -12,7 +12,7 @@ static==1.0.2
 wsgiref==0.1.2
 redis==2.10.3
 whitenoise==1.0.3
-celery==3.1.0
+celery==5.2.2
 django-sslify==0.2.4
 python-postmark==0.4.4
 suds==0.4
