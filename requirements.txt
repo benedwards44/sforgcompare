@@ -15,6 +15,6 @@ whitenoise==1.0.3
 celery==3.1.0
 django-sslify==0.2.4
 python-postmark==0.4.4
-suds==0.4
+suds==1.0.0
 django-s3direct==0.3.10
 django-redis-cache==1.6.0
