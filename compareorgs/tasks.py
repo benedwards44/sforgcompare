@@ -32,8 +32,11 @@ from boto.s3.key import Key
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
 @app.task
-def download_metadata_metadata(job, org):
+def download_metadata_metadata(job_id, org_id):
 
+	job = Job.objects.get(pk=job_id)
+
+	org = Org.objects.get(pk=org_id)
 	org.status = 'Downloading Metadata'
 	org.save()
 
@@ -222,8 +225,11 @@ def download_metadata_metadata(job, org):
 # Downloading metadata using the Tooling API
 # http://www.salesforce.com/us/developer/docs/api_tooling/index.htm
 @app.task
-def download_metadata_tooling(job, org):
+def download_metadata_tooling(job_id, org_id):
 
+	job = Job.objects.get(pk=job_id)
+
+	org = Org.objects.get(pk=org_id)
 	org.status = 'Downloading Metadata'
 	org.save()
 	
@@ -410,8 +416,11 @@ def retrieve_files(org, metadata_client, retrieve_request, component_retrieve_li
 
 
 @app.task
-def create_offline_file(job, offline_job):
+def create_offline_file(job_id, offline_job_id):
 
+	job = Job.objects.get(pk=job_id)
+
+	offline_job = OfflineFileJob.objects.get(pk=offline_job_id)
 	offline_job.status = 'Running'
 	offline_job.save()
 

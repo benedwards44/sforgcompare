@@ -181,7 +181,7 @@ def compare_orgs(request, job_id):
 
 				try:
 
-					download_metadata_metadata.delay(job, org)
+					download_metadata_metadata.delay(job.id, org.id)
 
 				except Exception as error:
 
@@ -198,7 +198,7 @@ def compare_orgs(request, job_id):
 
 				try:
 
-					download_metadata_tooling.delay(job, org)
+					download_metadata_tooling.delay(job.id, org.id)
 
 				except Exception as error:
 
@@ -292,7 +292,7 @@ def build_file(request, job_id):
 	# Start async job
 	try:
 
-		create_offline_file.delay(job, offline_job)
+		create_offline_file.delay(job.id, offline_job.id)
 
 	except Exception as ex:
 		# If error, save error to job
