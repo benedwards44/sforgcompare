@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext, Context, Template, loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
@@ -55,7 +55,7 @@ def index(request):
 	else:
 		job_form = JobForm()
 
-	return render_to_response('index.html', RequestContext(request,{'client_id': client_id, 'redirect_uri': redirect_uri, 'job_form': job_form}))
+	return render(request, 'index.html', {'client_id': client_id, 'redirect_uri': redirect_uri, 'job_form': job_form})
 
 def oauth_response(request):
 	"""
@@ -146,7 +146,7 @@ def oauth_response(request):
 
 					org.save()
 			
-	return render_to_response('oauth_response.html', RequestContext(request,{'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org, 'email': email, 'instance_url': instance_url}))
+	return render(request, 'oauth_response.html', {'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org, 'email': email, 'instance_url': instance_url})
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):
@@ -222,7 +222,7 @@ def compare_orgs(request, job_id):
 
 		return HttpResponseRedirect(return_url)
 
-	return render_to_response('loading.html', RequestContext(request, {'job': job}))	
+	return render(request, 'loading.html', {'job': job})
 
 # Page to display compare results
 def compare_results(request, job_id):
@@ -235,12 +235,12 @@ def compare_results(request, job_id):
 	# Build HTML here - improves page load performance
 	html_rows = ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
 
-	return render_to_response('compare_results.html', RequestContext(request, {
+	return render(request, 'compare_results.html', {
 		'org_left_username': job.sorted_orgs()[0].username, 
 		'org_right_username': job.sorted_orgs()[1].username, 
 		'html_rows': html_rows,
 		'job': job
-	}))
+	})
 
 
 # Re-run the job, user the user doens't have to re-authenticate

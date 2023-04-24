@@ -12,7 +12,7 @@ class Job(models.Model):
 	status = models.CharField(max_length=255, blank=True)
 	error = models.TextField(blank=True)
 	error_stacktrace = models.TextField(blank=True)
-	zip_file = models.FileField(upload_to='/', blank=True, null=True)
+	zip_file = models.FileField(upload_to='compare_results/', blank=True, null=True)
 	zip_file_error = models.TextField(blank=True, null=True)
 
 	def sorted_orgs(self):
@@ -22,7 +22,7 @@ class Job(models.Model):
 		return self.componentlistunique_set.order_by('order')
 
 class Org(models.Model):
-	job = models.ForeignKey(Job, blank=True, null=True)
+	job = models.ForeignKey(Job, blank=True, null=True, on_delete=models.deletion.CASCADE)
 	org_number = models.PositiveSmallIntegerField()
 	access_token = models.CharField(max_length=255)
 	instance_url = models.CharField(max_length=255)
@@ -37,7 +37,7 @@ class Org(models.Model):
 		return self.componenttype_set.order_by('name')
 
 class ComponentType(models.Model):
-	org = models.ForeignKey(Org)
+	org = models.ForeignKey(Org, on_delete=models.deletion.CASCADE)
 	name = models.CharField(max_length=255)
 
 	def __str__(self):
@@ -50,7 +50,7 @@ class ComponentType(models.Model):
 		return self.org.org_name
 
 class Component(models.Model):
-	component_type = models.ForeignKey(ComponentType)
+	component_type = models.ForeignKey(ComponentType, on_delete=models.deletion.CASCADE)
 	name = models.CharField(max_length=255)
 	content = models.TextField(blank=True, null=True)
 
@@ -58,14 +58,14 @@ class Component(models.Model):
 		return '%s' % (self.name)
 
 class ComponentListUnique(models.Model):
-	job = models.ForeignKey(Job)
+	job = models.ForeignKey(Job, on_delete=models.deletion.CASCADE)
 	diff_html = models.TextField(blank=True, null=True)
 	row_html = models.TextField(blank=True, null=True)
 	order = models.PositiveSmallIntegerField()
 
 
 class OfflineFileJob(models.Model):
-	job = models.ForeignKey(Job)
+	job = models.ForeignKey(Job, on_delete=models.deletion.CASCADE)
 	status = models.CharField(max_length=255)
 	error = models.TextField(blank=True, null=True)
 	error_stacktrace = models.TextField(blank=True)

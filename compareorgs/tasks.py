@@ -22,7 +22,6 @@ from django.core.files import File
 from django.conf import settings
 from difflib import HtmlDiff
 from django.core.mail import send_mail
-from postmark import PMMail
 from suds.client import Client
 from base64 import b64decode
 from zipfile import ZipFile

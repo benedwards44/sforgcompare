@@ -22,7 +22,6 @@ kombu==5.2.4
 prompt-toolkit==3.0.38
 psycopg2==2.9.6
 python-dateutil==2.8.2
-python-postmark==0.6.0
 pytz==2023.3
 redis==4.5.4
 requests==2.28.2
