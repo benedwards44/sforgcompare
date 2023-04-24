@@ -4,21 +4,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
 from compareorgs.forms import JobForm
+from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling, create_offline_file
+
 import json	
 import requests
 import datetime
 import uuid
 from time import sleep
-from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling, create_offline_file
-import sys
-import sqlite3
 import os
-from zipfile import ZipFile
-import StringIO
 import traceback
-
-reload(sys)
-sys.setdefaultencoding("utf-8")
 
 def index(request):
 	"""
