@@ -2,13 +2,9 @@ from __future__ import absolute_import
 from celery import Celery
 import os
 import json	
-import ast
 import requests
 import datetime
 import time
-import sys
-import sqlite3
-import StringIO
 import glob
 import traceback
 
@@ -26,16 +22,12 @@ from django.core.files import File
 from django.conf import settings
 from difflib import HtmlDiff
 from django.core.mail import send_mail
-from postmark import PMMail
 from suds.client import Client
 from base64 import b64decode
 from zipfile import ZipFile
 from django.template import RequestContext, Context, Template, loader
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
-
-reload(sys)
-sys.setdefaultencoding("utf-8")
 
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
@@ -66,7 +58,7 @@ def download_metadata_metadata(job, org):
 
 		# Components for listing metadata
 		component_list = []
-		loop_counter = 0;
+		loop_counter = 0
 
 		# loop through metadata types
 		for component_type in all_metadata[0]:

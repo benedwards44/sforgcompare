@@ -1,18 +1,17 @@
-from django.conf.urls import patterns, include, url
-from django.views.generic import TemplateView, RedirectView
+from django.urls import path
 from django.contrib import admin
-admin.autodiscover()
+from compareorgs import views
 
-urlpatterns = patterns('',
-    url(r'^$', 'compareorgs.views.index', name='index'),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^oauth_response/$', 'compareorgs.views.oauth_response', name='oauth_response'),
-    url(r'^job_status/(?P<job_id>[0-9A-Za-z_\-]+)/$', 'compareorgs.views.job_status'),
-    url(r'^compare_orgs/(?P<job_id>[0-9A-Za-z_\-]+)/$', 'compareorgs.views.compare_orgs'),
-    url(r'^compare_result/(?P<job_id>[0-9A-Za-z_\-]+)/$', 'compareorgs.views.compare_results'),
-    url(r'^compare_result/(?P<job_id>[0-9A-Za-z_\-]+)/build_file/$', 'compareorgs.views.build_file'),
-    url(r'^re-run-job/(?P<job_id>[0-9A-Za-z_\-]+)/$', 'compareorgs.views.rerunjob'),
-    url(r'^check_file_status/(?P<job_id>[0-9A-Za-z_\-]+)/$', 'compareorgs.views.check_file_status'),
-    url(r'^get_metadata/(?P<component_id>\d+)/$', 'compareorgs.views.get_metadata'),
-    url(r'^get_diffhtml/(?P<component_id>\d+)/$', 'compareorgs.views.get_diffhtml'),
-)
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('admin/', admin.site.urls),
+    path('oauth_response/', views.oauth_response, name='oauth_response'),
+    path('job_status/<str:job_id>/', views.job_status),
+    path('compare_orgs/<str:job_id>/', views.compare_orgs),
+    path('compare_result/<str:job_id>/', views.compare_results),
+    path('compare_result/<str:job_id>/build_file/', views.build_file),
+    path('re-run-job/<str:job_id>/', views.rerunjob),
+    path('check_file_status/<str:job_id>/', views.check_file_status),
+    path('get_metadata/<int:component_id>/', views.get_metadata),
+    path('get_diffhtml/<int:component_id>/', views.get_diffhtml),
+]

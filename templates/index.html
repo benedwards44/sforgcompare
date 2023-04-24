@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+	<h1>Salesforce Org Compare</h1>
+	<p>
+		This tool uses the Salesforce Tooling or Metadata API (user selection) to compare metadata between two Orgs. This is useful when planning deployments or building deployment packages, as well as seeing what configuration exists in Production to Sandbox or between Sandbox environments.
+	</p>
+	<p>
+		None of your organisation information or data is captured or kept from running this tool.
+	</p>
+	<div class="alert alert-warning alert-dismissible text-center" role="alert">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		Help keep <strong>Salesforce Org Compare</strong> free! Please donate to support development and Heroku running costs.
+		Any value is appreciated!
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="padding-top:12px;">
+			<input type="hidden" name="cmd" value="_s-xclick" />
+			<input type="hidden" name="hosted_button_id" value="9J3KBL2Q4ZUS4" />
+			<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+			<img alt="" border="0" src="https://www.paypal.com/en_NZ/i/scr/pixel.gif" width="1" height="1" />
+		</form>
+	</div>
+	<div class="alert alert-info alert-dismissible" role="alert">
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		<strong>Note:</strong>
+		<ul>
+			<li>You will need to be a System Administrator on both Orgs in order to use this application.</li>
+			<li>This application uses multiple API calls to your Salesforce Org to retrieve metadata and execute the logic it needs to run. Each Salesforce Org has a 24 hour limit of API calls it can make, and may break other integrations if you exceed this limit.</li>
+		</ul>
+	</div>
+
+	<div class="left-half">
+
+		<h2>Org One</h2>
+
+		<table id="orgOneLogin">
+
+			<tr>
+				<td width="125">
+					<select id="org_one_env" name="org_one_env" class="form-control">
+						<option value="Production">Production</option>
+						<option value="Sandbox">Sandbox</option>
+					</select>
+				</td>
+				<td>
+					&nbsp;&nbsp;
+					<button type="button" id="orgOneButton">
+						Login
+					</button>
+				</td>
+			</tr>
+
+		</table>
+
+		<table id="orgOneDisplay" style="display:none;">
+
+			<tr>
+				<td width="90">
+					<strong>Username</strong>
+				</td>
+				<td>
+					<span id="orgOneUsername"></span>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					<strong>Org</strong>
+				</td>
+				<td>
+					<span id="orgOneOrg"></span>
+				</td>
+			</tr>
+
+		</table>
+
+	</div>
+
+	<div class="right-half">
+
+		<h2>Org Two</h2>
+
+		<table id="orgTwoLogin">
+
+			<tr>
+				<td width="125">
+					<select id="org_two_env" name="org_two_env" class="form-control">
+						<option value="Production">Production</option>
+						<option value="Sandbox">Sandbox</option>
+					</select>
+				</td>
+				<td>
+					&nbsp;&nbsp;
+					<button type="button" id="orgTwoButton">
+							Login
+					</button>
+				</td>
+			</tr>
+
+		</table>
+
+		<table id="orgTwoDisplay" style="display:none;">
+
+			<tr>
+				<td width="90">
+					<strong>Username</strong>
+				</td>
+				<td>
+					<span id="orgTwoUsername"></span>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					<strong>Org</strong>
+				</td>
+				<td>
+					<span id="orgTwoOrg"></span>
+				</td>
+			</tr>
+
+		</table>
+
+	</div>
+
+	<div class="clear"></div>
+
+	<div id="compareOrgs">
+
+		<form action="." method="POST">
+
+			{% csrf_token %}
+
+			<select id="id_api_choice" name="api_choice" class="form-control">
+				<option value="metadata">Metadata API</option>
+				<option value="tooling">Tooling API</option>
+			</select>
+
+			<img src="{% static 'images/i-icon.png' %}" class="info_icon" data-toggle="modal" data-target="#apiModal" />
+
+			<div style="clear:both;margin: 5px 0;"></div>
+
+			<select id="id_email_choice" name="email_choice" class="form-control">
+				<option value="yes" selected="selected">Email me when ready</option>
+				<option value="no">Don't email me</option>
+			</select>
+
+			<img src="{% static 'images/i-icon.png' %}" class="info_icon" data-toggle="modal" data-target="#emailModal" />
+
+			<div style="clear:both;margin: 5px 0;"></div>
+
+			<input type="email" id="id_email" name="email" class="form-control" />
+
+			<div style="clear:both;margin: 5px 0;"></div>
+
+			<input type="checkbox" id="id_contextual_diff" name="contextual_diff" class="form-control" checked="checked" />
+			<label id="id_contextual_diff_label" for="id_contextual_diff">Contextual Diff</label>
+			<img src="{% static 'images/i-icon.png' %}" class="info_icon" data-toggle="modal" data-target="#contextModal" style="margin-left:60px;" />
+
+			<div style="clear:both;margin: 5px 0;"></div>
+
+			<input type="submit" id="submitCompare" value="Compare Orgs" />
+
+			<input type="hidden" id="client_id" value="{{ client_id }}" />
+			<input type="hidden" id="redirect_uri" value="{{ redirect_uri }}" />
+			<input type="hidden" id="id_org_one" name="org_one" />
+			<input type="hidden" id="id_org_two" name="org_two" />
+
+		</form>
+
+	</div>
+
+	<div class="modal fade" id="apiModal" tabindex="-1" role="dialog" aria-labelledby="apiModalLabel" aria-hidden="true">
+		<div class="modal-dialog small_dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">
+	        			<span aria-hidden="true">&times;</span>
+	        			<span class="sr-only">Close</span>
+	        		</button>
+	        		<h3 class="modal-title" id="apiModalLabel">
+	        			API Selection
+	        		</h3>
+	      		</div>
+	      		<div class="modal-body">
+	        		<h4>
+	        			Tooling API
+	        		</h4>
+	        		<p>
+	        			The Tooling API is much faster in querying the metadata and will return the org compare results a lot faster. However, the Tooling API currently only supports code-based metadata, so is limited to the <a href="#" data-toggle="popover" title="Supported Metadata" data-content="ApexClass <br/>ApexComponent<br/>ApexPage<br/>ApexTrigger" data-html="true" data-trigger="focus">following types of metadata</a>.
+	        		</p>
+
+	        		<br/>
+
+	        		<h4>
+	        			Metadata API
+	        		</h4>
+	        		<p>
+	        			The Metadata API is slower but returns the full set of queryable metadata for your Org. Use the Metadata API if there are components not contained in the Tooling API that you would like to compare. This should be used if you want a true <strong>full</strong> comparison between two Orgs.
+	        			<br/><br/>
+	        			Note: The Metadata API is limited to 5,000 files retrieved in a single call.
+	        		</p>
+	      		</div>
+	      		<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			    </div>
+	    	</div>
+	  	</div>
+	</div>
+
+	<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel" aria-hidden="true">
+		<div class="modal-dialog small_dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">
+	        			<span aria-hidden="true">&times;</span>
+	        			<span class="sr-only">Close</span>
+	        		</button>
+	        		<h3 class="modal-title" id="emailModalLabel">
+	        			Email Me
+	        		</h3>
+	      		</div>
+	      		<div class="modal-body">
+	        		<p>
+	        			For large Orgs, sometimes the process can take some time. If you'd rather do something else instead of staring at an orange loading circle then we can email you a link when the job is done so you can view your results.
+	        			<br/><br/>
+	        			Note: Because we don't want to store your metadata, the link will only be valid for an hour after the job is done. Once you've viewed your results, we clear all stored information.
+	        		</p>
+	      		</div>
+	      		<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			    </div>
+	    	</div>
+	  	</div>
+	</div>
+
+	<div class="modal fade" id="contextModal" tabindex="-1" role="dialog" aria-labelledby="contextModalLabel" aria-hidden="true">
+		<div class="modal-dialog small_dialog">
+	    	<div class="modal-content">
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal">
+	        			<span aria-hidden="true">&times;</span>
+	        			<span class="sr-only">Close</span>
+	        		</button>
+	        		<h3 class="modal-title" id="emailModalLabel">
+	        			Contextual Diff
+	        		</h3>
+	      		</div>
+	      		<div class="modal-body">
+	        		<p>
+	        			Choose this option to enable a contextual diff. A contextual diff means that compare results will only show the lines of metadata that are deemed to be different, and a number of lines before and after. 
+	        			<br/><br/>
+	        			This is preferable for large files, as it will only show what is relevant, rather than the entire file.
+	        		</p>
+	      		</div>
+	      		<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			    </div>
+	    	</div>
+	  	</div>
+	</div>
+
+	<!-- Force logout when page is loaded -->
+	<iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+    <iframe src="https://test.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+
+{% endblock %}
