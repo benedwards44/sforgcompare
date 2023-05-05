@@ -17,10 +17,6 @@ django.setup()
 
 # Import models
 from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
-from compareorgs.utils import chunks
-from django.core.files.storage import default_storage as s3_storage
-from django.core.files.base import ContentFile
-from django.core.cache import cache
 from django.core.files import File
 from django.conf import settings
 from difflib import HtmlDiff
@@ -28,9 +24,7 @@ from django.core.mail import send_mail
 from suds.client import Client
 from base64 import b64decode
 from zipfile import ZipFile
-from django.template import RequestContext, Context, Template, loader
-from boto.s3.connection import S3Connection
-from boto.s3.key import Key
+from django.template import Context, loader
 
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
