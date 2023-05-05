@@ -351,7 +351,7 @@ def retrieve_files(org, metadata_client, retrieve_request, component_retrieve_li
 	else:
 
 		# Save the zip file result to server
-		zip_file = open('metadata.zip', 'w+')
+		zip_file = open('metadata.zip', 'wb')
 		zip_file.write(b64decode(retrieve_result.zipFile))
 		zip_file.close()
 
