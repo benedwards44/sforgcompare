@@ -1,1 +1,4 @@
 .pyc
+db.sqlite3
+.env
+.DS_STORE

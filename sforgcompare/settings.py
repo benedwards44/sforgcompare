@@ -1,16 +1,31 @@
 import os
-import dj_database_url
+import environ
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-IS_HEROKU = "DYNO" in os.environ
+env = environ.Env(
+    ENVIRONMENT=(str, 'production'),
+    DEBUG=(bool, False),
+    REDIS_URL=(str, 'redis://localhost:6379'),
+    SALESFORCE_CONSUMER_KEY=(str, ''),
+    SALESFORCE_CONSUMER_SECRET=(str, ''),
+    SALESFORCE_API_VERSION=(int, 65),
+    SALESFORCE_REDIRECT_URI=(str, ''),
+    AWS_ACCESS_KEY_ID=(str, ''),
+    AWS_SECRET_ACCESS_KEY=(str, ''),
+    AWS_STORAGE_BUCKET_NAME=(str, ''),
+)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+ENVIRONMENT = env('ENVIRONMENT')
+IS_LOCAL = ENVIRONMENT == 'dev'
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'LOCAL')
+SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG') == '1' 
+DEBUG = True if IS_LOCAL else bool(env('DEBUG'))
 TEMPLATE_DEBUG = DEBUG
 THUMBNAIL_DEBUG = DEBUG
 
@@ -18,15 +33,19 @@ ADMINS = (
     ('Ben Edwards', 'ben@edwards.nz'),
 )
 
-if IS_HEROKU:
+if not IS_LOCAL:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
+    CSRF_TRUSTED_ORIGINS = [
+        'https://sforgcompare.cloudtoolkit.co'
+    ]
 
 ALLOWED_HOSTS = ['*']
 
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,7 +54,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'compareorgs',
     'storages',
-)
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,7 +67,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 ROOT_URLCONF = 'sforgcompare.urls'
 
@@ -81,40 +99,56 @@ DATABASES = {
     }
 }
 
-if "DATABASE_URL" in os.environ:
+# For running on server
+if not IS_LOCAL:
     # Configure Django for DATABASE_URL environment variable.
-    DATABASES["default"] = dj_database_url.config(
-        conn_max_age=MAX_CONN_AGE, ssl_require=True)
+    DATABASES["default"] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ["PGDATABASE"],
+        'USER': os.environ["PGUSER"],
+        'PASSWORD': os.environ["PGPASSWORD"],
+        'HOST': os.environ["PGHOST"],
+        'PORT': os.environ["PGPORT"],
+    }
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    }
+}
 
 # Celery settings
+REDIS_URL = env('REDIS_URL')
+CELERY_BROKER_URL = REDIS_URL
 BROKER_POOL_LIMIT = 1
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
-
-LANGUAGE_CODE = 'en-gb'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'en-nz'
+TIME_ZONE = 'Pacific/Auckland'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "static/"
+
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'static'
 ]
-STATIC_URL = 'static/'
 
 # SALESFORCE KEYS
-SALESFORCE_CONSUMER_KEY = os.environ.get('SALESFORCE_CONSUMER_KEY')
-SALESFORCE_CONSUMER_SECRET = os.environ.get('SALESFORCE_CONSUMER_SECRET')
-SALESFORCE_REDIRECT_URI = 'https://sforgcompare.herokuapp.com/oauth_response'
-SALESFORCE_API_VERSION = int(os.environ.get('SALESFORCE_API_VERSION', '55'))
+SALESFORCE_CONSUMER_KEY = env('SALESFORCE_CONSUMER_KEY')
+SALESFORCE_CONSUMER_SECRET = env('SALESFORCE_CONSUMER_SECRET')
+SALESFORCE_REDIRECT_URI = env('SALESFORCE_REDIRECT_URI')
+SALESFORCE_API_VERSION = int(env('SALESFORCE_API_VERSION'))
 
 # AWS Settings
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
 
 STORAGES = {
     "default": {
@@ -124,13 +158,5 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-
-# Mail Settings
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_PORT = os.environ.get('EMAIL_PORT')
-EMAIL_USE_TLS = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

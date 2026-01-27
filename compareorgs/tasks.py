@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-from celery import Celery
 import os
 import json	
 import requests
@@ -7,15 +6,7 @@ import datetime
 import time
 import glob
 import traceback
-
-# Celery config
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sforgcompare.settings')
-app = Celery('tasks', broker=os.environ.get('REDIS_URL', 'redis://localhost'))
-
-import django
-django.setup()
-
-# Import models
+from celery import shared_task
 from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
 from django.core.files import File
 from django.conf import settings
@@ -28,7 +19,7 @@ from django.template import Context, loader
 
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
-@app.task
+@shared_task
 def download_metadata_metadata(job_id, org_id):
 
 	job = Job.objects.get(pk=job_id)
@@ -40,7 +31,7 @@ def download_metadata_metadata(job_id, org_id):
 	try:
 
 		# instantiate the metadata WSDL
-		metadata_client = Client('http://sforgcompare.herokuapp.com/static/metadata-' + str(settings.SALESFORCE_API_VERSION) + '.xml')
+		metadata_client = Client('http://sforgcompare.cloudtoolkit.co/static/metadata.wsdl.xml')
 
 		# URL for metadata API
 		metadata_url = org.instance_url + '/services/Soap/m/' + str(settings.SALESFORCE_API_VERSION) + '.0/' + org.org_id
@@ -221,7 +212,7 @@ def download_metadata_metadata(job_id, org_id):
 
 # Downloading metadata using the Tooling API
 # http://www.salesforce.com/us/developer/docs/api_tooling/index.htm
-@app.task
+@shared_task
 def download_metadata_tooling(job_id, org_id):
 
 	job = Job.objects.get(pk=job_id)
@@ -412,7 +403,7 @@ def retrieve_files(org, metadata_client, retrieve_request, component_retrieve_li
 		org.status = 'Finished'
 
 
-@app.task
+@shared_task
 def create_offline_file(job_id, offline_job_id):
 
 	job = Job.objects.get(pk=job_id)
@@ -655,7 +646,7 @@ def compare_orgs_task(job):
 			job.status = 'Finished'
 
 			email_body = 'Your Org compare job is complete:\n'
-			email_body += 'https://sforgcompare.herokuapp.com/compare_result/' + str(job.random_id)
+			email_body += 'https://sforgcompare.cloudtoolkit.co/compare_result/' + str(job.random_id)
 			email_body += '\n\nYour result will be deleted after one day in order to avoid storing any metadata.'
 
 			email_subject = 'Your Salesforce Org Compare results are ready.'
