@@ -1,4 +1,5 @@
-.pyc
+*.pyc
 db.sqlite3
 .env
 .DS_STORE
+__pycache__
