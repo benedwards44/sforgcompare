@@ -55,6 +55,10 @@ def index(request):
 			org_two.job = job
 			org_two.save()
 
+			# Clear the saved Orgs
+			request.session.pop('org1')
+			request.session.pop('org2')
+
 			return HttpResponseRedirect('/compare_orgs/' + str(job.random_id) + '/?api=' + job_form.cleaned_data['api_choice'])
 
 	else:
@@ -401,3 +405,10 @@ def get_metadata(request, component_id):
 def get_diffhtml(request, component_id):
 	component = get_object_or_404(ComponentListUnique, pk = component_id)
 	return HttpResponse(component.diff_html)
+
+def clear_org(request, org_number):
+	"""
+	Clear the org from the session
+	"""
+	request.session.pop('org' + str(org_number))
+	return HttpResponseRedirect('/')

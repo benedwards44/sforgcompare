@@ -14,4 +14,5 @@ urlpatterns = [
     path('check_file_status/<str:job_id>/', views.check_file_status),
     path('get_metadata/<int:component_id>/', views.get_metadata),
     path('get_diffhtml/<int:component_id>/', views.get_diffhtml),
+    path('clear/<int:org_number>/', views.clear_org),
 ]

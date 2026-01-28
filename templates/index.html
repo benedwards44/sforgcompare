@@ -61,25 +61,20 @@
 		{% else %}
 
 		<table id="orgOneDisplay">
-
 			<tr>
-				<td width="90">
-					<strong>Username</strong>
-				</td>
-				<td>
-					{{ org_one.username }}
+				<td width="90"><strong>Username</strong></td>
+				<td>{{ org_one.username }}
 				</td>
 			</tr>
-
 			<tr>
-				<td>
-					<strong>Org</strong>
-				</td>
-				<td>
-					{{ org_one.org_name }}
+				<td><strong>Org</strong></td>
+				<td>{{ org_one.org_name }}</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center" style="padding-top:5px;">
+					<a href="/clear/1">Clear Org</a>
 				</td>
 			</tr>
-
 		</table>
 
 		{% endif %}
@@ -104,35 +99,28 @@
 				<td>
 					&nbsp;&nbsp;
 					<button type="button" id="orgTwoButton">
-							Login
+						Login
 					</button>
 				</td>
 			</tr>
-
 		</table>
 
 		{% else %}
 
 		<table id="orgTwoDisplay">
-
 			<tr>
-				<td width="90">
-					<strong>Username</strong>
-				</td>
-				<td>
-					{{ org_two.username }}
+				<td width="100"><strong>Username</strong></td>
+				<td>{{ org_two.username }}</td>
+			</tr>
+			<tr>
+				<td><strong>Org</strong></td>
+				<td>{{ org_two.org_name }}</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center" style="padding-top:5px;">
+					<a href="/clear/2">Clear Org</a>
 				</td>
 			</tr>
-
-			<tr>
-				<td>
-					<strong>Org</strong>
-				</td>
-				<td>
-					{{ org_two.org_name }}
-				</td>
-			</tr>
-
 		</table>
 
 		{% endif %}
