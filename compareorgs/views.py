@@ -187,7 +187,7 @@ def oauth_response(request):
 					org.save()
 
 					# Add to session to use back on homepage
-					request.session[org_choice] = org.random_id
+					request.session[org_choice] = str(org.random_id)
 					request.session['email'] = email
 			
 	return render(
