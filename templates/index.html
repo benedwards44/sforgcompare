@@ -166,10 +166,6 @@
 			<div style="clear:both;margin: 5px 0;"></div>
 
 			<input type="submit" id="submitCompare" value="Compare Orgs" />
-
-			<input type="hidden" id="client_id" value="{{ client_id }}" />
-			<input type="hidden" id="redirect_uri" value="{{ redirect_uri }}" />
-
 		</form>
 
 	</div>
@@ -265,4 +261,7 @@
 	    	</div>
 	  	</div>
 	</div>
+
+	<input type="hidden" id="client_id" value="{{ client_id }}" />
+	<input type="hidden" id="redirect_uri" value="{{ redirect_uri }}" />
 {% endblock %}
