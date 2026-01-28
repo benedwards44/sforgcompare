@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'compareorgs',
     'storages',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

@@ -37,6 +37,8 @@
 
 		<h2>Org One</h2>
 
+		{% if not org_one %}
+
 		<table id="orgOneLogin">
 
 			<tr>
@@ -56,14 +58,16 @@
 
 		</table>
 
-		<table id="orgOneDisplay" style="display:none;">
+		{% else %}
+
+		<table id="orgOneDisplay">
 
 			<tr>
 				<td width="90">
 					<strong>Username</strong>
 				</td>
 				<td>
-					<span id="orgOneUsername"></span>
+					{{ org_one.username }}
 				</td>
 			</tr>
 
@@ -72,17 +76,21 @@
 					<strong>Org</strong>
 				</td>
 				<td>
-					<span id="orgOneOrg"></span>
+					{{ org_one.org_name }}
 				</td>
 			</tr>
 
 		</table>
+
+		{% endif %}
 
 	</div>
 
 	<div class="right-half">
 
 		<h2>Org Two</h2>
+
+		{% if not org_two %}
 
 		<table id="orgTwoLogin">
 
@@ -103,14 +111,16 @@
 
 		</table>
 
-		<table id="orgTwoDisplay" style="display:none;">
+		{% else %}
+
+		<table id="orgTwoDisplay">
 
 			<tr>
 				<td width="90">
 					<strong>Username</strong>
 				</td>
 				<td>
-					<span id="orgTwoUsername"></span>
+					{{ org_two.username }}
 				</td>
 			</tr>
 
@@ -119,15 +129,19 @@
 					<strong>Org</strong>
 				</td>
 				<td>
-					<span id="orgTwoOrg"></span>
+					{{ org_two.org_name }}
 				</td>
 			</tr>
 
 		</table>
 
+		{% endif %}
+
 	</div>
 
 	<div class="clear"></div>
+
+	{% if org_one and org_two %}
 
 	<div id="compareOrgs">
 
@@ -153,7 +167,7 @@
 
 			<div style="clear:both;margin: 5px 0;"></div>
 
-			<input type="email" id="id_email" name="email" class="form-control" />
+			<input type="email" id="id_email" name="email" placeholder="eg. john@smith.com" class="form-control" value="{{ email }}" />
 
 			<div style="clear:both;margin: 5px 0;"></div>
 
@@ -167,12 +181,12 @@
 
 			<input type="hidden" id="client_id" value="{{ client_id }}" />
 			<input type="hidden" id="redirect_uri" value="{{ redirect_uri }}" />
-			<input type="hidden" id="id_org_one" name="org_one" />
-			<input type="hidden" id="id_org_two" name="org_two" />
 
 		</form>
 
 	</div>
+
+	{% endif %}
 
 	<div class="modal fade" id="apiModal" tabindex="-1" role="dialog" aria-labelledby="apiModalLabel" aria-hidden="true">
 		<div class="modal-dialog small_dialog">
@@ -263,9 +277,4 @@
 	    	</div>
 	  	</div>
 	</div>
-
-	<!-- Force logout when page is loaded -->
-	<iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
-    <iframe src="https://test.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
-
 {% endblock %}

@@ -3,3 +3,5 @@ db.sqlite3
 .env
 .DS_STORE
 __pycache__
+cert.crt
+cert.key

@@ -1,8 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from django.template import RequestContext, Context, Template, loader
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.conf import settings
-from compareorgs.models import Job, Org, ComponentType, Component, ComponentListUnique, OfflineFileJob
+from compareorgs.models import Job, Org, Component, ComponentListUnique, OfflineFileJob
 from compareorgs.forms import JobForm
 from compareorgs.tasks import download_metadata_metadata, download_metadata_tooling, create_offline_file
 
@@ -10,18 +9,24 @@ import json
 import requests
 import datetime
 import uuid
-from time import sleep
 import os
 import traceback
 
 def index(request):
 	"""
 	Home page for the application. Holds the methods to authenticate and begin the process
-
 	"""
 
 	client_id = settings.SALESFORCE_CONSUMER_KEY
 	redirect_uri = settings.SALESFORCE_REDIRECT_URI
+
+	org_one, org_two = None, None
+
+	if request.session.get('org1'):
+		org_one = Org.objects.get(random_id=request.session.get('org1'))
+	
+	if request.session.get('org2'):
+		org_two = Org.objects.get(random_id=request.session.get('org2'))
 
 	if request.POST:
 
@@ -42,11 +47,11 @@ def index(request):
 			job.random_id = uuid.uuid4()
 			job.save()
 
-			org_one = Org.objects.get(pk = job_form.cleaned_data['org_one'])
+			org_one = Org.objects.get(random_id=request.session.get('org1'))
 			org_one.job = job
 			org_one.save()
 
-			org_two = Org.objects.get(pk = job_form.cleaned_data['org_two'])
+			org_two = Org.objects.get(random_id=request.session.get('org2'))
 			org_two.job = job
 			org_two.save()
 
@@ -55,50 +60,75 @@ def index(request):
 	else:
 		job_form = JobForm()
 
-	return render(request, 'index.html', {'client_id': client_id, 'redirect_uri': redirect_uri, 'job_form': job_form})
+	return render(
+		request, 
+		'index.html', 
+		{
+			'client_id': client_id, 
+			'redirect_uri': redirect_uri, 
+			'job_form': job_form,
+			'org_one': org_one,
+			'org_two': org_two,
+			'email': request.session.get('email', '')
+		}
+	)
+
 
 def oauth_response(request):
 	"""
 	Method to call the Salesforce OAuth server and authenticate the user
-	
 	"""
 
 	error_exists = False
-	error_message = ''
-	username = ''
-	email = ''
-	org_name = ''
+	instance_url = None
+	error_message = None
+	username = None
+	email = None 
+	org_name = None
+	org_choice = None
+	access_token = None 
+	org_id = None
 	org_choice = None
 	org = Org()
 
-	# On page load
-	if request.GET:
+	if not request.GET.get('code'):
+		error_exists = True
+		error_message = 'No code provided. Please retry the authentication process'
+	elif not request.GET.get('state'):
+		error_exists = True
+		error_message = 'No state parameter provided. Please retry the authentication process'
+	
+	else:
 
 		oauth_code = request.GET.get('code')
 		environment = request.GET.get('state')[:-4]
 		org_choice = request.GET.get('state')[-4:]
-		access_token = ''
-		instance_url = ''
-		org_id = ''
 
 		if 'Production' in environment:
-
 			login_url = 'https://login.salesforce.com'
-			
 		else:
-
 			login_url = 'https://test.salesforce.com'
 		
-		r = requests.post(login_url + '/services/oauth2/token', headers={ 'content-type':'application/x-www-form-urlencoded'}, data={'grant_type':'authorization_code','client_id': settings.SALESFORCE_CONSUMER_KEY,'client_secret':settings.SALESFORCE_CONSUMER_SECRET,'redirect_uri': settings.SALESFORCE_REDIRECT_URI,'code': oauth_code})
-		auth_response = json.loads(r.text)
+		response = requests.post(
+			login_url + '/services/oauth2/token', 
+			headers={ 
+				'Content-Type':'application/x-www-form-urlencoded'
+			}, 
+			data={
+				'grant_type':'authorization_code',
+				'client_id': settings.SALESFORCE_CONSUMER_KEY,
+				'client_secret':settings.SALESFORCE_CONSUMER_SECRET,
+				'redirect_uri': settings.SALESFORCE_REDIRECT_URI,
+				'code': oauth_code
+			},
+			verify=not settings.IS_LOCAL
+		)
+		auth_response = response.json()
 
 		if 'error_description' in auth_response:
-
 			error_exists = True
 			error_message = auth_response['error_description']
-
 		else:
-
 			access_token = auth_response['access_token']
 			instance_url = auth_response['instance_url']
 			user_id = auth_response['id'][-18:]
@@ -106,20 +136,29 @@ def oauth_response(request):
 			org_id = org_id[-18:]
 
 			# get username of the authenticated user
-			r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/User/' + user_id + '?fields=Username,Email', headers={'Authorization': 'OAuth ' + access_token})
+			r = requests.get(
+				instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/User/' + user_id + '?fields=Username,Email', 
+				headers={
+					'Authorization': 'OAuth ' + access_token
+				},
+				verify=not settings.IS_LOCAL
+			)
 			
 			if 'errorCode' in r.text:
-
 				error_exists = True
 				error_message = r.json()[0]['message']
-
 			else:
-
 				username = r.json()['Username']
 				email = r.json()['Email']
 
 				# get the org name of the authenticated user
-				r = requests.get(instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/Organization/' + org_id + '?fields=Name', headers={'Authorization': 'OAuth ' + access_token})
+				r = requests.get(
+					instance_url + '/services/data/v' + str(settings.SALESFORCE_API_VERSION) + '.0/sobjects/Organization/' + org_id + '?fields=Name', 
+					headers={
+						'Authorization': 'OAuth ' + access_token
+					},
+					verify=not settings.IS_LOCAL
+				)
 				
 				if 'errorCode' in r.text:
 
@@ -131,35 +170,44 @@ def oauth_response(request):
 					org_name = r.json()['Name']
 
 					org = Org()
+					org.random_id = uuid.uuid4()
 					org.access_token = access_token
 					org.instance_url = instance_url
 					org.org_id = org_id
 					org.org_name = org_name
 					org.username = username
-					
 					if org_choice == 'org1':
-
 						org.org_number = 1
-
 					else:
-
 						org.org_number = 2
-
 					org.save()
+
+					# Add to session to use back on homepage
+					request.session[org_choice] = org.random_id
+					request.session['email'] = email
 			
-	return render(request, 'oauth_response.html', {'error': error_exists, 'error_message': error_message, 'username': username, 'org_name': org_name, 'org_choice':org_choice, 'org': org, 'email': email, 'instance_url': instance_url})
+	return render(
+		request, 
+		'oauth_response.html', 
+		{
+			'error': error_exists, 
+			'error_message': error_message, 
+			'username': username, 
+			'org_name': org_name, 
+			'org_choice':org_choice, 
+			'org': org, 
+			'email': email, 
+			'instance_url': instance_url,
+		}
+	)
 
 # AJAX endpoint for page to constantly check if job is finished
 def job_status(request, job_id):
-
 	job = get_object_or_404(Job, random_id = job_id)
-
-	response_data = {
+	return JsonResponse({
 		'status': job.status,
 		'error': job.error
-	}
-
-	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
+	})
 
 # Page for user to wait for job to run
 def compare_orgs(request, job_id):
@@ -269,7 +317,7 @@ def rerunjob(request, job_id):
 
 def build_file(request, job_id):
 	""" 
-		Generate a zip file to download results for offline
+	Generate a zip file to download results for offline
 	"""
 
 	job = get_object_or_404(Job, random_id = job_id)

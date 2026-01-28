@@ -101,11 +101,11 @@ a.object_link:hover {
 }
 
 #compareOrgs {
-    display:none;
-    width:500px;
+    width: 500px;
     text-align:center;
     margin-top:30px;
     padding-left: 200px;
+    margin-bottom: 100px;
 }
 
 #id_api_choice, #id_email_choice {

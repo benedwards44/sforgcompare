@@ -22,6 +22,7 @@ class Job(models.Model):
 		return self.componentlistunique_set.order_by('order')
 
 class Org(models.Model):
+	random_id = models.CharField(db_index=True,max_length=255, blank=True)
 	job = models.ForeignKey(Job, blank=True, null=True, on_delete=models.deletion.CASCADE)
 	org_number = models.PositiveSmallIntegerField()
 	access_token = models.CharField(max_length=255)
