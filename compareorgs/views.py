@@ -195,7 +195,8 @@ def oauth_response(request):
 		'oauth_response.html', 
 		{
 			'error': error_exists, 
-			'error_message': error_message
+			'error_message': error_message,
+			'instance_url': instance_url
 		}
 	)
 

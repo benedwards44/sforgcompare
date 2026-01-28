@@ -264,4 +264,8 @@
 
 	<input type="hidden" id="client_id" value="{{ client_id }}" />
 	<input type="hidden" id="redirect_uri" value="{{ redirect_uri }}" />
+
+	<!-- Force logout when page is loaded -->
+	<iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+    <iframe src="https://test.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
 {% endblock %}

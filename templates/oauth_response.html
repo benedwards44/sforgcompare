@@ -28,6 +28,16 @@
 
 		<a href="/">Back to Homepage</a>
 
+		<script>
+			setTimeout(function() {
+				window.location = '/';
+			}, 2000);
+		</script>
+
+		<iframe src="https://login.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+		<iframe src="https://test.salesforce.com/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+		<iframe src="{{ instance_url }}/secur/logout.jsp" width="0" height="0" style="display:none;"></iframe>
+
 	{% endif %}
 
 {% endblock %}
