@@ -15,6 +15,10 @@ env = environ.Env(
     AWS_ACCESS_KEY_ID=(str, ''),
     AWS_SECRET_ACCESS_KEY=(str, ''),
     AWS_STORAGE_BUCKET_NAME=(str, ''),
+    DEFAULT_FROM_EMAIL=(str, ''),
+    EMAIL_HOST=(str, ''),
+    EMAIL_HOST_USER=(str, ''),
+    EMAIL_HOST_PASSWORD=(str, ''),
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
