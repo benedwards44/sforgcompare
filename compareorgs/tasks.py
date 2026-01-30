@@ -16,6 +16,7 @@ from suds.client import Client
 from base64 import b64decode
 from zipfile import ZipFile
 from django.template import Context, loader
+from django.utils import timezone
 
 # Downloading metadata using the Metadata API
 # https://www.salesforce.com/us/developer/docs/api_meta/
@@ -723,3 +724,11 @@ def send_error_email(job, error):
 			fail_silently=True
 		)
 
+@shared_task
+def job_archival():
+	"""
+	Deletes old jobs to keep the database clean
+	"""
+	one_day_ago = timezone.now() - datetime.timedelta(hours=24)
+	jobs = Job.objects.filter(created_date__lt=one_day_ago)
+	jobs.delete()

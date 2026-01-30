@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'compareorgs',
     'storages',
     'django_extensions',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -122,6 +123,8 @@ STORAGES = {
 REDIS_URL = env('REDIS_URL')
 CELERY_BROKER_URL = REDIS_URL
 BROKER_POOL_LIMIT = 1
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
 
 
 # Internationalization
@@ -167,4 +170,4 @@ EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
-EMAIL_USE_TLS = False
+EMAIL_USE_TLS = True
