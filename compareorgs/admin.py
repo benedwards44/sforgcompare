@@ -20,7 +20,7 @@ class ComponentListUniqueInline(admin.TabularInline):
 	extra = 0
 
 class OfflineFileJobInline(admin.TabularInline):
-	fields = ['status', 'error']
+	fields = ['status', 'error', 'error_stacktrace']
 	model = OfflineFileJob
 	extra = 0
 
