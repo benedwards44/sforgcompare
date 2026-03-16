@@ -169,7 +169,7 @@ function checkAnyChildVisible()
 
 function startDownloadJob(file_url, job_id) {
 
-	if (file_url != '' && file_url != null) {
+	if (file_url) {
 
 		updateModal(
 			'File Ready For Download',
@@ -198,10 +198,9 @@ function startDownloadJob(file_url, job_id) {
 		    type: 'get',
 		    dataType: 'json',
 		    success: function(resp) {
-		    	
+
 		    	// There was an error running the job
 		    	if (resp.status == 'Error') {
-
 		    		updateModal(
 			    		'Error Generating File',
 			    		'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp.error + '</div>',
@@ -211,16 +210,17 @@ function startDownloadJob(file_url, job_id) {
 		    	}
 		    	// Job has successfully started. Start looping for progress
 		    	else {
-
 		    		check_status(job_id);
 		    	}
 		    },
-		    failure: function(resp) { 
+		    error: function(resp) { 
+
+				console.log(resp);
 		        
 		        // Error starting job
 		    	updateModal(
 		    		'Error Generating File',
-		    		'<div class="alert alert-danger" role="alert">There was an error building your file: ' + resp + '</div>',
+		    		'<div class="alert alert-danger" role="alert">There was an error building your file:<br/><br/> ' + resp + '</div>',
 		    		true
 		    	);
 		    }

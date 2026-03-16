@@ -318,8 +318,9 @@ def build_file(request, job_id):
 	""" 
 	Generate a zip file to download results for offline
 	"""
+	
 
-	job = get_object_or_404(Job, random_id = job_id)
+	job = get_object_or_404(Job, random_id=job_id)
 
 	# If file already exists
 	if os.path.exists('compare_results_' + str(job.id) + '.zip'):
@@ -327,7 +328,7 @@ def build_file(request, job_id):
 			'status': 'Finished',
 			'error': ''
 		}
-		return HttpResponse(json.dumps(response_data), content_type = 'application/json')
+		return JsonResponse(response_data, status=200)
 
 
 	# Create offline job to run
@@ -344,7 +345,7 @@ def build_file(request, job_id):
 	except Exception as ex:
 		# If error, save error to job
 		offline_job.status = 'Error'
-		offline_job.error = ex
+		offline_job.error = str(ex)
 		offline_job.save()
 
 	response_data = {
@@ -352,7 +353,7 @@ def build_file(request, job_id):
 		'error': offline_job.error
 	}
 
-	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
+	return JsonResponse(response_data)
 	
 
 # AJAX endpoint for page to constantly check if job is finished
@@ -363,7 +364,6 @@ def check_file_status(request, job_id):
 
 	# If job is finished
 	if job.zip_file:
-
 		response_data = {
 			'status': 'Finished',
 			'url': job.zip_file.url,
@@ -372,7 +372,6 @@ def check_file_status(request, job_id):
 
 	# Else check for any errors
 	elif job.zip_file_error:
-
 		response_data = {
 			'status': 'Error',
 			'url': '',
@@ -380,14 +379,13 @@ def check_file_status(request, job_id):
 		}
 
 	else:
-
 		response_data = {
 			'status': 'Running',
 			'url': '',
 			'error': ''
 		}
 
-	return HttpResponse(json.dumps(response_data), content_type = 'application/json')
+	return JsonResponse(response_data)
 
 
 # AJAX endpoint for getting the metadata of a component
