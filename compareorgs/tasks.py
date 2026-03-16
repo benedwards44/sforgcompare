@@ -446,11 +446,11 @@ def create_offline_file(job_id, offline_job_id):
 
 		# Build the html using the template contentxt
 		t = loader.get_template('compare_results_offline.html')
-		c = Context({ 
+		c = { 
 			'org_left_username': job.sorted_orgs()[0].username, 
 			'org_right_username': job.sorted_orgs()[1].username, 
 			'html_rows': ''.join(list(job.sorted_component_list().values_list('row_html', flat=True)))
-		})
+		}
 
 		# Write template contents to file
 		compare_result.write(t.render(c))
